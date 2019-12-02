@@ -4,7 +4,7 @@
 ### PostgreSQL
 postgresql-serverが稼働しており、TogoDB（Railsアプリケーション）からpostgresql-serverにアクセスできる必要があります。
 * Version 9.x, 10.x, 11.xで動作を確認しています。
-* pg_trigmを利用しています。そのためpostgresql-contribをインストールするかPostgreSQLのcontribからpg_trgmをインストールする必要があります。
+* pg_trgmを利用しています。そのためpostgresql-contribをインストールするかPostgreSQLのcontribからpg_trgmをインストールする必要があります。
 
 ### Redis
 redis-serverが稼働しており、TogoDB（Railsアプリケーション）からredis-serverにアクセスできる必要があります。
@@ -28,8 +28,8 @@ $ ant jar
 ```
 
 ### Raptor RDF Syntax Library
-[http://librdf.org/raptor/](http://librdf.org/raptor/)  
 RDFのフォーマット変換（N-triples => Turtle, RDF/XML）のため、Raptorに含まれているrapperコマンドを使用します。
+[http://librdf.org/raptor/](http://librdf.org/raptor/)  
 
 ### nkf
 データベース作成の際にアップロードされたCSV, TSVファイルをUTF-8に変換するために使用します。
@@ -109,3 +109,5 @@ Railsサーバの起動
 ```
 $ bundle exec rails s -b 0.0.0.0
 ```
+
+サーバの起動後、Webブラウザで http://<サーバ名>:3000/ にアクセスするとTogoDBのトップ画面が表示されます。
