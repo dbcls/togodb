@@ -60,7 +60,7 @@ $ vi .env
 |SERVER_NAME|TogoDBが稼働するマシンのホスト名とポート番号|
 |RAPPER_PATH|rapperコマンドのパス名|
 |NKF_PATH|nkfコマンドのパス名|
-|D2RQ_DIR|D2RQのディレクトリ|
+|D2RQ_DIR|D2RQのディレクトリ（dump-rdfファイル、d2r-queryファイルがあるディレクトリ）|
 |DATA_DIR|TogoDBで作成、利用されるファイル（アップロードされたファイル、リリース機能で生成されるファイル）を保存するディレクトリ|
 |TMP_DIR|TogoDBで一時ファイルを作成するディレクトリ|
 |BASE_URI_HOST|RDFのBaseURIに使用するホスト名|
