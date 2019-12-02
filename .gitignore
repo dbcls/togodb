@@ -16,8 +16,15 @@
 !/log/.keep
 !/tmp/.keep
 
+# Ignore uploaded files in development
+/storage/*
+!/storage/.keep
+
 # Ignore Byebug command history file.
 .byebug_history
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
 
 # Ignore rbenv files
 .rbenv-gemsets
@@ -28,10 +35,9 @@
 .project
 .DS_Store
 
-# yarn
 yarn.lock
-package.json
-node_modules
+/node_modules
+/yarn-error.log
 
 # Ignore asset pipeline files
 /public/assets
@@ -55,6 +61,3 @@ node_modules
 /docker
 /docker-compose.yml
 
-# Backup
-app.bak*
-lib.bak*
