@@ -1,0 +1,49 @@
+table.togodb_table_inform.margin_top_28 cellpadding="5" cellspacing="0"
+  tr.head
+    th Column
+    th Schema
+    th Label
+    th.text_align_center
+      | Show in
+      br
+      | table
+    th.text_align_center
+      | Sanitize
+      br
+      | value
+    th Description
+    th.text_align_center
+      | Text
+      br
+      | search
+    th.text_align_center
+      | Advanced
+      br
+      | search
+  - @columns.each do |column|
+    - param = "togodb_column[#{column.id}]"
+    tr.column
+      td
+        = column.name
+      td
+        = column.data_type_label
+        - if column.data_type == "float" || column.data_type == "decimal"
+          div
+            |  (
+            = text_field_tag "#{param}[num_decimal_places]", column.num_decimal_places, size: 2
+            |  fractional digits)
+      td
+        = text_field_tag "#{param}[label]", column.label, size: 16
+      td
+        = check_box param, :action_list, column.action_list ? { checked: "checked" } : {}
+      td
+        = check_box param, :sanitize, column.sanitize ? { checked: "checked" } : {}
+      td
+        = text_field_tag "#{param}[comment]", column.comment, size: 20
+      td style="text-align:center;"
+        - if column.support_text_search?
+          = check_box param, :action_search, column.action_search ? { checked: "checked" } : {}
+        - else
+          |   
+      td style="text-align:center;"
+        = check_box param, :action_luxury, column.action_luxury ? { checked: "checked" } : {}

@@ -1,0 +1,4 @@
+<% if message.is_a?(Array) %>
+message = "<ul>" + "<%== j message.map{ |s| "<li>#{h(s)}</li>" }.join %>" + "</ul>"
+<% end %>
+$("#<%= element_id %>").html("<%= j(render partial: 'd2rq_mapper/alert_message', locals: { message: message }) %>");

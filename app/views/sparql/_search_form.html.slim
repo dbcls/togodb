@@ -1,0 +1,19 @@
+ruby:
+  options_for_format = { "Text" => "text", "XML" => "xml", "JSON" => "json", "CSV" => "csv", "TSV" => "tsv" }
+
+= form_with url: search_sparql_path, id: "sparql-form", class: "form-horizontal" do
+  .form-group
+    div
+      label.control-label for="sparql-query" style="padding-left:15px;" SPARQL Query
+    .col-sm-12
+      = text_area_tag :query, "#{@prefixes}\n\nSELECT * { ?s ?p ?o . } LIMIT 10\n\n\n\n\n\n\n\n\n", id: "sparql-query", class: "form-control", rows: 10
+
+  .form-group
+    label.col-sm-2.control-label for="query-result-format" Format
+    .col-sm-9
+      = select_tag :output_format, options_for_select(options_for_format), id: "query-result-format", class: "form-control"
+
+  .submit.form-group
+    button#sparql-submit.btn.btn-primary[type="submit"]
+      i.fa.fa-search
+      | Search

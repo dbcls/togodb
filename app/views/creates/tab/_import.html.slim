@@ -1,0 +1,7 @@
+#togodb_create_import
+  .togodb_import_track_contents
+    #import_progress_processing_msg.import_progress_processing_msg
+    #import_progress_bar.import_progress_bar
+    #import_db_result_message.import_progress_msg
+    = link_to config_path(@create.table.name), role: "button", "aria-disabled" => "false" do
+      button#db_configure_btn.togodb_btn_single.configure.margin_bottom_10 style="display:none;" Configure

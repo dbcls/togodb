@@ -1,0 +1,26 @@
+= form_with url: users_path, local: true do
+  table
+    tr
+      th style="text-align:left;" Login
+      td
+        = text_field_tag "user[login]", nil, id: "togodb-account-edit-login", size: 80
+    tr
+      th style="text-align:left;" Password
+      td
+        = password_field_tag "user[password]", nil, id: "togodb-account-edit-password", size: 16
+        |  (Used for local account) 
+    tr
+      th style="text-align:left;" Super user
+      td
+        == checkbox_tag_with_hidden("user[superuser]", "1", "0", false, id: "togodb-account-edit-superuser")
+        |  All privileges 
+    tr
+      th style="text-align:left;" Import table
+      td
+        == checkbox_tag_with_hidden("user[import_table]", "1", "0", true, id: "togodb-account-edit-import_table")
+        |  Import table 
+  div style="margin-top:10px; text-align:center;"
+    = submit_tag "Update", id: "togodb-account-edit-form-submit-btn", onclick: "return confirm('Are you sure ?');"
+    button#togodb-account-edit-form-cancel-btn type="button" style="margin-left:20px;"
+      | Cancel
+  = hidden_field_tag "id", nil, id: "togodb-account-edit-user-id"

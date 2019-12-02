@@ -1,0 +1,9 @@
+$("div#togodb-quickbrowse-<%= @table.name %> > div#togodb-quickbrowse-body").html("<%= j(render partial: 'add_record_dialog') %>");
+$(".togodb-view-add-form-submit").button();
+$(".togodb-view-add-form-cancel").button();
+$("#togodb-quickbrowse-button-wrapper").hide();
+
+$(".togodb-view-add-form-cancel").on("click", function() {
+  $.getScript("<%= quickbrowse_path(db: @table.name, id: @record) %>");
+  $("#togodb-quickbrowse-button-wrapper").show();
+});

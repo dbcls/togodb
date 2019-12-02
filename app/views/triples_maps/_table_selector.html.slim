@@ -1,0 +1,8 @@
+h2.heading02
+  | Selected table
+.form-group
+  .col-sm-11
+    = select_tag("class_map_id",
+    - 	           grouped_options_for_select(@grouped_triples_maps, @class_map.id),
+    -                    id: "table-selector", class: "form-control")
+  - #= render partial: 'tooltip_icon', locals: { title: "Some tooltip text!" }

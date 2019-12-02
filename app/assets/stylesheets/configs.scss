@@ -1,0 +1,71 @@
+// Place all the styles related to the configs controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+div#togodb-config {
+    .contents-title {
+        font-size: 2em;
+        font-weight: bold;
+        margin-bottom: 5px
+    }
+  
+    .contents-subtitle {
+        font-size: 1.5em;
+        font-weight: bold;
+	margin-top: 15px;
+    }
+
+    #table-config-area {
+        margin-top:5px;
+    }
+
+    #column-config-area {
+        margin-bottom:20px;
+    }
+
+    .togodb-config-panel {
+        padding-top: 16px;
+    }
+}
+
+table.togodb-table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    border-spacing: 0pt;
+    margin: 0pt;
+    padding: 0pt;
+
+    th {
+        background: image-url("bg_th.jpg") repeat-x;
+        border: 1px solid #999999;
+	padding: 2px 5px;
+	white-space: nowrap;
+    }
+
+    td {
+        border: 1px solid #999999;
+        text-align: center;
+        padding: 4px 5px;
+        background: #FFFFFF;
+    }
+}
+
+#no-authorized-user-msg {
+  font: {
+    size: 1.05rem;
+  }
+
+  padding: {
+    top: 3px;
+  }
+}
+
+#togodb-user-roles-new-user-update-button {
+  display: none;
+}
+
+#search-user-login {
+  margin: {
+    left: 5px;
+    right: 5px;
+  }
+}

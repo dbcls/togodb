@@ -1,0 +1,11 @@
+$("#togodb-view-add-form").html("<%= j(render partial: 'add_record_dialog') %>");
+<% if @record&.new_record? %>
+$("#togodb-view-add-form").dialog("option", "title", "Add record to <%= @table.name %>");
+<% else %>
+$("#togodb-view-add-form").dialog("option", "title", "Edit record ID: <%= @record.id %>");
+<% end %>
+$("#togodb-view-add-form button").button();
+$("#togodb-view-add-form button.togodb-view-add-form-cancel").bind("click", function() {
+    $("#togodb-view-add-form").dialog("close");
+});
+$("#togodb-view-add-form").dialog("open");

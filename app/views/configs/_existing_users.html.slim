@@ -1,0 +1,5 @@
+- if @roles.empty?
+  #no-authorized-user-msg
+    | No user is authorized for this table.
+- else
+  = render 'configs/user_roles_list'

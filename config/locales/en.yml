@@ -1,0 +1,108 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# The following keys must be escaped otherwise they will not be retrieved by
+# the default I18n backend:
+#
+# true, false, on, off, yes, no
+#
+# Instead, surround them with single quotes.
+#
+# en:
+#   'true': 'foo'
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+en:
+  errors:
+    messages:
+      not_blank: can't be blank.
+      at_least_one: must have at least one value.
+      both_lang_datatype: Cannot set both Language and Datatype at the same time.
+
+  triples_maps:
+    update:
+      success: RDF mapping was successfully updated.
+      fail: RDF mapping was not updated because of the following error%{s}.
+
+  activemodel:
+    attributes:
+      triples_map_form:
+        subject_uri_value: Subject URI
+        subject_rdf_types: rdf:type
+        subject_label_value: rdfs:label
+
+  views:
+    roles:
+      user_read_help: The user can see the data.
+      user_edit_help: The user can edit the data.
+      user_config_help:
+        html: |-
+          The user can change the<br />database settings.
+
+    triples_maps:
+      help:
+        subject_format:
+          html: |-
+            [Required]<br />
+            * URI pattern: Construct a subject URI starting with http://〜 or namespace:〜 (the namespace name must be registered in the &quot;Namespaces&quot; setting).<br />
+            * URI column: Treat values of a specified column as subject URIs (Use only if cell values of a specified column are already stored as URIs).
+
+        subject_uri:
+          html: |-
+            [Required]<br />
+            * URI pattern: Specify a template URI using a special variable @@table_name.column_name@@ (combination of a table name and a column name to take a cell's value).<br />
+            * URI column: Specify a column containing subject URIs.<br />
+
+        class_map_condition:
+          html: |-
+            [Optional] Specifies an SQL WHERE condition. RDF triples will only be generated for database rows that satisfy the condition.
+
+        object_format:
+          html: |-
+            [Required]<br />
+            * URI pattern: Specify to construct an object URI based on the cell's value using a special variable @@table_name.column_name@@ (e.g., to make ID as a URI by adding prefix).<br />
+            * URI column: Specify to treat the cell's value as an object URI.<br />
+            * Literal pattern: Specify to customize a literal value including the cell's value using a special variable @@table_name.column_name@@ (e.g., to add unit string to numbers).<br />
+            * Literal column: Specify to use cell's value as a literal object.
+
+        predicate:
+          html: |-
+            URI: Specify a predicate URI to link two tables.
+
+        object_language:
+          html: |-
+            [Optional] Specify a language tag (e.g., en for English, ja for Japanese) to be added for generating an object literal with a language tag (e.g., "foobar"@en)
+
+        object_datatype:
+          html: |-
+            [Optional] Specify a datatype URI (e.g., xsd:integer) to be added for generating an object literal with a datatype (e.g., 123^^xsd:integer)
+
+        property_bridge_condition:
+          html: |-
+            [Optional] If the condition evaluates to TRUE for a SQL result set row, then triples will be generated from that row.
+
+  confirm:
+    consent_agreement: If you do not agree to the terms of the license, click "Cancel".
+    select_list_order: All fields will be renumbered.
+    unselect_list_order: All fields will be blank.
+    select_show_order: All fields will be renumbered.
+    unselect_show_order: All fields will be blank.
+    select_dl_order: All fields will be renumbered.
+    unselect_dl_order: All fields will be blank.

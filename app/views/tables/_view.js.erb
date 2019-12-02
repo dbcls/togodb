@@ -1,0 +1,76 @@
+<%# The JavaScript code blow is part of "flexigrid.js" %>
+<%# The code is rendered at "flexigrid.js" %>
+
+const entry_form = function () {
+    return document.getElementById("entry-form");
+};
+
+const advanced_search_pressed = function (command, grid) {
+    $("#togodb-view-advanced-search").dialog("open");
+};
+
+const add_pressed = function (command, grid) {
+    $.getScript(new_form_url());
+};
+
+const edit_pressed = function (command, grid) {
+    const items = $(".trSelected", grid);
+    const num_records = items.length;
+    if (num_records == 0) {
+        alert("No record selected. Please select the record to edit.");
+        return false;
+    } else if (num_records > 1) {
+        alert("Multiple records are selected. Please select only one record.");
+        return false;
+    }
+
+    const record_id = items[0].id.slice(3);
+    $.getScript(edit_form_url(record_id));
+}
+
+const delete_pressed = function (command, grid) {
+    const items = $(".trSelected", grid);
+    const num_records = items.length;
+    if (num_records <= 0) {
+        alert("No records selected. Please select the records to be deleted.");
+        return;
+    }
+
+    let ok = false;
+    if (num_records == 1) {
+        ok = confirm("Delete 1 item ?");
+    } else {
+        ok = confirm("Delete " + num_records + " items ?");
+    }
+    if (!ok) {
+        return;
+    }
+
+    let itemlist = [];
+    for (let i = 0; i < items.length; i++) {
+        itemlist.push(items[i].id.substring(3));
+    }
+    const json = JSON.stringify(itemlist);
+
+    $.ajax({
+        url: delete_entries_url(),
+        method: "DELETE",
+        data: {
+            ids: json,
+            "_method": "delete"
+        },
+        dataType: "script"
+    });
+};
+
+const quickbrowse_edit_pressed = function () {
+    const records = $(".shown", "#" + view_table_id());
+    if (records.length != 1) {
+        return;
+    }
+
+    const record_id = $(records[0]).attr('id').slice(3);
+    $.getScript(quickbrowse_form_url(record_id));
+
+    list_viewer.edit_mode = true;
+};

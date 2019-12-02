@@ -1,0 +1,60 @@
+$(function() {
+<% if @table.metadata.confirm_license %>
+    $("#togodb-db-dl-confirm-dialog").dialog({
+        autoOpen: false,
+	resizable: false,
+	modal: true,
+	buttons: {
+	    "Download": function() {
+		$(this).dialog("close");
+		$("table#<%= view_table_id(@table.name) %>").flexDownload();
+	    },
+	    Cancel: function() {
+		$(this).dialog("close");
+	    }
+	}
+    });
+
+    $("#togodb-released-data-dl-confirm-dialog").dialog({
+        autoOpen: false,
+	resizable: false,
+	modal: true,
+	buttons: {
+	    "Download": function() {
+		$(this).dialog("close");
+		location.href = $("input#togodb_released_data_dl_href").val();
+	    },
+	    Cancel: function() {
+		$(this).dialog("close");
+	    }
+	}
+    });
+
+    $("a.togodb-<%= @table.name %>-released-data-dl-link").click(function() {
+        $("input#togodb_released_data_dl_href").val($(this).attr('href'));
+	$("#togodb-released-data-dl-confirm-dialog").dialog("open");
+	return false;
+    });
+<% end %>
+
+<% if @multiple_language %>
+<%= render partial: "header_footer_switcher", formats: :js, locals: { page: 'view' } %>
+<% end %>
+
+<% if @header_footer_lang %>
+<%   if @header_footer_lang == 1 %>
+$("#togodb-<%= @table.name %>-view-header-j").css('display', 'block');
+$("#togodb-<%= @table.name %>-view-footer-j").css('display', 'block');
+<%   elsif @header_footer_lang == 2 %>
+$("#togodb-<%= @table.name %>-view-header-e").css('display', 'block');
+$("#togodb-<%= @table.name %>-view-footer-e").css('display', 'block');
+<%   end %>
+<% end %>
+
+    $("#togodb-<%= @table.name %>-released-data-list").dialog({
+        autoOpen: false,
+	title: "Released data",
+	width: 500,
+	height: "auto"
+    });
+});

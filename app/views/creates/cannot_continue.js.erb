@@ -1,0 +1,3 @@
+<% message = "The database creation cannot continue because the following error occurred.<br /><br />#{h @error_message}" %>
+
+$("#togodb_create_tabmenu").html("<%== j(render partial: 'application/alert_message', locals: { message: message }) %>");

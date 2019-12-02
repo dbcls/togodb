@@ -1,0 +1,33 @@
+#togodb_page_contents {
+    font-size: 75%;
+}
+
+.contents_title {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+table#togodb_show_table {
+    border-collapse: collapse;
+}
+
+table#togodb_show_table .record_name {
+    background: #cccccc;
+    text-align: left;
+    padding: 5px;
+}
+
+table#togodb_show_table .column_label {
+    background: #eeeeee;
+    font-weight: bold;
+    border: solid #cccccc;
+    border-width: 0px 0px 1px 0px;
+    padding: 5px;
+}                                                                                                                                                    
+
+table#togodb_show_table .column_value {
+    background: #ffffff;
+    border: solid #cccccc;
+    border-width: 0px 0px 1px 0px;
+    padding: 5px;                                                                                                                                    }

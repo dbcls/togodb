@@ -1,0 +1,10 @@
+<% if @user.nil? %>
+  $("#search-user-result").html('<p class="modal_content_text">The user <%= @searched_user_name %> is not found.</p>');
+<% else %>
+  <% if @privileged_user %>
+    $("#search-user-result").html('<p class="modal_content_text">The user <%= @searched_user_name %> is already authorized.</p>');
+  <% else %>
+    $("#search-user-result").html("<%= j(render partial: 'user_priviledge_form', locals: { table: @table, user: @user }) %>");
+    $("#togodb-user-roles-new-user-update-button").show();
+  <% end %>
+<% end %>

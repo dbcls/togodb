@@ -1,0 +1,23 @@
+#togodb_create_headerline aria-labelledby="togodb-create-headerline-tab" role="tabpanel" aria-expanded="true" aria-hidden="false"
+  .togodb_import_track_contents
+    table.togodb_table_inform.margin_top_28
+      - @truncated_head_records.each_with_index do |record, i|
+        tr
+          - if i == 0
+            - record.each do |col|
+              th
+                = col
+          - else
+            - record.each do |col|
+              td
+                = col
+
+  p.contents_subtitle Treat the first line as column names?
+
+  .togodb_btns.margin_bottom_10 style="text-align: center;"
+    = form_with url: header_create_path(@create), method: :post do
+      = submit_tag "Yes", class: "togodb_btn_double"
+      = hidden_field_tag "header", "t"
+    = form_with url: header_create_path(@create), method: :post do
+      = submit_tag "No", class: "togodb_btn_double"
+      = hidden_field_tag "header", "f"

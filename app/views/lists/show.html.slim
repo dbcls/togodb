@@ -1,0 +1,154 @@
+= content_for :header do
+  meta charset="utf-8"
+  title TogoDB - My databases
+  = stylesheet_link_tag "style"
+  = stylesheet_link_tag "bootstrap"
+  = stylesheet_link_tag "font-awesome"
+  = javascript_include_tag "bootstrap"
+
+  javascript:
+      $(function () {
+          const on_click_records_sorter = function () {
+              if (list_sort.column === "records") {
+                  if (list_sort.direction === "asc") {
+                      list_sort.direction = "desc";
+                  } else {
+                      list_sort.direction = "asc";
+                  }
+              } else {
+                  list_sort.column = "records";
+                  list_sort.direction = "asc";
+              }
+              redraw_databases();
+          };
+
+          const on_click_access_sorter = function () {
+              if (list_sort.column === "access") {
+                  if (list_sort.direction === "asc") {
+                      list_sort.direction = "desc";
+                  } else {
+                      list_sort.direction = "asc";
+                  }
+              } else {
+                  list_sort.column = "access";
+                  list_sort.direction = "asc";
+              }
+              redraw_databases();
+          };
+
+          const on_click_name_sorter = function () {
+              if (list_sort.column === "name") {
+                  if (list_sort.direction === "asc") {
+                      list_sort.direction = "desc";
+                  } else {
+                      list_sort.direction = "asc";
+                  }
+              } else {
+                  list_sort.column = "name";
+                  list_sort.direction = "asc";
+              }
+              redraw_databases();
+          };
+
+          const database_sort_columns = [
+              "name", "access", "records", "date", "creator"
+          ];
+
+          const list_sort = {
+              column: "name",
+              direction: "asc"
+          };
+
+          const bind_table_select = function () {
+              $("#name-sorter").on("click", function () {
+                  on_click_name_sorter();
+              });
+              $("#access-sorter").on("click", function () {
+                  on_click_access_sorter();
+              });
+              $("#records-sorter").on("click", function () {
+                  on_click_records_sorter();
+              });
+              $("#date-sorter").on("click", function () {
+                  on_click_date_sorter();
+              });
+              $("#creator-sorter").on("click", function () {
+                  on_click_creator_sorter();
+              });
+          };
+
+          const redraw_databases = function () {
+              $.ajax({
+                  url: "#{refresh_list_path}",
+                  type: "GET",
+                  data: {
+                      "sort_col": list_sort.column,
+                      "sort_dir": list_sort.direction
+                  }
+              }).done(function (data) {
+                  $("#databases").html(data);
+                  bind_table_select();
+              }).fail(function (data) {
+
+              }).always(function (data) {
+
+              })
+          };
+
+          const on_click_date_sorter = function () {
+              if (list_sort.column === "date") {
+                  if (list_sort.direction === "asc") {
+                      list_sort.direction = "desc";
+                  } else {
+                      list_sort.direction = "asc";
+                  }
+              } else {
+                  list_sort.column = "date";
+                  list_sort.direction = "asc";
+              }
+              redraw_databases();
+          };
+
+          const on_click_creator_sorter = function () {
+              if (list_sort.column === "creator") {
+                  if (list_sort.direction === "asc") {
+                      list_sort.direction = "desc";
+                  } else {
+                      list_sort.direction = "asc";
+                  }
+              } else {
+                  list_sort.column = "creator";
+                  list_sort.direction = "asc";
+              }
+              redraw_databases();
+          };
+
+          bind_table_select();
+
+          // Copy
+          $(".copy").click(function () {
+              const db_id = $(this).data("dbid");
+              const db_name = $(this).data("dbname");
+              $("#database-copy-form").attr("action", "/tables/" + db_id + "/copy");
+              $("#copy-src-name").text(db_name);
+          });
+      });
+
+#togodb_mydatabases_page_contents
+  section#togodb_page_top_graphics
+    .top_service_image
+      = link_to create_path do
+        button Create new DB
+
+  section
+    .contents_subtitle My databases
+    - if flash[:notice]
+      div
+        = render partial: 'application/success_message', locals: { message: flash[:notice] }
+    - if flash[:error]
+      div
+        = render partial: 'application/alert_message', locals: { message: flash[:error] }
+
+    .togodb_database_title Database List
+    #databases
+      = render partial: 'table_content'

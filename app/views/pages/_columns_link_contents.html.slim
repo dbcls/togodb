@@ -1,0 +1,8 @@
+section.togodb_create_db_sectionbox
+  #contents_editcolumn.togodb_create_db_sectionbox_content
+    #togodb_create_columns
+      .togodb_import_track_contents
+        = form_with url: columns_link_togodb_page_path(@page), method: :patch, id: "tab-column-link-form" do
+          #column_link_setting_table
+            = render 'link_setting_table'
+          = render partial: 'form_buttons', locals: { div_id: "col_link_btns", form: nil, show_default_btn: false }

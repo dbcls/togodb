@@ -1,0 +1,10 @@
+label.col-sm-2.control-label for="tables-join-object-format" Format
+.col-sm-9
+  .radio
+    - @object_properties.each do |object_property|
+      - form_name = PropertyBridgePropertySetting.form_name(@property_set.property_bridge.id, @property_set.object_value.id, 'property_bridge_property_id')
+      label
+        = radio_button :property_set, :object_form_value, object_property.id, name: form_name,
+                class: 'object-format', 'data-pbid' => @property_set.property_bridge.id
+        = object_property.label
+= render partial: 'tooltip_icon', locals: { title: t('views.triples_maps.help.object_format.html') }

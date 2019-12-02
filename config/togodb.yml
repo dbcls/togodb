@@ -1,0 +1,21 @@
+default: &default
+  resque:
+    data_download_queue: togodb_v4_dl
+    data_import_queue: togodb_v4_di
+    db_copy_queue: togodb_v4_cp
+    data_release_queue: togodb_v4_re
+
+  run_data_release_after_import: true
+
+  open_search:
+    enable: false
+    admin_email: togodb-admin@dbcls.jp
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

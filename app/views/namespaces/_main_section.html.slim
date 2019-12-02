@@ -1,0 +1,26 @@
+h1.heading01 Ontologies & prefixes
+div
+  = render 'd2rq_mapper/flash_message'
+#namespaces-error-message
+#namespaces-message
+.panel.panel-default
+  .panel-body
+    table#namespace-list.table
+      thead
+        tr
+          th Prefix
+          th URI
+          th.text-right.tight-side-padding
+            button#namespace-add-btn.btn.btn-primary type="button"
+              i.fa.fa-plus
+              |  Add
+      tbody
+        - @namespaces.select{ |ns| ns[:is_ontology] }.each do |ns|
+          = render partial: 'namespace_tr', locals: { namespace: ns }
+        - @namespaces.reject{ |ns| ns[:is_ontology] }.each do |ns|
+          = render partial: 'namespace_tr', locals: { namespace: ns }
+= form_with url: namespace_path(@work), id: 'namespace-update-form', method: :patch, local: true, class: "form-horizontal" do
+  .submit.form-group
+    = button_tag type: 'submit', id: 'namespaces-save-btn', class: 'btn btn-primary' do
+      i.fa.fa-heart
+      | Save 

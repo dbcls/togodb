@@ -1,0 +1,21 @@
+ruby:
+  def_atag_class = "btn btn-default btn-block"
+  cur_atag_class = "btn btn-primary btn-block"
+
+section#side
+  .menu
+    h1.haeding-get Mapping result
+    ul.btn-set
+      h2 Mapping
+      li class=("current" if current == 'd2rq')
+        = link_to 'D2RQ Mapping', d2rq_mapping_path, class: "#{current == 'd2rq' ? cur_atag_class : def_atag_class}"
+      li class=("current" if current == 'r2rml')
+        = link_to 'R2RML Mapping', r2rml_mapping_path, class: "#{current == 'r2rml' ? cur_atag_class : def_atag_class}"
+
+      h2 RDF / SPARQL
+      li class=("current" if current == 'rdf')
+        = link_to 'RDF (Turtle)', turtle_path, class: "#{current == 'rdf' ? cur_atag_class : def_atag_class}"
+      li class=("current" if current == 'sparql')
+        = link_to 'SPARQL', sparql_path, class: "#{current == 'sparql' ? cur_atag_class : def_atag_class}"
+
+    = render partial: 'd2rq_mapper/goto_menu_link', locals: { next_link: false, current: current }

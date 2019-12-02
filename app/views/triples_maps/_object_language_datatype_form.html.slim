@@ -1,0 +1,12 @@
+- language = @property_set.object_language
+- datatype = @property_set.object_datatype
+
+label.col-sm-2.control-label for=language.form_id Language
+.col-sm-3
+  = text_field_tag language.form_name, language.value, id: language.form_id, class: 'form-control input-sm'
+= render partial: 'tooltip_icon', locals: { title: t('views.triples_maps.help.object_language.html') }
+
+label.col-sm-2.control-label for=datatype.form_id Datatype
+.col-sm-3
+  = text_field_tag datatype.form_name, datatype.value, id: datatype.form_id, class: 'form-control input-sm'
+= render partial: 'tooltip_icon', locals: { title: t('views.triples_maps.help.object_datatype.html') }

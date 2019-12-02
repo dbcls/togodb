@@ -1,0 +1,8 @@
+$("#togodb-account-edit-form").html("<%= j(render partial: 'form', locals: { submit_btn_label: submit_btn_label }) %>");
+$("#togodb-account-edit-form-cancel-btn").click(function() {
+    $("#togodb-account-edit-form").dialog("close");
+    return false;
+});
+$("input[type='submit']").button();
+$("button").button();
+$("#togodb-account-edit-form").dialog("open");

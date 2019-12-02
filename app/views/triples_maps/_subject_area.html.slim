@@ -1,0 +1,25 @@
+- uri = f.object.subject_uri
+- if uri.class_map_property.property == 'd2rq:uriPattern'
+  - subject_value = uri_for_disp(@base_uri, @namespace_prefixes, uri.value)
+- else
+  - subject_value = uri.value
+
+#setting-subject
+  span.value
+    span.icon-set.bg-primary
+      | S
+    = subject_value
+.panel.panel-triple.subject
+  .panel-heading
+    h3
+      span.icon-set.bg-primary
+        | S
+      | ubject 
+  .panel-body
+    div[style="text-align:center;"]
+      span.value
+        span.icon-set.bg-primary
+          | S
+        = subject_value
+
+    = render partial: 'subject_form', locals: { f: f }

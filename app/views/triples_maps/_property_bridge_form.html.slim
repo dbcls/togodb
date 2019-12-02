@@ -1,0 +1,13 @@
+- collapse_class = @class_map_type == 'T' ? "collapse in" : "collapse"
+- property_bridge = @property_set.property_bridge
+
+li.list-group-item[class=(property_bridge.enable ? "" : "disabled")
+    id="column-listitem-#{property_bridge.id}"
+    data-pbid="#{property_bridge.id}"]
+
+  / Column name
+  = render partial: 'column_name_area', locals: { first: first }
+
+  / Predicate-Object form
+  div class=collapse_class id="collapse#{property_bridge.id}" style="height: 0px;"
+    = render 'predicate_object_area'

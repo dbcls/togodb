@@ -1,0 +1,40 @@
+- property_bridge = @property_set.property_bridge
+
+/ Predicate
+- if defined?(bnode)
+  - predicates = bnode_property[:predicates]
+- else
+  - predicates = @property_set.predicates ? @property_set.predicates : []
+
+.panel.panel-triple
+  .panel-heading
+    h3
+      span.icon-set
+        | P
+      | redicate
+      /button.add-predicate-btn.btn.btn-primary type="button" data-pbid="#{property_bridge.id}" style="margin-left:20px;"
+        i.fa.fa-plus
+
+  .panel-body id="predicate-wrapper-#{property_bridge.id}"
+    - predicates.each_with_index do |predicate, i|
+      = render partial: 'predicate_form', locals: { predicate: predicate, first: i == 0 }
+
+/ Object
+- unless defined?(bnode)
+  .panel.panel-triple
+    .panel-heading
+      h3
+        span.icon-set.bg-primary
+          | O
+        | bject
+    .panel-body
+      = render 'object_form'
+
+/ WHERE condition
+/- if defined?(bnode)
+  - property_bridge_property_setting = { condition: bnode_property[:condition] }
+/.panel.panel-triple
+  .panel-heading
+    h3 WHERE condition
+  .panel-body
+    = render 'po_where_condition_form'

@@ -1,0 +1,46 @@
+.contents_selected_menu_title Release (CSV/JSON/RDF)
+
+.togodb_release
+  .togodb_release_info
+    .release_info_row
+      .release_info_title SPARQL endpoint
+      .release_info_data
+        = link_to "#{@app_server}#{sparql_path(@table.name)}", sparql_path(@table.name), target: '_blank'
+    .release_info_row
+      .release_info_title Last updated
+      .release_info_data
+        = Time.now.utc.strftime("%Y-%m-%d %H:%M:%S")
+        |  UTC
+        span.reload_button
+          = link_to redraw_release_path(@table), remote: true, role: "button", 'aria-disabled' => 'false' do
+            button#reload.reload type="button" Reload
+
+#togodb-database-release-message
+section.togodb_create_db_sectionbox
+  #contents_editheader.togodb_create_db_sectionbox_content
+    #togodb_create_headerline
+      .togodb_import_track_contents
+        table.togodb_table_release
+          tbody
+            tr
+              th
+              th.text_align_center CSV
+              th.text_align_center JSON
+              th.text_align_center RDF(turtle)
+              th.text_align_center RDF(XML)
+              th.text_align_center FASTA
+              th Release date
+              th Status
+              th Action
+            tr
+              - @datasets.each_with_index do |dataset, i|
+                td.release_info_data_table
+                - %w(csv json ttl rdf fasta).each do |format|
+                  td.release_info_data_table.release_data_table
+                    = render partial: 'release_file_td', locals: { table: @table, dataset_name: dataset.name, format: format }
+                td.release_info_data_table.release_info_data_time
+                  = dataset.released_at
+                td.release_info_data_table
+                  = dataset.status_text
+                td.release_info_data_table.release_info_data_tabble_menu
+                  = render partial: 'action_td_content', locals: { dataset: dataset }

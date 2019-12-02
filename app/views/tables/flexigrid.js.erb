@@ -1,0 +1,90 @@
+<%= render partial: "embed", formats: [:js] %>
+<%= render partial: "view", formats: [:js] %>
+<%= render partial: "quickbrowse", formats: [:js] %>
+
+window.onload = function () {
+    $("button").button();
+
+    $("#togodb-view-advanced-search-submit").click(function () {
+        const fields = $("#advanced_search_form").serializeArray();
+        let p = [
+            {name: "database", value: "<%= @table.name %>"},
+            {name: "advanced_search", value: 1}
+        ];
+        jQuery.each(fields, function (i, field) {
+            p[p.length] = field
+        });
+        $("#" + view_table_id()).flexOptions({method: 'get', params: p, newp: 1}).flexReload();
+        return false;
+    });
+
+    $("#togodb-view-advanced-search-clear").click(function () {
+        $("input[value=Clear]", $(".sDiv2")).click();
+    });
+
+    $("#togodb-view-advanced-search").dialog({
+        autoOpen: false,
+        title: "Advanced search",
+        width: 700,
+        height: "auto"
+    });
+
+    // Edit Record
+    $(".togodb-view-add-form-submit").button();
+    $(".togodb-view-add-form-cancel").button();
+
+    $("#togodb-view-add-form-cancel").click(function () {
+        $("#togodb-view-add-form").dialog("close");
+    });
+
+    $("#togodb-view-add-form").dialog({
+        autoOpen: false,
+        width: 700,
+        height: "auto"
+    });
+
+    // QuickBrowse
+    list_viewer = new Togodb.ListViewer({
+        item_class_name: "record",
+        current_class_name: "shown",
+        root: "togodb-<%= @table.name %>",
+        dbname: "<%= @table.name %>",
+        popup_id: quickbrowse_data_elem_id(),
+        prev: [38, 75, 80],     // KEY_UP(38), k(75), p(80)
+        next: [40, 74, 78],     // KEY_DOWN(40), j(74), n(78)
+        toggle: 32,             // Space(32)
+        close: 27               // KEY_ESC(27)
+    });
+    $(document).keydown(function (event) {
+        list_viewer.keyevent_handler(event);
+    });
+    $("#togodb-quickbrowse-close-btn").click(function () {
+        list_viewer.popuper.close();
+    });
+
+    <% if @writable %>
+    $("#togodb-quickbrowse-edit-button").button();
+    $("#togodb-quickbrowse-edit-button").bind("click", quickbrowse_edit_pressed);
+    <% else %>
+    $("#togodb-quickbrowse-edit-button").css("display", "none");
+    <% end %>
+
+    $("#" + quickbrowse_data_elem_id()).dialog({
+        title: "QuickBrowse",
+        autoOpen: false,
+        width: 'auto',
+        height: 'auto',
+        position: {
+            my: "left top",
+            at: "left+20 top+20"
+        },
+        open: function (event) {
+            list_viewer.show_row_highlight();
+        },
+        close: function (event) {
+            list_viewer.hide_row_highlight();
+        }
+    });
+
+    $("#togodb-<%= @table.name %>").flexigrid(<%== flexigrid_properties %>);
+};

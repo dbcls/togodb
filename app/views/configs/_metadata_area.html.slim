@@ -1,0 +1,55 @@
+= form_for @metadata, remote: true do |f|
+  table.togodb_table.general_settings
+    tbody
+      tr
+        th Title
+        td
+          = f.text_field :title
+          p.description.margin_bottom_10
+            | Provide a short textual description of the dataset
+      tr
+        th Description
+        td
+          .metadata_form
+            = f.text_area :description, size: '87x4'
+          p.description.margin_bottom_10
+            | Provide a more elaborate textual description of the dataset
+      tr
+        th Creator
+        td
+          .metadata_form
+            = f.text_area :creator, size: '87x4'
+          p.description.margin_bottom_10
+            | Provide a more elaborate textual description of the dataset
+      tr
+        th License
+        td
+          p.form_control_static
+            | Creative Commons license
+          #licence
+            - TogodbDbMetadata.creative_commons.each_with_index do |cc, i|
+              .nav_licence
+                = f.label "creative_commons_#{i + 1}", class: 'radio_inline' do
+                  = f.radio_button :creative_commons, i + 1
+                  = image_tag cc[:image_url]
+            .nav_licence
+              = f.label :creative_commons_0, class: 'radio_inline' do
+                = f.radio_button :creative_commons, 0, style: 'margin-top: 0'
+                |  that describes the rights and responsibilities of the user and responsible organization in relation to the dataset 
+            = f.text_area :licence, size: '87x4', class: 'margin_bottom_10'
+          table
+            tr
+              th style="white-space: nowrap;" Ask user to confirm the license
+              td
+                = f.select :confirm_license, [["True", true], ["False", false]]
+
+      tr
+        th Literature reference
+        td
+          .metadata_form
+            = f.text_area :literature_reference, size: '87x4'
+            p.description.margin_bottom_10
+              | Provide a reference to a published work that describes or reports the dataset
+
+  .togodb_btns style="margin-bottom: 20px;"
+    = f.submit 'Update', class: 'togodb_btn_double update', role: 'button', "aria-disabled" => 'false'

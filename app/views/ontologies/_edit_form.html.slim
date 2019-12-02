@@ -1,0 +1,9 @@
+.ontology-edit-wrapper.ontology-form-wrapper style="display: none;"
+  h4 Edit ontology
+  = form_with model: @namespace_setting, url: form_url, local: true, class: 'ontology-form', id: "ontology-text-#{@namespace_setting.id}" do |f|
+    = f.text_area :ontology, size: '150x10'
+    = hidden_field_tag 'prefix', @namespace_prefix
+    = hidden_field_tag 'uri', @namespace_uri
+    div style="margin-top: 10px;"
+      = button_tag 'Save', class: 'togodb_btn_single upload'
+      = button_tag 'Cancel', type: 'button', id: form_close_btn_id, class: 'ontology-form-close-btn'

@@ -1,0 +1,25 @@
+= form_with model: @user, local: true do |f|
+  table
+    tr
+      th style="text-align:left;" Login
+      td
+        = f.text_field :login, id: "togodb-account-edit-login", size: 80
+    tr
+      th style="text-align:left;" Password
+      td
+        = f.password_field :password, id: "togodb-account-edit-password", size: 16
+        | (Used for local account)
+    tr
+      th style="text-align:left;" Super user
+      td
+        = f.check_box :superuser, id: "togodb-account-edit-superuser"
+        | All privileges
+    tr
+      th style="text-align:left;" Import table
+      td
+        = f.check_box :import_table, id: "togodb-account-edit-import_table"
+        | Import table
+  div style="margin-top:10px; text-align:center;"
+    = f.submit "#{submit_btn_label}", id: "togodb-account-edit-form-submit-btn", data: { comfirm: 'Are you sure ?', disable_with: 'Saving ...' }
+    button#togodb-account-edit-form-cancel-btn[type="button" style="margin-left:20px;"]
+      | Cancel

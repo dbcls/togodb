@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    meta charset="UTF-8"
+    = csrf_meta_tags
+    = csp_meta_tag
+    link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet"
+    = javascript_include_tag 'application'
+    = yield :header
+  body
+    = render 'application/page_header'
+    = yield
+    = render 'application/page_footer'

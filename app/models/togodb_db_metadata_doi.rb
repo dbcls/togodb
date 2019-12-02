@@ -1,0 +1,2 @@
+class TogodbDbMetadataDoi < ApplicationRecord
+end

@@ -1,0 +1,14 @@
+.form-group.required
+  label.col-sm-2.control-label for=predicate.form_id URI
+  .col-sm-9
+    = text_field_tag predicate.form_name, absolute_uri(@base_uri, predicate.value),
+     		       id: predicate.form_id, class: "form-control", placeholder: "rdfs:seeAlso"
+  - if first
+    /= render partial: 'tooltip_icon', locals: { title: t('views.triples_maps.help.predicate.html') }
+    span
+      button.add-predicate-btn.btn.btn-primary type="button" data-pbid="#{@property_set.property_bridge.id}" style="width:36px; height:32px; margin:0px; padding:0px;"
+        i.fa.fa-plus style="width:11px; height:11px; text-align:center; font-size:16px; margin:0px; padding:0px;"
+  - else
+    span
+      button.predicate-del-btn.btn.btn-default.btn-delete type="button" style="width:36px; height:32px; margin:0px; padding:0px;"
+        i.fa.fa-trash-o style="width:11px; height:11px; text-align:center; font-size:18px; margin:0px; padding:0px;"

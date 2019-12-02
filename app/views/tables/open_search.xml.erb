@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>TogoDB <%= @table.name %> search</ShortName>
+  <LongName>Open Search interface for the TogoDB <%= @table.name %> database</LongName>
+  <Description>Open Search interface for the <%= @table.name %> database provided by the TogoDB system (<%= @app_server %>/).</Description>
+  <Url type="application/atom+xml"
+       template="<%= @app_server %>/search/<%= @table.name %>/{searchTerms}/{startPage?}" />
+  <Url type="text/html"
+       template="<%= @app_server %>/db/<%= @table.name %>/{searchTerms}/{startPage?}" />
+  <Query role="example" searchTerms="<%= search_example %>" />
+  <Developer>TogoDB Open Search administrators</Developer>
+  <Contact><%= Togodb.open_search_admin_mail %></Contact>
+  <Attribution>
+    Consult <%= @table.name %> (<%= @app_server %>/db/<%= @table.name %>) for the attribution of search data
+  </Attribution>
+  <SyndicationRight>open</SyndicationRight>
+  <AdultContent>false</AdultContent>
+  <OutputEncoding>UTF-8</OutputEncoding>
+  <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

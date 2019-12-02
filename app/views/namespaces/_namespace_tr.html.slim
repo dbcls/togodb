@@ -1,0 +1,23 @@
+tr
+  - if namespace[:new]
+    - @namespace_setting = NamespaceSetting.new
+    th
+      = text_field_tag "new_namespaces[#{namespace[:id]}][prefix]", '', class: "prefix-text-field form-control", disabled: false
+    td
+      = text_field_tag "new_namespaces[#{namespace[:id]}][uri]", '', class: "uri-text-field form-control", disabled: false
+  - else
+    - @namespace_setting = NamespaceSetting.find(namespace[:id])
+    th
+      = text_field_tag "namespace_settings[#{namespace[:id]}][prefix]", namespace[:prefix], class: "prefix-text-field form-control", disabled: @namespace_setting.is_default
+    td
+      = text_field_tag "namespace_settings[#{namespace[:id]}][uri]", namespace[:uri], class: "uri-text-field form-control", disabled: @namespace_setting.is_default
+      - if @namespace_setting.is_ontology
+        = render partial: 'ontologies/upload_form', locals: { namespace: namespace }
+        = render partial: 'ontologies/edit_form', locals: { namespace: namespace }
+  td.text-right.tight-side-padding
+    - if @namespace_setting && @namespace_setting.is_ontology
+      button type="button" class="ontology-upload-btn" data-nssid=namespace[:id] Upload
+      button type="button" class="ontology-edit-btn" data-nssid=namespace[:id] Edit
+    - elsif !namespace[:is_default]
+      button.btn.btn-default.btn-delete type="button"
+        i.fa.fa-trash-o

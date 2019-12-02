@@ -1,0 +1,14 @@
+.contents_title_selectdb_menu
+  ul
+    li
+      = link_to 'Show database', data_list_path(@table.name)
+    li class=("selected" if selected == :general_settings)
+      = link_to 'General settings', config_path(@table.name)
+    li class=("selected" if selected == :customize)
+      = link_to 'Customize HTML', config_html_path(@table.name)
+    li class=("selected" if selected == :upload_files)
+      = link_to 'Upload files', upload_files_path(@table.name)
+    li
+      = link_to 'Configure RDF', config_rdf_path(@table.name)
+    li class=("selected" if selected == :release)
+      = link_to 'Release', release_path(@table.name)

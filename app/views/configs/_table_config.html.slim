@@ -1,0 +1,39 @@
+- default_button_label ||= "Revert to default"
+#togodb-database-setting-tab
+  ul
+    li
+      a[href="#tab-table-operation"]
+        em
+          | Operation
+    li
+      a[href="#tab-table-release"]
+        em
+          | Release
+    li
+      a[href="#tab-table-html"]
+        em
+          | HTML
+    li
+      a[href="#tab-table-owl"]
+        em
+          | OWL
+    li
+      a[href="#tab-table-metadata"]
+        em
+          | Metadata
+    li
+      a[href="#tab-table-user"]
+        em
+          | User
+  #tab-table-operation
+    = render "configs/table/tab_operation"
+  #tab-table-release
+    = render "configs/table/tab_release"
+  #tab-table-html
+    = render partial: "pages/form", locals: { default_button_label: default_button_label }
+  #tab-table-owl
+    = render partial: "configs/table/tab_owl", locals: { default_button_label: default_button_label }
+  #tab-table-metadata
+    = render partial: "metadata/form"
+  #tab-table-user
+    = render partial: "roles/form"

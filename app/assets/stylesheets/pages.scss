@@ -1,0 +1,22 @@
+// Place all the styles related to the pages controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+#code_textarea {
+  margin: {
+    top: 10px;
+  }
+  width: 400px;
+  height: 300px;
+}
+
+.CodeMirror {
+  // font-family: 'Courier New', Courier, monospace, sans-serif;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;  
+  font: {
+    size: 9pt;
+  }
+}
+
+iframe {
+  height: 300px;
+}

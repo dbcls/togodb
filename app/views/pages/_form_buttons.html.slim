@@ -1,0 +1,10 @@
+.togodb_btns id=div_id
+  = button_tag 'Preview', type: 'button', class: 'preview-btn togodb_btn_double preview', role: 'button', 'aria-disabled' => 'false'
+
+  - if form
+    = form.submit 'Update', id: 'update_btn', class: 'togodb_btn_double update', role: 'button', 'aria-disabled' => 'false'
+  - else
+    = submit_tag 'Update', id: 'update_btn', class: 'togodb_btn_double update', role: 'button', 'aria-disabled' => 'false'
+
+  - if show_default_btn
+    = button_tag 'Revert to default', type: 'button', class: 'revert-default-btn togodb_btn_double default', role: 'button', 'aria-disabled' => 'false'

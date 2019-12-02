@@ -1,0 +1,14 @@
+#togodb-entry-view
+  / TODO サーバ名をrequetヘッダからとれるかどうか
+  img id="togodb-entry-banner" src="#{@app_server}/images/togodb_banner_narrow.png"
+
+  .togodb_entry_wrapper
+    span.togodb_entry_ribbon
+      .large-number
+        = "{{#{@table.pk_column_name}_value}}"
+
+    div.togodb_entry_title id="togodb-#{@table.name}-show-label"
+      =
+
+    - Slim::Engine.with_options(pretty: true) do
+      == render "pages/data_layout_default", formats: [ :html ]

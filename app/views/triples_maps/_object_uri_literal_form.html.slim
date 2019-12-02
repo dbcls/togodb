@@ -1,0 +1,15 @@
+- object_format = @property_set.object_format_d2rq_property
+
+label.col-sm-2.control-label for="tables-join-object-format" URI / Literal
+.col-sm-9 id="object-value_#{@property_set.property_bridge.id}"
+  - if object_format == 'd2rq:uriPattern'
+    = render 'object_uri_pattern'
+
+  - elsif object_format == 'd2rq:uriColumn'
+    = render 'object_uri_column'
+
+  - elsif object_format == 'd2rq:pattern'
+    = render 'object_literal_pattern'
+
+  - elsif object_format == 'd2rq:column'
+    = render 'object_literal_column'

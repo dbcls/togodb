@@ -1,0 +1,15 @@
+$(function() {
+    let tabManager = new TabManager();
+    let tabLoginOpenid = new Tab("tab_login_openid", tabManager);
+    let tabLoginAdmin = new Tab("tab_login_admin", tabManager);
+
+    tabManager.addTab(tabLoginOpenid);
+    tabManager.addTab(tabLoginAdmin);
+    <% if flash[:account_login_error] %>
+    $("#tab_login_admin").addClass("active");
+    $("#tab_login_openid_contents").hide();
+    <% else %>
+    $("#tab_login_openid").addClass("active");
+    $("#tab_login_admin_contents").hide();
+    <% end %>
+});

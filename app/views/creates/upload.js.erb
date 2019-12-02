@@ -1,0 +1,75 @@
+var track_download_progress_id = null;
+var track_convert_progress_id = null;
+
+var set_progressbar = function (pct_s) {
+    var percentage = 0;
+    if (!pct_s) {
+        pct_s = "0";
+    }
+    var percentage = parseInt(pct_s);
+    if (percentage > 100) {
+        percentage = 100;
+    }
+    //$("#upload-remote-file-progressbar").progressbar("value", percentage);
+    $("#upload-remote-file-percentage").html("&nbsp;" + pct_s + "%");
+
+    return percentage;
+};
+
+var track_download_progress = function () {
+    $.ajax({
+        url: "<%= progress_create_path %>",
+        type: "GET",
+        dataType: "json",
+        data: { key: '<%= @key %>', uptype: 'data_download' },
+
+        success: function (data) {
+            console.log(data);
+            if (data.error != "") {
+                clearInterval(track_download_progress_id);
+                $("#upload-remote-file-progress-message").html("")
+                //$("#upload-remote-file-progressbar").progressbar("value", 0);
+                $("#upload-remote-file-percentage").html("&nbsp;0%");
+                $("#upload-remote-file-result-message").html(data.error).removeClass("notice_message").addClass("error_message");
+                $("#remote_url").removeAttr("disabled");
+                //$("#upload-local-file-submit").button({disabled: false});
+                //$("#upload-remote-file-submit").button({disabled: false});
+            } else {
+                percentage = set_progressbar(data.pct);
+                if (percentage == 100) {
+                    clearInterval(track_download_progress_id);
+                    $("#upload-remote-file-progress-message").html("Converting data ... &nbsp;<%= j image_tag('arrow22-007.gif') %>&nbsp;");
+                    set_progressbar("0");
+                    track_convert_progress_id = setInterval(track_convert_progress, 1000);
+                }
+            }
+        }
+    });
+};
+
+var track_convert_progress = function () {
+    $.ajax({
+        url: "<%= convert_progress_create_path %>",
+        type: 'GET',
+        dataType: 'json',
+        data: { key: '<%= @key %>' },
+
+        success: function (data) {
+            var percentage = set_progressbar(data.pct);
+            if (percentage == 100) {
+                clearInterval(track_convert_progress_id);
+                $("#upload-remote-file-progress-message").html("Converting data ... done.&nbsp;");
+                location.href = '<%= upload_create_path %>';
+            }
+        }
+    });
+};
+
+$("#remote_url").attr("disabled", "disabled");
+//$("#upload-local-file-submit").button({disabled: true});
+//$("#upload-remote-file-submit").button({disabled: true});
+$("#upload-remote-file-progress-message").html("Uploading data ...&nbsp;<%= j image_tag('arrow22-007.gif') %>&nbsp;");
+$("#upload-remote-file-progress").css("display", "block");
+$("#upload-remote-file-result-message").html("").removeClass("error_message").addClass("notice_message");
+
+track_download_progress_id = setInterval(track_download_progress, 1000);

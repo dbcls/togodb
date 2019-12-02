@@ -1,0 +1,11 @@
+- content_for :head do
+  title R2RML | D2RQ Mapper
+  = javascript_include_tag "r2rml_mapping"
+
+- content_for :side do
+  = render partial: 'graphs/side_menu', locals: { current: 'r2rml' }
+
+h1.heading01 R2RML Mapping
+.submit.form-group
+textarea#code
+  = @mapping_data

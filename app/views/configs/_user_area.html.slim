@@ -1,0 +1,6 @@
+= form_tag update_roles_config_path, remote: true, method: :patch do
+  #existing-users
+    = render 'existing_users'
+  .togodb_btns
+    = button_tag 'Add', type: 'button', class: 'togodb_btn_double plus', data: { toggle: 'modal', target: '#search-user-modal' }
+    = submit_tag 'Update', id: 'togodb-user-roles-update-btn', class: 'togodb_btn_double update', role: 'button', 'aria-disabled' => 'false'

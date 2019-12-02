@@ -1,0 +1,27 @@
+$(function () {
+    $("#contents_editheader").html("<%= j(render 'creates/tab/header_line') %>");
+
+    var tabManager = new TabManager();
+
+    var tabLocalFile = new Tab("tab_local_file", tabManager);
+    var tabRemoteFile = new Tab("tab_remote_file", tabManager);
+
+    tabManager.addTab(tabLocalFile);
+    tabManager.addTab(tabRemoteFile);
+
+    <% unless @message %>
+    $('#contents_uploadcsv').hide();
+    $('#title_uploadcsv').addClass('inactive');
+    <% end %>
+
+    $('#contents_editheader').hide();
+    $('#contents_editcolumn').hide();
+    $('#contents_importdata').hide();
+
+    $('#title_editheader').addClass('inactive');
+    $('#title_editcolumn').addClass('inactive');
+    $('#title_importdata').addClass('inactive');
+
+    $('#contents_editheader').show();
+    $('#title_editheader').removeClass('inactive');
+});

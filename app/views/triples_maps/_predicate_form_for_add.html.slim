@@ -1,0 +1,8 @@
+.form-group
+  label.col-sm-2.control-label
+    | URI
+  .col-sm-9
+    = text_field_tag "predicates[#{property_bridge_id}][]", "", class: "form-control"
+  span
+    button.predicate-del-btn.btn.btn-default.btn-delete[type="button" style="width:36px; height:32px; margin:0px; padding:0px;"]
+      i.fa.fa-trash-o[style="width:11px; height:11px; text-align:center; font-size:18px; margin:0px; padding:0px;"]

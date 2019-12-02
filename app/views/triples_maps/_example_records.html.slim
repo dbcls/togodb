@@ -1,0 +1,54 @@
+.panel.panel-default
+  .panel-heading
+    - # if current_user.username == 'togodb-demo'
+    - if true
+      h3.panel-title
+        i.fa.fa-database
+        = @exmaple_records_table_name
+    - else
+      h3.panel-title
+        i.fa.fa-database
+        = @db_connection.database
+        | :
+        i.fa.fa-table
+        = @exmaple_records_table_name
+  .panel-body
+    .table-responsive
+      - if @records.empty?
+        table.table
+          thead
+            tr
+              - @property_bridges.each do |property_bridge|
+                th.nowrap
+                  - if @class_map_type == 'T'
+                    == example_records_sp_icon(@class_map, @property_bridge_hash[property_bridge.column_name])
+                  = property_bridge.column_name
+          tbody
+            tr
+              | <td colspan="
+              = @property_bridges.size
+              | ">No records.
+      - else
+        - colnames = @records[0].keys
+        table.table
+          thead
+            tr
+              - colnames.each do |colname|
+                th.nowrap
+                  - if @class_map_type == 'T'
+                    div[style="white-space:nowrap;"]
+                      == example_records_sp_icon(@class_map, @property_bridge_hash[colname])
+                      = colname
+                  - elsif @class_map_type == 'J'
+                    == colname
+          tbody
+            - @records.each do |record|
+              tr
+                - colnames.each do |colname|
+                  td
+                    = record[colname].to_s.truncate(40)
+p.note.text-right
+  - unless @records.empty?
+    | Show 
+    = @records.size
+    |  lines

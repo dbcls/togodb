@@ -1,0 +1,28 @@
+<%# The JavaScript code blow is part of "flexigrid.js" %>
+<%# The code is rendered at "flexigrid.js" %>
+
+<% if request.headers['Referer'] != "#{@app_server}/db/#{@table.name}" %>
+document.write("<%== j @entry_head %>");
+document.write('<%= stylesheet_link_tag "#{@app_server}/entry/#{@table.name}" %>');
+
+document.write('<%= stylesheet_link_tag asset_url("menu.css") %>');
+document.write('<%= stylesheet_link_tag asset_url("page-contents.css") %>');
+document.write('<%= stylesheet_link_tag asset_url("flexigrid/flexigrid.css") %>');
+document.write('<%= stylesheet_link_tag asset_url("jquery-ui-Base.1.11.4/jquery-ui.css") %>');
+document.write('<%= stylesheet_link_tag asset_url("jquery-ui.css") %>');
+document.write('<%= stylesheet_link_tag asset_url("table_view.css") %>');
+document.write('<%= stylesheet_link_tag asset_url("flexigrid.css") %>');
+document.write('<%= stylesheet_link_tag asset_url("tables/dialog.css") %>');
+
+document.write('<%= javascript_include_tag asset_url("jquery.js") %>');
+document.write('<%= javascript_include_tag asset_url("jquery-ui.js") %>');
+document.write('<%= javascript_include_tag asset_url("flexigrid.js") %>');
+document.write('<%= javascript_include_tag asset_url("jquery.cookie.js") %>');
+
+document.write("<%== j @page_head %>");
+document.write('<%= stylesheet_link_tag "#{@app_server}/db/#{@table.name}.css" %>');
+document.write('<%= javascript_include_tag "#{@app_server}/tables/#{@table.name}.js" %>');
+<% end %>
+
+document.write('<%== render(partial: "advanced_search_form").gsub(/\n/, "") %>');
+document.write('<%== render(partial: "entries/quickbrowse", formats: [ :html ]).gsub(/\n/, "") %>');

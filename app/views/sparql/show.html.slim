@@ -1,0 +1,14 @@
+- content_for :head do
+  title SPARQL | D2RQ Mapper
+  = javascript_include_tag "sparql"
+
+- content_for :side do
+  = render partial: 'graphs/side_menu', locals: { current: 'sparql' }
+
+h1.heading01 SPARQL
+#sparql_wrapper
+  #sparql-search-form
+    = render 'search_form'
+  div style="margin-top:20px; padding:5px;"
+    = image_tag 'arrow45-010.gif', id: "sparql-running-icon", style: "display:none;"
+    #sparql-result style="display:none;"

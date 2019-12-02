@@ -1,0 +1,22 @@
+- content_for :head do
+  title RDF (Turtle) | D2RQ Mapper
+  javascript:
+    $(function() {
+        $.get("#{{preview_turtle_path(@work.name)}}", function (data) {
+            $("#d2rq-dumped-turtle-textarea").val(data);
+            $("#d2rq-dumped-turtle-running-icon").hide();
+            CodeMirror.fromTextArea(document.getElementById("d2rq-dumped-turtle-textarea"), {
+                mode: "text/turtle",
+                matchBrackets: true,
+                lineNumbers: true,
+                lineWrapping: true
+            });
+        });
+    });
+
+- content_for :side do
+  = render partial: 'graphs/side_menu', locals: { current: 'rdf' }
+
+h1.heading01 RDF (Turtle)
+div style="padding:5px;"
+  textarea#d2rq-dumped-turtle-textarea style="display:none;"

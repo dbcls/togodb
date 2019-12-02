@@ -1,0 +1,9 @@
+doctype html
+html
+  head
+    meta http-equiv="content-type" content="text/html; charset=utf-8"
+    = javascript_include_tag "entries"
+    = yield :header
+  body
+    div id=show_embeded_elem_id(@db.name)
+      = yield

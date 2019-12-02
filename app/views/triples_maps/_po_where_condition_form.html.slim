@@ -1,0 +1,7 @@
+- condition = @property_set.object_condition
+
+.form-group
+  label.col-sm-2.control-label for=condition.form_id SQL where condition
+  .col-sm-9
+    = text_field_tag condition.form_name, condition.value, id: condition.form_id, class: 'form-control'
+  = render partial: 'tooltip_icon', locals: { title: t('views.triples_maps.help.property_bridge_condition.html') }

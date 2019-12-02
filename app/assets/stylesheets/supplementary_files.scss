@@ -1,0 +1,84 @@
+// Place all the styles related to the supplementary_files controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#supplementary-files {
+  color: #fff;
+  background-color: #FF478A;
+  display: block;
+  font-size: 18px;
+  padding-left: 10px;
+  height: 32px;
+  box-sizing: border-box;
+  width: 100%;
+  line-height: 32px;
+
+  a {
+    color: #fff2dc;
+    margin-left: 10px;
+    transition: .3s;
+    font-size: 14px;
+  }
+
+  a:before {
+    font-family: "FontAwesome";
+    content: "\f1f8";
+    padding-right: 3px;
+    width: 80%;
+  }
+
+  a:hover {
+    color: #fff;
+  }
+}
+
+#jqtree {
+  background-color: #fff2dc;
+  padding: 10px;
+
+  ul.jqtree-tree {
+    .jqtree-element {
+      cursor: default;
+    }
+
+    .jqtree-folder {
+      .jqtree-element {
+        .jqtree-toggler-left {
+          color: #FF478A;
+        }
+
+        .jqtree-title-folder {
+          color: #FF478A;
+        }
+      }
+    }
+
+    .jqtree_common {
+      .jqtree-title::before {
+        font-family: "FontAwesome";
+        content: "\f016";
+        margin-right: 5px;
+      }
+
+      .jqtree-title-folder {
+        font-weight: bold;
+      }
+
+      .jqtree-title-folder::before {
+        font-family: "FontAwesome";
+        content: "\f07b";
+        margin-right: 5px;
+        color: #FF478A;
+      }
+    }
+
+    .togodb_supfile_link {
+      a {
+        color: #E50063;
+      }
+      margin: {
+        left: 10px;
+      }
+    }
+  }
+}

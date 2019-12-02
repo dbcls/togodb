@@ -1,0 +1,112 @@
+input[type="text"] {
+  font: {
+    size: 14px;
+  }
+}
+
+select {
+  font: {
+    size: 14px;
+  }
+}
+
+#copy-database-title {
+  margin: {
+    bottom: 20px;
+  }
+}
+
+#database-copy-wrapper {
+  width: 700px;
+  margin: 0 auto;
+}
+
+form#togodb-db-copy-form {
+  table {
+    th {
+      color: #e50063;
+      font: {
+        size: 14px;
+      }
+      text: {
+        align: right;
+      }
+      border: none;
+    }
+
+    td {
+      border: none;
+      padding: {
+        top: 10px;
+        left: 20px;
+      }
+
+      div.authorized_user {
+        display: flex;
+        align-items: center;
+
+        input[type="checkbox"] {
+          padding: 0;
+          margin: 0;
+        }
+
+        label {
+          margin: {
+            left: 5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+#database-copy-progress-wrapper {
+  display: none;
+}
+
+#database-copy-progress-container {
+  display: flex;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+#copy-db-progress-message {
+}
+
+#copy-db-progressbar-wrapper {
+  width: 300px;
+  height: 1.4em;
+  border: {
+    color: #e50063;
+    width: 1px;
+    style: solid;
+    radius: 6px;
+  }
+  margin: {
+    left: 5px;
+    right: 5px;
+  };
+
+  #copy-db-progressbar {
+    width: 0px;
+    height: 100%;
+    background: #ff91b9;
+  }
+}
+
+#copy-db-percentage {
+}
+
+#copy-db-message {
+  display: none;
+  font: {
+    size: 16px;
+  }
+  text: {
+    align: center;
+  }
+  margin-top: 10px;
+}

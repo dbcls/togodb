@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>TogoDB</title>
+  <link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
+</head>
+
+<body>
+<%= render 'application/page_header' %>
+
+<div id="togodb_indexpage_contents">
+  <section id="togodb_page_top_graphics">
+    <div class="top_service_image">
+      <a href="/create">
+        <button>Create new DB</button>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="contents_title top_page">DBCLS TogoDB database hosting service</div>
+    <p>Database Center for Life Science (<a href="http://dbcls.rois.ac.jp/" class="color_FF478A">DBCLS</a>) hosts
+      your database as a public scientific archive.</p>
+  </section>
+
+  <section>
+    <div class="contents_subtitle">What is TogoDB?</div>
+    <p>TogoDB presents a simple and quality database service. User can deploy a database within a few minutes.</p>
+  </section>
+
+  <section>
+    <div class="contents_subtitle">Quick start</div>
+    <p>TogoDB simply accepts tabular formatted data which can be easily exported from standard spreadsheet
+      applications.</p>
+    <ol>
+      <li><a href="http://openid.dbcls.jp/" class="color_FF478A">Obtain your own OpenID</a> (or use 'guest'
+        account for trial)
+      </li>
+      <li><a href="/login" class="color_FF478A">Login to the TogoDB system</a></li>
+      <li>Upload your <a href="http://en.wikipedia.org/wiki/Comma-separated_values" class="color_FF478A">CSV</a>
+        data and follow the instruction (<a href="/sample.csv" class="color_FF478A">sample file</a>)
+      </li>
+      <li>Customize columns and views (if needed)</li>
+      <li>Make it public or privately invite your colleagues to complete your DB</li>
+    </ol>
+    <p>That's it! See the tutorial (<a href="files/togodb-manual.pdf" class="color_FF478A">English</a>, <a
+      href="files/togodb-manual-jp.pdf" class="color_FF478A">Japanese</a>) for more details.</p>
+  </section>
+
+  <section>
+    <div class="contents_subtitle">Features</div>
+    <p>In contrast to its simplicity, TogoDB comes with remarkable features which many life science databases often
+      lack:</p>
+    <ul>
+      <li>Highly customizable options including HTML/CSS/JavaScript codes</li>
+      <li>All databases can be released as CSV, JSON and RDF (XML, Turtle) files with semantic annotations</li>
+      <li>Built-in advanced search engine including numerical ranges and regular expressions targeting data
+        effectively</li>
+      <li>Database records are shown by default without requiring users to seek for appropriate search keywords</li>
+      <li>QuickBrowse interface offers ultrafast browsing experience thoroughout large number of entries</li>
+      <li>You can also embed your database into any web page via JSONP API</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="contents_subtitle">Examples</div>
+    <ul>
+      <li><a href="http://togodb.org/db/antmossdb" class="color_FF478A">Antarctic Moss</a> database (by <a
+        href="http://www.nii.ac.jp/" class="color_FF478A">NII</a>) -- Embedding images and Google Map API</li>
+      <li><a href="http://togodb.org/db/kaftom" class="color_FF478A">Tomato full-length cDNA</a> database</li>
+      <li><a href="http://togodb.org/db/egtc" class="color_FF478A">Exchangeable Gene Trap Clones</a> database</li>
+      <li><a href="http://togodb.org/db/kegg_genome" class="color_FF478A">KEGG GENOME</a> database -- Complete
+        genomes at a glance</li>
+      <li><a href="http://togodb.org/db/togows_domestic_methods" class="color_FF478A">Japanese bioinformatics web
+        services</a> database -- with sample codes in Perl/Python/Ruby/Java</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="contents_subtitle">Terms of service</div>
+    <p>TogoDB service is free and open to all users. Please read
+      <a href="terms_en.html" class="color_FF478A">English</a>
+      or <a href="terms_ja.html" class="color_FF478A">Japanese</a> version of the "Terms of Service" for more
+      details.</p>
+  </section>
+</div>
+
+<%= render 'application/page_footer' %>
+</body>
+</html>

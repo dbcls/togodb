@@ -1,0 +1,117 @@
+a {
+  outline: none;
+}
+
+a:focus, *:focus {
+  outline: none;
+}
+
+.ui-dialog-titlebar {
+  color: white;
+  background: #FF478A;
+  border: none;
+}
+
+table.togodb_table {
+  th {
+    background: #7d5c51;
+  }
+}
+
+.togodb-view-add-form-submit.ui-state-default {
+  border: none;
+  color: white;
+  background: #FF478A;
+  padding: .4em 1em;
+  margin: {
+    right: 5px;
+  }
+
+  &:hover {
+    background: #ff146a;
+    border-radius: 6px;
+    padding: .4em 1em;
+  }
+
+  .ui-button-text {
+    &:before {
+      //font-family: "Font Awesome 5 Free";
+      font-family: "FontAwesome";
+      content: "\f0aa";
+      padding-right: 3px;
+    }
+  }
+}
+
+.togodb-view-add-form-cancel.ui-state-default {
+  border: none;
+  color: white;
+  background: #999999;
+  padding: .4em 1em;
+
+  &:hover {
+    background: #BBB;
+    border-radius: 6px;
+    padding: .4em 1em;
+  }
+}
+
+#togodb-view-advanced-search-submit {
+  border: none;
+  color: white;
+  background: #FF478A;
+  padding: .4em 1em;
+
+  &:hover {
+    background: #ff146a;
+    border-radius: 6px;
+    padding: .4em 1em;
+  }
+
+  .ui-button-text {
+    &:before {
+      //font-family: "Font Awesome 5 Free";
+      font-family: "FontAwesome";
+      content: "\f002";
+      padding-right: 3px;
+    }
+  }
+}
+
+#togodb-view-advanced-search-clear {
+  border: none;
+  color: white;
+  background: #999999;
+  padding: .4em 1em;
+
+  &:hover {
+    background: #BBB;
+    border-radius: 6px;
+    padding: .4em 1em;
+  }
+}
+
+#togodb-quickbrowse-edit-button {
+  border: none;
+  color: white;
+  background: #FF478A;
+  padding: .4em 1em;
+  margin: {
+    top: 10px;
+  }
+
+  &:hover {
+    background: #ff146a;
+    border-radius: 6px;
+    padding: .4em 1em;
+  }
+
+  .ui-button-text {
+    &:before {
+      //font-family: "Font Awesome 5 Free";
+      font-family: "FontAwesome";
+      content: "\f044";
+      padding-right: 3px;
+    }
+  }
+}

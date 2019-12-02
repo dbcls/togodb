@@ -1,0 +1,22 @@
+table#togodb_database_list.datatables.display
+  thead.database_list_databases_header
+    tr
+      th
+        | Name
+        span#name-sorter.table_select
+      th
+        | Access
+        span#access-sorter.table_select
+      th
+        | records
+        span#records-sorter.table_select
+      th
+        | Date created
+        span#date-sorter.table_select
+      th
+        | Creator
+        span#creator-sorter.table_select
+      th.database_list_mydatabases_action_width
+
+  tbody.database_list_databases_body
+    = render partial: 'table_row', collection: @tables, as: 'table'

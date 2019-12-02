@@ -1,0 +1,19 @@
+#search-user-modal.modal.fade tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  .modal-dialog role="document"
+    = form_tag togodb_roles_path, id: 'search-user-form', remote: true do
+      .modal-content
+        .modal-header
+          #myModalLabel.modal_title Add user
+
+        .modal-body
+          form
+            .tabble_menu_row_other
+              .table_menu_find Find
+              = text_field_tag 'login', 'http://openid.dbcls.jp/user/', id: 'search-user-login', class: 'table_menu_find_input', size: 50
+              = button_tag 'Search', type: 'button', id: 'search-user-submit', class: 'add_user_menu_btn', 'data-configid': @table.name, role: 'button', 'aria-disabled' => 'false'
+          #search-user-result
+
+        .modal-footer
+          .togodb_btns style="margin-bottom: 20px;"
+            = submit_tag 'Update', id: 'togodb-user-roles-new-user-update-button', class: 'togodb_btn_double update', 'data-dismiss' => 'modal', 'aria-disabled' => 'false'
+            = button_tag 'Cancel', class: 'togodb_btn_double cancel', 'data-dismiss' => 'modal', 'aria-disabled' => 'false'

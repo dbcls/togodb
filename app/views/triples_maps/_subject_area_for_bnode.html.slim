@@ -1,0 +1,17 @@
+.panel.panel-triple.subject
+  .panel-heading
+    h3
+      span.icon-set.bg-primary
+        | S
+      | ubject: Blank node 
+  .panel-body
+    .form-group.subject-group.required
+      label.col-sm-2.control-label[for="subject-type"]
+        | Column
+      #subject-expression.col-sm-9
+        = render 'subject_bnode'
+    - # == rdf:type ==
+    #subject-rdf-type-wrapper
+      - @class_map_property_setting[:rdf_type].each_with_index do |rdf_type_cmps, i|
+        = render(partial: "subject_rdf_type_form",
+        -                    locals: { rdf_type_cmps: rdf_type_cmps, base_uri: @base_uri, first: i == 0 })

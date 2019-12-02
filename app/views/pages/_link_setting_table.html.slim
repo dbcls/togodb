@@ -1,0 +1,20 @@
+table.togodb_table_inform.margin_top_28 cellpadding="5" cellspacing="0"
+  tr.head
+    th Column
+    th Label
+    th ID separator
+    th Data type
+    th HTML link
+  - @columns.each do |column|
+    - param = "togodb_column[#{column.id}]"
+    tr.column
+      td
+        = column.name
+      td
+        = column.label
+      td
+        = text_field_tag "#{param}[id_separator]", column.id_separator, size: 10
+      td
+        = select_tag("#{param}[other_type]", "<option value=\"\"></option>".html_safe + options_from_collection_for_select(Togodb::ColumnTypes.supported_types.map { |h| [h[:label], h[:name]] }, :last, :first, column.other_type).html_safe, class: "link-other-type-selector", data: { colid: column.id, colname: column.name })
+      td align="left"
+        = text_field_tag "#{param}[html_link_prefix]", column.html_link_prefix, size: 60

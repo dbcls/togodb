@@ -1,0 +1,14 @@
+#togodb_page_header
+  #togodb_menu
+    / TODO サーバ名をrequetヘッダからとれるかどうか
+    a href="#{@app_server}/"
+    span#togodb_title TogoDB
+    - if @user
+      #togodb_user
+        | Logged in as 
+        span.togodb_username
+          = @user.login
+      = render 'navi'
+    - else
+      span#togodb_navi
+        = link_to 'Login', login_path

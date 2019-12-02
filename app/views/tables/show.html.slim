@@ -1,0 +1,65 @@
+- content_for :header do
+  title = @table.label
+
+  javascript:
+    const writable = "#{@writable}";
+    const table_id = "#{@table.id}";
+    const database = "#{@table.name}";
+    const new_form_url = function () {
+        return "#{{entry_form_path(db: @table.name)}}";
+    };
+    const edit_form_url = function (record_id) {
+        return "#{{entry_form_path(db: @table.name)}}" + "/" + record_id;
+    };
+    const delete_entries_url = function () {
+        return "#{{delete_entries_path(db: @table.name)}}";
+    };
+    const quickbrowse_form_url = function (record_id) {
+        return "#{{quickbrowse_form_path(db: @table.name, id: 1)}}".replace('/1', '/' + record_id);
+    };
+    const view_table_id = function () {
+        return "#{{view_table_id(@table.name)}}";
+    };
+    const quickbrowse_data_elem_id = function () {
+        return "#{{quickbrowse_data_elem_id(@table.representative_name)}}";
+    };
+
+  / for QuickBrowse
+  - if @table.name != 'antmossdb'
+    == @entry_head_html
+    = stylesheet_link_tag "/entry/#{@table.name}"
+
+  = stylesheet_link_tag "menu"
+  = stylesheet_link_tag "page-contents"
+  = stylesheet_link_tag "flexigrid/flexigrid"
+  = stylesheet_link_tag "jquery-ui-Base.1.11.4/jquery-ui"
+  = stylesheet_link_tag "jquery-ui"
+  = stylesheet_link_tag "table_view"
+  = stylesheet_link_tag "flexigrid"
+  = stylesheet_link_tag "tables/dialog"
+  = javascript_include_tag "jquery-ui"
+  = javascript_include_tag "flexigrid"
+  = javascript_include_tag "jquery.cookie"
+
+  - if Togodb.enable_open_search && @table.enabled?
+    link rel="search" type="application/opensearchdescription+xml" href="#{@app_server}/search/#{@table.name}.xml" title="TogoDB #{@table.name} search"
+
+  == @page_head
+  - if @preview
+    style
+      == @css
+  - else
+    = stylesheet_link_tag "/db/#{@table.name}"
+
+  = javascript_include_tag url_for(format: 'js')
+
+== @page_body
+
+= hidden_field_tag "togodb_view_page_key", @page_key
+
+/ wrapper div element for Add or Edit record dialog
+#togodb-view-add-form style="display: none;"
+
+- if @table.metadata&.has_license?
+  = render partial: 'dl_confirm_dialog', locals: { dialog_id: 'togodb-db-dl-confirm-dialog' }
+  = render partial: 'dl_confirm_dialog', locals: { dialog_id: 'togodb-released-data-dl-confirm-dialog' }

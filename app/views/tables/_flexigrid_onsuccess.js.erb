@@ -1,0 +1,9 @@
+var inner_html = 'Download:&nbsp;<input type="button" id="dl_selected_csv" name="dl_selected_csv" value="Selected as CSV" />';
+$("div#togodb-<%= @table.name %>-dl-csv").html(inner_html);
+$("input#dl_selected_csv").click(function() {
+<% if @table.metadata&.confirm_license %>
+    $("#togodb-db-dl-confirm-dialog").dialog("open");
+<% else %>
+    $("table#<%= view_table_id(@table.name) %>").flexDownload();
+<% end %>
+});

@@ -1,0 +1,17 @@
+- content_for :head do
+  title Configure mapping
+
+  - if @table_not_found
+    javascript:
+      $(function () {
+        #{render partial: 'table_selector_handler', formats: [ :js ]}
+      });
+  - else
+    javascript:
+      #{render partial: 'show', formats: [ :js ]}
+
+#contents
+  section#side
+    = render partial: 'mappings/side_menu', locals: { current: 'triples_maps', class_map: @class_map }
+  section#main
+    = render 'main_section'

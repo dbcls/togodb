@@ -1,0 +1,58 @@
+.flexigrid div.mDiv div.quickbrowse_btn {
+    position: absolute;
+    top: 3px;
+    right: 26px;
+    padding: 0px;
+    height: 18px;
+    width: 18px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.flexigrid div.mDiv div.quickbrowse_btn span {
+    display: block;
+    border-left: 1px solid #eee;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #ddd;
+    width: 16px;
+    height: 16px;
+    background: asset-url("flexigrid/asterisk_orange.png") no-repeat center;
+}
+
+.flexigrid div.fbutton .advanced_search {
+    background: asset-url("flexigrid/magnifier.png") no-repeat scroll left center transparent;
+}
+
+.flexigrid div.fbutton .all_dl_button {
+    background: asset-url("flexigrid/table_multiple.png") no-repeat scroll left center transparent;
+}
+
+.flexigrid div.fbutton .add {
+    background: asset-url("flexigrid/add.png") no-repeat scroll left center transparent;
+}
+
+.flexigrid div.fbutton .edit {
+    background: asset-url("flexigrid/pencil.png") no-repeat scroll left center transparent;
+}
+
+.flexigrid div.fbutton .delete {
+    background: asset-url("flexigrid/close.png") no-repeat scroll left center transparent;
+}
+
+.flexigrid div.sDiv3 {
+    float: left;
+    padding: 5px 0px 5px 0px;
+}
+.flexigrid div.sDiv4 {
+    float: left;
+    padding: 5px 0px 5px 5px;
+}
+.flexigrid div.sDiv6 {
+    float: left;
+    padding: 5px 0px 5px 0px;
+}
+
+.flexigrid div.hDiv th, div.colCopy {
+  height: auto;
+}

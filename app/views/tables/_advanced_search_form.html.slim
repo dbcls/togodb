@@ -1,0 +1,37 @@
+ruby:
+  # We have to remove search form params before the url_for method call, otherwise it throughs it on
+  search_params = params[:search]
+  params.merge!(search: nil)
+
+#togodb-view-advanced-search style="display:none;"
+  p#search-description
+    |
+      Regular expression search in the form of /regex/ is accepted in string and text columns.
+  form#advanced_search_form
+    table.togodb_table
+      - @table.advanced_search_columns.each do |column|
+        - next if column.data_type == "binary"
+        tr
+          th
+            label for="search_#{column.internal_name}"
+              = column.label
+          td
+            == column.data_type_label
+
+          td style="text-align:left;"
+            == advanced_search_form_element(column, search_params)
+            - if @search_help_lang && !column["search_help#{@search_help_lang}"].blank?
+              a.tt href="#"
+                = image_tag "togodb/help.png", alt: "", title: ""
+                span.tooltip
+                  span.top
+                  span.middle
+                    = column["search_help#{@search_help_lang}"]
+                  span.bottom
+
+    - if params.key?(:togodb_view_page_key)
+      = hidden_field_tag "togodb_view_page_key", params[:togodb_view_page_key]
+
+    div style="margin-top:10px;"
+      button#togodb-view-advanced-search-submit type="button" Search
+      button#togodb-view-advanced-search-clear type="button" style="margin-left:10px;" Clear

@@ -1,0 +1,29 @@
+ruby:
+  select_tag_id = "togodb_create_column_type_select_#{column.id}"
+  select_tag_name = "column[#{column.id}][data_type]"
+  if column[:other_type].blank?
+    column_type = column.data_type.to_s
+  else
+    column_type = column.other_type
+  end
+  num_decimal_places_elem_id = "togodb_create_column_#{column.id}_num_decimal_places"
+  num_decimal_places_elem_style = "margin-top: 2px;"
+  if column_type != "decimal"
+    num_decimal_places_elem_style << " display: none;"
+  end
+
+= select_tag select_tag_name, grouped_options_for_select(Togodb::ColumnTypes.select_tag_options, column_type), id: select_tag_id
+
+div id=num_decimal_places_elem_id style=num_decimal_places_elem_style
+  = render partial: 'creates/num_decimal_places', locals: { column: column }
+
+javascript:
+  $("##{select_tag_id}").change(function () {
+    const selected_type = $("##{select_tag_id} option:selected").val();
+    const num_decimal_place_elem = $("##{num_decimal_places_elem_id}");
+    if (selected_type === "decimal") {
+      num_decimal_place_elem.show();
+    } else {
+      num_decimal_place_elem.hide();
+    }
+  });

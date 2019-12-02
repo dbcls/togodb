@@ -1,0 +1,14 @@
+- property_bridge = @property_set.property_bridge
+- object_format = @property_set.object_format_d2rq_property
+
+/ 'URI pattern', 'URI column', 'Literal pattern', 'Literal column'
+.form-group.required
+  = render 'object_format_form'
+
+/ Object (URI / Literal)
+.form-group.required
+  = render 'object_uri_literal_form'
+
+/ Language, Datatype
+.form-group id="object-language-datatype-#{property_bridge.id}" style=("display: none;" if object_format == 'd2rq:uriPattern' || object_format == 'd2rq:uriColumn')
+  = render partial: 'object_language_datatype_form'

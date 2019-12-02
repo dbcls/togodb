@@ -1,0 +1,7 @@
+.tabble_menu_row_other
+  .table_menu_actions_other
+    - if dataset.can_submit_job?
+      = link_to run_release_path(dataset), remote: true do
+        #release.release Release
+    - if dataset.name != 'default'
+      .delete Delete

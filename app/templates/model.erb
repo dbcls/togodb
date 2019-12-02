@@ -1,0 +1,18 @@
+class <%= class_name %> < ApplicationRecord
+<%- if false -%>
+  ### comment out following line if you don't want to overwrite this file automatically
+  <%= ActiveScaffold::Activator::File::AUTO_GENERATED %>
+<%- end -%>
+<%- unless pk_column == "id" -%>
+  self.primary_key = '<%= pk_column %>'
+<%- end -%>
+<%- unless class_name.tableize == @table.name -%>
+  self.table_name = '<%= @table.name %>'
+<%- end -%>
+<%#- unless @table.primary_column_name.blank? -%>
+<%- if false -%>
+  def to_label
+    self[:<%= @table.primary_column_name %>]
+  end
+<%- end -%>
+end

@@ -1,0 +1,16 @@
+ruby:
+  metadata = @table.metadata
+
+div id=dialog_id title="License agreement" style="display:none;"
+  p
+    span.ui-icon.ui-icon-alert[style="float:left; margin:0 7px 20px 0;"]
+    | License agreement is required to download data.
+    br
+    br
+    - if metadata.license_is_creative_commons?
+      = image_tag TogodbDbMetadata.creative_commons[metadata.creative_commons - 1][:image_url]
+    - else
+      = @table.metadata.licence
+
+    div style="margin-top: 5px;"
+      = t('confirm.consent_agreement')

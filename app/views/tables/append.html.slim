@@ -1,0 +1,24 @@
+= content_for :header do
+  title TogoDB - Append
+  link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet"
+  = stylesheet_link_tag "style"
+  = stylesheet_link_tag "font-awesome"
+  = stylesheet_link_tag "bootstrap"
+  = stylesheet_link_tag "append_table"
+  = javascript_include_tag "bootstrap"
+  = javascript_include_tag "tools"
+  = javascript_include_tag "append_table"
+  = javascript_include_tag "csv_upload_tab"
+  javascript:
+    $(function () {
+      $("#tab_local_file_contents").html("#{j(render 'creates/tab/local_file')}");
+      $("#tab_remote_file_contents").html("#{j(render 'creates/tab/remote_file')}");
+    });
+
+= render 'application/page_header'
+
+.contents_title
+  = create_page_title
+= render 'creates/form'
+
+= render 'application/page_footer'

@@ -1,0 +1,29 @@
+.pager-box
+  - if current != 'triples_maps' && current != 'namespaces'
+    ul.pager
+      li
+        = link_to release_path(@class_map.table_name) do
+          |  Release RDF
+          i.fa.fa-angle-right
+    ul.pager
+      li
+        - if @work
+          = link_to config_rdf_path(@class_map.table_name) do
+            i.fa.fa-angle-left
+            | Edit RDF mapping 
+        - else
+          = link_to config_rdf_path(@class_map.table_name) do
+            i.fa.fa-angle-left
+            | Edit RDF mapping 
+  - if next_link
+    ul.pager
+      li
+        | <a id="next-link" href="
+        = href ? href : '#'
+        | ">Mapping result 
+        i.fa.fa-angle-right
+  ul.pager
+    li
+      = link_to config_path(@class_map.table_name) do
+        i.fa.fa-angle-left
+        | Database setting

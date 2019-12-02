@@ -1,0 +1,60 @@
+= content_for :header do
+  meta charset="utf-8"
+  title TogoDB - My datasets
+  = stylesheet_link_tag "style"
+  = stylesheet_link_tag "bootstrap"
+  = stylesheet_link_tag "font-awesome"
+  = javascript_include_tag "bootstrap"
+
+#togodb_mydatabases_page_contents
+  section
+    div style="height:50px;"
+    .togodb_database_title Release List
+    #togodb-database-release-message
+    table#dataset_list.togodb_table_release
+      thead.database_list_databases_header
+        tr
+          th
+            | Database
+            span.table_select
+          th
+            | CSV
+            span.table_select
+          th
+            | JSON
+            span.table_select
+          th
+            | RDF (Turtle)
+            span.table_select
+          th
+            | RDF (XML)
+            span.table_select
+          th
+            | FASTA
+            span.table_select
+          th
+            | Release date
+            span.table_select
+          th
+            | Status
+            span.table_select
+          th.database_list_mydatabases_action_width
+            | Action
+
+      tbody.database_list_databases_body
+        - @tables.each do |table|
+          - dataset = table.default_dataset
+          - dataset_name = dataset.name
+          - latest_history = dataset.latest_history
+          tr
+            td
+              = table.name
+            - %w(csv json ttl rdf fasta).each do |format|
+              td.release_info_data_table.release_data_table
+                = render partial: 'release_file_td', locals: { table: table, dataset_name: dataset_name, format: format }
+            td
+              = latest_history.nil? ? '' : latest_history.released_at
+            td
+              = latest_history.nil? ? '' : latest_history.status
+            td.release_info_data_tabble_menu
+              = render partial: 'action_td_content', locals: { dataset: dataset }

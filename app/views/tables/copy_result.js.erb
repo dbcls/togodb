@@ -1,0 +1,13 @@
+$("#copy-db-progress-message").html("Copying database settings ... done.");
+$("#copy-db-message").removeClass("notice-message").removeClass("warning-message").removeClass("error-message");
+<% case @status %>
+<% when 'SUCCESS' %>
+$("#copy-db-message").html("<%= j render(partial: 'application/success_message', locals: { message: @message }) %>");
+<% when 'WARNING' %>
+$("#copy-db-message").html("<%= j render(partial: 'application/notice_message', locals: { message: @message }) %>");
+<% when 'ERROR' %>
+$("#copy-db-message").html("<%= j render(partial: 'application/alert_message', locals: { message: @message }) %>");
+<% end %>
+
+$("#database-copy-progress-wrapper").hide();
+$("#copy-db-message").show();

@@ -1,0 +1,7 @@
+span style="margin-right: 5px;" Integer part
+= text_field_tag "column[#{column.id}][num_integer_digits]", column.num_integer_digits, size: 2
+span style="margin-left: 2px;" ,
+br
+span style="margin-right: 5px;" fractional part
+= text_field_tag "column[#{column.id}][num_fractional_digits]", column.num_fractional_digits, size: 2
+span style="margin-left: 3px;" digits

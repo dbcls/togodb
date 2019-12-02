@@ -1,0 +1,91 @@
+$('#contents_importdata').html("<%= j(render 'creates/tab/import') %>");
+
+$('#contents_editheader').hide();
+$('#title_editheader').addClass('inactive');
+
+$('#contents_editcolumn').hide();
+$('#title_editcolumn').addClass('inactive');
+
+$('#contents_importdata').show();
+$('#title_importdata').removeClass('inactive');
+
+function get_progress(create_id, key) {
+    $.ajax({
+        url: "<%= progress_create_path(@create) %>",
+        type: "GET",
+        dataType: "text",
+        data: "key=<%= @key %>",
+
+        success: function (obj) {
+            percentage = parseInt(obj);
+            $("#import_progress_bar").css("width", obj + "%");
+            if (obj === "") {
+                obj = "0";
+            }
+            $("#import_progress_processing_msg").html("Importing data ... " + obj + "%");
+            if (percentage == 100) {
+                clearInterval(importdb_progress_handle);
+                $("#import_progress_processing_msg").html("Importing data ... done");
+                $.ajax({
+                    url: "<%= status_create_path(@create) %>",
+                    type: "GET",
+                    dataType: "json",
+                    data: "key=<%= @key %>",
+
+                    success: function (json) {
+                        set_importdb_message(json.status, json.message);
+                    }
+                });
+            }
+        }
+    });
+}
+
+
+function track_progress(create_id, key) {
+    importdb_progress_handle = setInterval("get_progress(<%= @create.id %>, '<%= @key %>')", 1000);
+}
+
+
+function set_importdb_message(status, message) {
+    if (status == "SUCCESS") {
+        $("#import_db_result_message").css("color", "#008000");
+    } else if (status == 'WARNING') {
+        $("#import_db_result_message").css("color", "#A52A2A");
+    } else if (status == 'ERROR') {
+        $("#import_db_result_message").css("color", "#F00000");
+    }
+    $("#import_db_result_message").html(message);
+
+    if (status != "ERROR") {
+        $("#db_configure_btn").show();
+    }
+}
+
+
+function import_database_before() {
+    $("#togodb-import-submit").hide();
+    $("#import-db-progress-message").html("Preparing data import ...");
+}
+
+
+function start_import() {
+    //$("#import-db-progressbar").css("visibility", "visible");
+    //$("#import-db-percentage").css("visibility", "visible");
+
+    track_progress(<%= @create.id %>, "<%= @key %>");
+
+    $("#import_progress_processing_msg").html("Importing data ...");
+}
+
+
+function import_database_failure(request) {
+    $("import_db_result_message").css("style", "#FF0000").html(request);
+}
+
+
+function import_database_complete() {
+}
+
+import_database_before();
+start_import();

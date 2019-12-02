@@ -1,0 +1,18 @@
+- if flash[:account_login_error]
+  div style="margin-top:10px;"
+    = render partial: 'application/alert_message', locals: { message: flash[:account_login_error] }
+.login_title Login with local account
+
+= form_tag account_login_path do
+  table.togodb_table.login_settings
+    tr.login_admin_data_box
+      th Username
+      td
+        = text_field_tag "login", "", id: "login_admin", size: 30
+    tr.login_admin_data_box
+      th Password
+      td
+        = password_field_tag "password", "", id: "password", size: 30
+
+  .db_operation_buttons style="padding:20px 0 10px 0;"
+    = submit_tag "Login", data: { disable_with: 'Login ...' }, id: "togodb-login-admin-submit", class: "togodb_btn_single login", role: "button", "aria-disabled" => "false"

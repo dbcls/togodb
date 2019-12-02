@@ -1,0 +1,36 @@
+= form_for @table, remote: true, html: { id: "togodb_setting_database_operation_form" } do |f|
+  table.togodb_table.form_table
+    tbody
+      tr
+        th Database name
+        td
+          p.form_control_static
+            = @table.name
+      tr
+        th Access
+        td
+          = f.select :enabled, [["Public", true], ["Private", false]]
+          #sparql-endpoint-uri style="margin-top: 2px; margin-bottom: 5px;#{' display: none;' unless @table.enabled?}"
+            | SPARQL endpoint
+            span style="color:#ff478a; margin-left:10px;"
+              = link_to @app_server + sparql_path(@table.name), @app_server + sparql_path(@table.name), target: '_blank'
+      tr
+        th Alias name
+        td
+          = f.text_field :page_name
+      tr
+        th Download file name
+        td
+          = f.text_field :dl_file_name
+      tr
+        th Sorted by
+        td
+          div
+            = f.collection_select :sort_col_id, @columns, :id, :label, include_blank: true
+      tr
+        th Primary key
+        td
+          = f.collection_select :pkey_col_id, @columns, :id, :label, include_blank: true
+
+  .togodb_btns style="margin-bottom: 20px; margin-top: -10px;"
+    input.togodb_btn_double.update name="commit" type="submit" value="Update" role="button" aria-disabled="false"

@@ -1,0 +1,23 @@
+ruby:
+  update_button_label ||= "Update"
+  msg_div_id ||= "update-user-roles-message"
+
+h3 Existing users
+- if @roles.empty?
+  |  None 
+- else
+  = form_tag controller: :togodb, action: :update_user_roles, :id => @db.id, remote: true, id: "togodb-db-user-update" do
+    #togodb_user_setting_existing_users
+      = render partial: "config/user_setting_existing_users"
+    div style="margin-top:10px;"
+      = submit_tag update_button_label, id: "togodb-user-roles-update-btn"
+  div id=msg_div_id
+
+h3 Add user
+= form_tag controller: :togodb, action: :search_users, id: @db.id}, remote: true, "data-type" => :html, id: "togodb-db-user-search-submit" do
+  | Login:
+  = text_field_tag "login", "http://openid.dbcls.jp/user/", size: 60
+  = submit_tag "Search", id: "togodb-user-roles-search-btn"
+
+#togodb-db-user-add-user-list
+#togodb-db-user-add-search-msg

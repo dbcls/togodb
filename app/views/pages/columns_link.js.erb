@@ -1,0 +1,7 @@
+$("#preview-btn").click();
+$("#columns_settings_contents").html(
+    "<%= j(render partial: 'columns_settings_contents') %>"
+);
+$("#config-html-setting-message").html(
+    "<%= j(render partial: 'application/success_message', locals: { message: 'Link setting has been updated successfully.' }) %>"
+);

@@ -1,0 +1,10 @@
+<% dialog_id = 'togodb-user-toggle-deleted-confirm-dialog' %>
+$("#<%= dialog_id %>").html("<%= j(render 'toggle_deleted_form') %>");
+$("#<%= dialog_id %>").dialog("option", "title", "<%= @user.deleted ? 'Enable' : 'Disable' %> user ?");
+$("#togodb-user-toggle-deleted-form-cancel-btn").click(function() {
+    $("#<%= dialog_id %>").dialog("close");
+    return false;
+});
+$("#togodb-user-toggle-deleted-form-submit-btn").button();
+$("#togodb-user-toggle-deleted-form-cancel-btn").button();
+$("#<%= dialog_id %>").dialog("open");

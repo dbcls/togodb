@@ -1,0 +1,2 @@
+class TogodbDbMetadataPubmed < ApplicationRecord
+end

@@ -1,0 +1,262 @@
+.table {
+  tbody {
+    tr {
+      td.tight-side-padding {
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+.ontology-upload-btn, .ontology-edit-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  appearance: none;
+
+  background-color: rgba(62, 53, 50, 0.2);
+  font-weight: 300;
+  padding: 6px 12px;
+  line-height: 1.42857;
+  border-radius: 3px;
+
+  &:hover {
+    background-color: #BBB;
+  }
+}
+
+.ontology-upload-btn {
+  margin: {
+    right: 5px;
+  }
+  &::before {
+    font-family: "FontAwesome";
+    content: "\f093";
+    padding-right: 3px;
+  }
+}
+
+.ontology-edit-btn {
+  &:before {
+    font-family: "FontAwesome";
+    content: "\f040";
+    padding-right: 3px;
+  }
+}
+
+.ontology-upload-wrapper {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-top: 10px;
+  position: relative;
+
+  &.hidden {
+    display: none;
+  }
+
+  &::before {
+    content: "";
+    border-top: 1px dotted #ccc;
+    width: 500%;
+    height: 1px;
+    display: inline-block;
+    position: absolute;
+    top: -6px;
+    left: -177px;
+  }
+
+  h4 {
+    margin: 0px;
+    padding: 6px 12px;
+    color: #3e3532;
+    font-weight: bold;
+    font-size: 16px;
+    background-color: rgba(62, 53, 50, 0.2);
+  }
+
+  form {
+    padding: 10px;
+
+    #namespace_setting_ontology_file {
+      font-size: 12px;
+    }
+
+    .togodb_btn_single {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      padding: 0;
+      appearance: none;
+
+      color: white;
+      background-color: #ff478a;
+      font-weight: 300;
+      padding: 6px 12px;
+      line-height: 1.42857;
+      border-radius: 3px;
+
+      margin: {
+        right: 5px;
+      }
+
+      &:before {
+        font-family: "FontAwesome";
+        content: "\f093";
+        padding-right: 3px;
+      }
+
+      &:hover {
+        background-color: #ff146a;
+      }
+    }
+
+    .ontology-form-close-btn {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      padding: 0;
+      appearance: none;
+
+      background-color: rgba(62, 53, 50, 0.2);
+      font-weight: 300;
+      padding: 6px 12px;
+      line-height: 1.42857;
+      border-radius: 3px;
+
+      &:hover {
+        background-color: #BBB;
+      }
+    }
+  }
+}
+
+.ontology-edit-wrapper {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-top: 10px;
+
+
+  &.hidden {
+    display: none;
+  }
+
+  h4 {
+    margin: 0px;
+    padding: 6px 12px;
+    color: #3e3532;
+    font-weight: bold;
+    font-size: 16px;
+    background-color: rgba(62, 53, 50, 0.2);
+  }
+
+  form {
+    padding: 10px;
+  }
+
+  .new_namespace_setting {
+    padding: 10px;
+  }
+
+  #namespace_setting_ontology {
+    display: block;
+    width: 100%;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857;
+    color: #3e3532;
+    background-color: rgba(255, 255, 255, 0.6);
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+
+  #namespace_setting_ontology:focus {
+    border-color: #ff478a;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 71, 138, 0.6);
+  }
+
+  .togodb_btn_single {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+    appearance: none;
+
+    color: white;
+    background-color: #ff478a;
+    font-weight: 300;
+    padding: 6px 12px;
+    line-height: 1.42857;
+    border-radius: 3px;
+
+    margin: {
+      right: 5px;
+    }
+
+    &::before {
+      font-family: "FontAwesome";
+      content: "\f004";
+      padding-right: 3px;
+    }
+
+    &:hover {
+      background-color: #ff146a;
+    }
+  }
+
+  .ontology-form-close-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+    appearance: none;
+
+    background-color: rgba(62, 53, 50, 0.2);
+    font-weight: 300;
+    padding: 6px 12px;
+    line-height: 1.42857;
+    border-radius: 3px;
+
+    &:hover {
+      background-color: #BBB;
+    }
+  }
+}
+
+#namespace_setting_ontology {
+  max-width: 500px;
+}
+
+
+.btn-default {
+  display: block;
+  margin-left: auto;
+}
+
+#namespace-add-btn {
+  display: block;
+  margin-left: auto;
+  outline: none;
+}
+
+
+.panel-default {
+  overflow: hidden;
+}
+
+
+.tight-side-padding .btn-delete {
+  width: 36px;
+  height: 32px;
+}
+
+.tight-side-padding .btn-delete .fa-trash-o::before {
+  font-size: 14px;
+}

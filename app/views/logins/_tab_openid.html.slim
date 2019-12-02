@@ -1,0 +1,15 @@
+.login_title Login with OpenID account
+= form_tag openid_login_path do
+  table.togodb_table.login_settings
+    tbody
+      tr
+        th DBCLS OpenID
+        td
+          = text_field_tag "openid_identifier", "http://openid.dbcls.jp/user/", id: "openid_url", size: 80
+
+  .db_operation_buttons[style="padding: 20px 0 10px 0;"]
+    = submit_tag "Login", data: { disable_with: 'Login ...' }, id: "togodb-login-openid-submit", class: "togodb_btn_single login", role: "button", "aria-disabled" => "false"
+
+  span.login_openid
+    a.color_FF478A href="http://openid.dbcls.jp/" target="_blank"
+      | Obtain your own OpenID

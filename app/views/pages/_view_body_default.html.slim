@@ -1,0 +1,29 @@
+#togodb-table-view
+  / TODO サーバ名をrequetヘッダからとれるかどうか
+  img#togodb-table-banner src="#{@app_server}/images/togodb_banner_condensed.png"
+
+  .togodb_title
+    h1
+      | {{db_name}}
+    h2
+      | {{db_name}} database: {{title}}
+
+  .togodb_description
+    |
+      This message can be edited in the "<a href="/config_html/{{db_name}}">Customize HTML</a>" > "Table" > "Body".<br/>
+      Title ({{title}}) can be set in the "<a href="/config/{{db_name}}">General settings</a>" > "Metadata". <br/>
+      Description ({{description}}) can be set in the "<a href="/config/{{db_name}}">General settings</a>" > "Metadata".<br/>
+
+  /!
+    This is a placeholder for a data table. Do not edit this block.
+  .togodb_table_wrapper
+    table class="togodb_table" id="togodb-{{db_name}}" style="display:none;"
+    script src="/togodb/flexigrid/#{@table.name}.js?width=auto&height=400&buttons" type="text/javascript"
+  = "\n"
+
+  .togodb_info id="togodb-info-{{db_name}}" style="display:none;"
+  script src="/togodb/info/#{@table.name}.js" type="text/javascript"
+
+  .togodb_footer
+    |
+      The {{db_name}} database, Copyright (C) 2019 {{creator}}

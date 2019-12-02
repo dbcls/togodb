@@ -1,0 +1,24 @@
+- def_atag_class = "btn btn-default btn-block"
+- cur_atag_class = "btn btn-primary btn-block"
+.menu
+  h1.haeding-edit Edit mapping
+  ul.btn-set
+    - unless class_map.nil?
+      li class=("current" if current == 'triples_maps')
+        = link_to 'Configure mapping', config_rdf_path(class_map.table_name), class: "#{current == 'triples_maps' ? cur_atag_class : def_atag_class}", id: 'configure-link'
+    li class=("current" if current == 'namespaces')
+      = link_to 'Ontologies & prefixes', namespace_path(@work.name), class: "#{current == 'namespaces' ? cur_atag_class : def_atag_class}", id: 'namespaces-link'
+  = render partial: 'd2rq_mapper/goto_menu_link', locals: { next_link: true, href: turtle_path(@class_map.table_name), current: current }
+  - if current == 'triples_maps'
+    .delineation
+      .subject
+        .icon
+          span.icon-set.bg-primary S
+        p.description Subject
+      .predicate
+        span.icon-set P
+        p.description Predicate
+      .object
+        .icon
+          span.icon-set.bg-primary O
+        p.description Object

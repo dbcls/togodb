@@ -1,0 +1,314 @@
+<%# The JavaScript code blow is part of "flexigrid.js" %>
+<%# The code is rendered at "flexigrid.js" %>
+
+let Togodb = {};
+
+Togodb.ListViewer = function (options) {
+    options = options || {};
+    this.options = options
+
+    // styles
+    this.style = {};
+    this.style.item = options.item_class_name || "item";
+    this.style.current = options.current_class_name || "current";
+    this.style.preview = options.preview_class_name || "preview";
+    this.style.next_page = options.next_page_class_name || "next";
+    this.style.prev_page = options.previous_page_class_name || "previous";
+
+    // instance variables
+    this.root = options.root;
+    this.position = 0;
+    this.active = false;
+    this.changed = false;
+    this.popupper = new Togodb.ListViewer.Popup(this);
+
+    this.current_id = "";
+
+    // key binds
+    this.keybinds = this.generate_keybinds_from(options);
+
+    // database name
+    this.dbname = options.dbname;
+
+    // popup element id
+    this.popup_id = options.popup_id;
+
+    this.edit_mode = false;
+};
+
+/*--------------------------------------------------------------------------*/
+// Togodb.ListViewer
+/*--------------------------------------------------------------------------*/
+Togodb.ListViewer.prototype = {
+
+    // --------------------------------------------------------------------------
+    // private methods
+    // --------------------------------------------------------------------------
+    generate_keybinds_from: function (options) {
+        let hash = {};
+        $.each(["prev", "next", "toggle", "close"], function (i, action) {
+            code = options[action];
+            switch (typeof (code)) {
+                case "undefined":
+                    break;
+                case "number":
+                    hash[code] = action;
+                    break;
+                case "object":
+                    if (code.constructor == Array) {
+                        $.each(code, function (j, v) {
+                            hash[v] = action
+                        });
+                    } else {
+                        throw "Keybind Error (" + action + "): expected number/Array but got " + code.constructor;
+                    }
+                    break;
+                default:
+                    throw "Keybind Error (" + action + "): expected number/Array but got " + typeof (code);
+            }
+        });
+
+        return hash;
+    },
+
+    // --------------------------------------------------------------------------
+    // public methods
+    // --------------------------------------------------------------------------
+    keyevent_handler: function (event) {
+        const element = event.srcElement || event.target
+        if (element.form) return true;
+
+        const action = this.keybinds[event.keyCode];
+        if (action) {
+            this[action]();
+        }
+        return true;
+    },
+
+    // --------------------------------------------------------------------------
+    // accessor methods
+    // --------------------------------------------------------------------------
+    records: function () {
+        return $("#" + this.root + " tr");
+    },
+
+    link_to_next_page: function () {
+        return $("div.pDiv div.pNext");
+    },
+
+    link_to_prev_page: function () {
+        return $("div.pDiv div.pPrev");
+    },
+
+    at: function (index) {
+        return this.records()[index];
+    },
+
+    current: function () {
+        return this.at(this.position);
+    },
+
+    current_page: function () {
+        const page_no = $("#flexigrid_current_page").val();
+        //console.log("Current page no = " + page_no);
+        return page_no;
+    },
+
+    // --------------------------------------------------------------------------
+    // events
+    // --------------------------------------------------------------------------
+    next_page: function () {
+        const prev_id = $(this.records()[0]).attr("id");
+        const link = this.link_to_next_page();
+        if (link) {
+            link.click();
+
+            let timer = null;
+            const progress = function () {
+                const cur_id = $("#" + list_viewer.root + " tr").attr("id");
+                if (prev_id == cur_id) {
+                    timer = setTimeout(progress, 500);
+                } else {
+                    if (timer) {
+                        clearTimeout(timer);
+                    }
+                    list_viewer.construct();
+                    list_viewer.position = 0;
+                    list_viewer.changed = true;
+                    list_viewer.update();
+                    return;
+                }
+            }
+            progress();
+        }
+    },
+
+    prev_page: function () {
+        if (this.current_page() == "1") {
+            return;
+        }
+
+        const records = this.records();
+        const prev_id = $(records[records.length - 1]).attr("id");
+        const link = this.link_to_prev_page();
+        if (link) {
+            link.click();
+
+            let timer = null;
+            const progress = function () {
+                const new_records = $("#" + list_viewer.root + " tr");
+                const cur_id = $(new_records[new_records.length - 1]).attr("id");
+                if (prev_id == cur_id) {
+                    timer = setTimeout(progress, 500);
+                } else {
+                    if (timer) {
+                        clearTimeout(timer);
+                    }
+                    list_viewer.construct();
+                    list_viewer.position = new_records.length - 1;
+                    list_viewer.changed = true;
+                    list_viewer.update();
+                    return;
+                }
+            }
+            progress();
+        }
+    },
+
+    move_to: function (index) {
+        if (!this.active) {
+            index = 0;
+            this.active = true;
+        }
+
+        if (index < 0) {
+            return this.prev_page();
+        }
+        if (index >= this.records().length) {
+            return this.next_page();
+        }
+
+        this.position = index;
+        this.changed = true;
+        this.update();
+    },
+
+    construct: function () {
+
+    },
+
+    prev: function () {
+        if (!$("#" + this.popup_id).dialog("isOpen")) {
+            return;
+        }
+
+        this.construct();
+        this.move_to(this.position - 1);
+    },
+
+    next: function () {
+        if (!$("#" + this.popup_id).dialog("isOpen")) {
+            return;
+        }
+
+        this.construct();
+        this.move_to(this.position + 1);
+    },
+
+    update: function () {
+        if (this.active && this.changed) {
+            this.update_real();
+            this.changed = false;
+        }
+    },
+
+    update_real: function () {
+        this.popupper.update();
+    },
+
+    close: function () {
+        this.popupper.close();
+    },
+
+    toggle: function () {
+        this.popupper.toggle();
+    },
+
+    show_row_highlight: function () {
+        if (this.position < 0) {
+            return;
+        }
+
+        const elem = this.records()[this.position];
+        if (elem) {
+            $(elem).addClass(this.style.current);
+        }
+    },
+
+    hide_row_highlight: function () {
+        const elem = this.records()[this.position];
+        if (elem) {
+            $(elem).removeClass(this.style.current);
+        }
+    }
+};
+
+/*--------------------------------------------------------------------------*/
+// Togodb.ListViewer.Popup
+/*--------------------------------------------------------------------------*/
+Togodb.ListViewer.Popup = function (viewer) {
+    this.viewer = viewer;
+    this.active = false;
+};
+
+Togodb.ListViewer.Popup.prototype = {
+    element_id_for: function (object) {
+        return object.id || object;
+    },
+
+    update: function () {
+        if (!this.viewer.active) return;
+        this.change_record();
+        this.viewer.active = true;
+    },
+
+    open: function () {
+        const target_elem = this.viewer.records()[this.viewer.position];
+        if (target_elem) {
+            var target_id = $(target_elem).attr("id").slice(3);
+        }
+        if (!target_elem || target_id != this.viewer.current_id) {
+            this.viewer.position = 0;
+            this.change_record();
+        }
+        $("#" + this.viewer.popup_id).dialog("open");
+        this.viewer.active = true;
+    },
+
+    close: function () {
+        $("#" + this.viewer.popup_id).dialog("close");
+        this.viewer.active = false;
+    },
+
+    toggle: function () {
+        if ($("#" + this.viewer.popup_id).dialog("isOpen")) {
+            this.close();
+        } else {
+            this.open();
+        }
+    },
+
+    change_record: function () {
+        const elem = this.viewer.records()[this.viewer.position];
+        this.viewer.current_id = $(elem).attr("id").slice(3);
+        $.getScript("<%= @app_server %>/entries/quickbrowse/" + this.viewer.dbname + "/" + this.viewer.current_id, function (data) {
+                eval(data);
+            }
+        );
+
+        if (this.viewer.active) {
+            $(elem).addClass(this.viewer.style.current);
+            $(elem).siblings().removeClass(this.viewer.style.current);
+        }
+    }
+};

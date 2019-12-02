@@ -1,0 +1,23 @@
+#togodb-page-header {
+    background: #ffffff image-url("header-bg.jpg") top center repeat-x;
+    padding: 8px 10px 0px 10px;
+}
+
+#togodb-navi {
+    positon: relative;
+    float: right;
+    color: #999999;
+}
+	    
+#togodb-menu {
+    width: 100%;
+    margin: 0px auto;
+    padding: 0 0 5px 0;
+    font-size: 1.1em;
+    line-height: 1.2em;
+
+    a {
+        color: #ffffff;
+        text-decoration: none;
+    }
+}

@@ -1,0 +1,19 @@
+= stylesheet_link_tag "info.css"
+
+.togodb_info_wrapper
+  .togodb_info_label SPARQL endpoint
+  .togodb_info_value
+    = link_to sparql_url(@table.name), sparql_url(@table.name), target: :_blank
+
+table.togodb_export_table
+  tbody
+    tr
+      th.togodb_export_table_label CSV
+      th.togodb_export_table_label JSON
+      th.togodb_export_table_label RDF(turtle)
+      th.togodb_export_table_label RDF(XML)
+      th.togodb_export_table_label FASTA
+    tr
+      - %w(csv json ttl rdf fasta).each do |format|
+        td.release_info_data_table.release_data_table
+          = render partial: 'releases/release_file_td', locals: { table: @table, dataset_name: @table.default_dataset.name, format: format }

@@ -1,0 +1,120 @@
+#togodb-table-view .togodb_info_wrapper {
+  display: block;
+  min-height: 28px;
+  line-height: 28px;
+  margin-top: 10px;
+}
+
+#togodb-table-view .togodb_info_label {
+  padding-right: 1%;
+  display: inline-block;
+  color: #444444;
+}
+
+#togodb-table-view .togodb_info_value {
+  display: inline-block;
+  color: #e50063;
+  padding-bottom: 15px;
+}
+
+#togodb-table-view .togodb_export_table {
+  color: initial;
+  font-size: initial;
+  text-shadow: initial;
+  line-height: 16px;
+}
+
+#togodb-table-view .togodb_export_table th {
+  background-color: #fff;
+  color: #e50063;
+  font-size: 12px;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#togodb-table-view .togodb_export_table td {
+  color: #444444;
+  font-size: 12px;
+  box-sizing: border-box;
+  margin: 10px;
+  padding: 0 15px;
+  text-align: left;
+  border: none;
+}
+
+#togodb-table-view .togodb_export_table_label {
+  text-align: center !important;
+}
+
+#togodb-table-view .togodb_export_table_value {
+  vertical-align: middle;
+  text-align: center;
+  max-width: 90px;
+  padding: 0 15px;
+}
+
+#togodb-table-view .togodb_export_icon_box {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  margin: 4px 4px 0;
+}
+
+#togodb-table-view .togodb_export_icon_box a {
+  text-decoration: none;
+  color: #FF478A;
+  transition: color 0.3s;
+}
+
+#togodb-table-view .togodb_export_icon_circle {
+  display: block;
+  background-color: #FF478A;
+  width: 45px;
+  height: 45px;
+  border-radius: 45px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  background-repeat: no-repeat;
+}
+
+#togodb-table-view .togodb_export_icon_circle.csv {
+  background-image: url("/img/icon_csv.svg");
+  background-size: 18px 22px;
+  background-position: 52% 43%;
+}
+
+#togodb-table-view .togodb_export_icon_circle.json {
+  background-image: url("/img/icon_json.svg");
+  background-size: 18px 22px;
+  background-position: 52% 43%;
+}
+
+#togodb-table-view .togodb_export_icon_circle.ttl {
+  background-image: url("/img/icon_ttl.svg");
+  background-size: 21px 33px;
+  background-position: 47% 43%;
+}
+
+#togodb-table-view .togodb_export_icon_circle.rdf {
+  background-image: url("/img/icon_rdf.svg");
+  background-size: 36px 33px;
+  background-position: 47% 43%;
+}
+
+#togodb-table-view .togodb_export_icon_circle.fasta {
+  background-image: url("/img/icon_fasta.svg");
+  background-size: 18px 22px;
+  background-position: 52% 43%;
+}
+
+#togodb-table-view .togodb_export_icon_circle p {
+  display: none;
+}
+
+#togodb-table-view .togodb_export_size {
+  text-align: center;
+  font-size: 10px;
+  color: #444444;
+  padding: 5px 0px;
+  line-height: 12px;
+}

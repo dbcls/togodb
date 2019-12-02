@@ -1,0 +1,18 @@
+tr.odd
+  td.left.sorting_1.style.style_fontsize_14
+    = link_to table.name, data_list_path(table.name), target: '_blank'
+    = link_to content_tag(:span, 'Config', class: 'table_arrow'), config_path(table.name)
+  td
+    = database_access_text(table)
+  td.right
+    = number_with_delimiter(table.num_records)
+  td.left
+    = table.created_at
+  td
+    = table.creator ? table.creator.inspect : '[Unknown]'
+  td.release_info_data_table
+    .tabble_menu_row_other
+      .table_menu_actions_other
+        = link_to content_tag(:div, 'Copy', class: 'copy'), copy_table_path(table)
+        = link_to content_tag(:div, 'Append', class: 'add'), append_table_path(table)
+        = link_to content_tag(:div, 'Delete', class: 'delete'), table_path(table), method: :delete, data: { confirm: "Are you sure you want to delete the database '#{table.name}' ?" }

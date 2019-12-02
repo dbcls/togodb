@@ -1,0 +1,18 @@
+- content_for :head do
+  title Ontologies & prefiexes
+  = stylesheet_link_tag "namespaces"
+  = javascript_include_tag "namespaces"
+  javascript:
+    const edit_ontology_path = function(namespace_setting_id) {
+        return "#{{edit_namespace_setting_path(0)}}".replace("/0", "/" + namespace_setting_id);
+    };
+    const new_namespace_setting_path = "#{{new_namespace_namespace_setting_path(@work)}}";
+    const new_namespace_form_url = function(new_namespace_id) {
+        return "#{{new_namespace_form_path(0)}}".replace("/0", "/" + new_namespace_id);
+    };
+
+#contents
+  section#side
+    = render partial: 'mappings/side_menu', locals: { current: 'namespaces', class_map: @enabled_class_maps[0] }
+  section#main
+    = render 'main_section'

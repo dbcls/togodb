@@ -11,10 +11,8 @@ redis-serverが稼働しており、TogoDB（Railsアプリケーション）か
 
 TogoDBでは、データベースの作成やデータリリース（CSV, JSON, RDF, FASTAファイルの生成）はバックグラウンド・ジョブ（非同期処理）
 として実行します。このバックグラウンド・ジョブを実現するため[Resque](https://github.com/resque/resque)を利用しています。  
-Resqueは、ジョブ・キューをRedisを利用します。
+Resqueのジョブ・キューとしてRedis利用します。
   
-また、TogoDB Railsアプリケーションのsession storeとしてRedisを利用しています。
-
 ### D2RQ
 RDB-RDFのマッピング、RDFファイルの生成、SPARQL検索に使用します。  
 [https://d2rq.org/](https://d2rq.org/)  
@@ -31,7 +29,7 @@ $ ant jar
 
 ### Raptor RDF Syntax Library
 [http://librdf.org/raptor/](http://librdf.org/raptor/)  
-RDFのフォーマット変換（N-triples => Turtle, RDF/XML）にrapperコマンドを使用します。
+RDFのフォーマット変換（N-triples => Turtle, RDF/XML）のため、Raptorに含まれているrapperコマンドを使用します。
 
 ### nkf
 データベース作成の際にアップロードされたCSV, TSVファイルをUTF-8に変換するために使用します。
@@ -71,12 +69,12 @@ $ vi .env
 TogoDBアプリケーションのセットアップは以下の手順で行います。
 1. ソースコードの取得
 2. 必要なライブラリ（gem）のインストール
-3. 設定ファイルの編集
+3. 設定ファイル（.envファイル）の編集
 4. データベースのセットアップ
 5. TogoDBのセットアップ
-6. アセットファイルの作成（production環境の場合）
+6. アセットファイルの作成（production環境の場合のみ、development環境では不要）
 
-上記の手順を実行するには、コマンドラインで以下のように実行します。
+コマンドラインで以下のように実行します。
 ```
 $ git clone https://github.com/dbcls/togodb.git
 $ cd togodb
@@ -85,18 +83,22 @@ $ cp .env-sample .env
 $ .envファイルの内容を環境に合わせて編集
 $ bundle exec rails db:setup
 $ bundle exec rails togodb:setup
-$ bundle exec rails assets:precompile
+$ bundle exec rails assets:precompile　（development環境では不要）
 ```
 
 ## ローカル・アカウントの作成
-ローカル・アカウントを作成するには、以下のコマンドを実行します。
+TogoDBにローカル・アカウントでログインするためには、ローカル・アカウントを作成する必要があります。 
+
+ローカル・アカウントの作成は、以下のコマンドを実行します。
 ```
 $ bundle exec rails c
 irb(main):001:0> TogodbUser.regist('ユーザ名', 'パスワード')
 ```
 
 ## サーバの起動
-TogoDBが動作するにはResque workerとRailsサーバが起動している必要があります。 
+TogoDBが動作するにはResque worker（バックグラウンド・ジョブを実行する）と、Railsサーバが起動している必要があります。  
+
+以下のコマンドで起動します。
 
 Resque workerの起動
 ```

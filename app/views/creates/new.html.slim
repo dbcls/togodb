@@ -1,0 +1,16 @@
+= content_for :header do
+  title TogoDB - Create
+  = stylesheet_link_tag "style"
+  = stylesheet_link_tag "font-awesome"
+  = stylesheet_link_tag "bootstrap"
+  = stylesheet_link_tag "creates"
+  = javascript_include_tag "bootstrap"
+  = javascript_include_tag "tools"
+  = javascript_include_tag "copy"
+  = javascript_include_tag "csv_upload_tab"
+  = javascript_include_tag "creates"
+
+.contents_title
+  = create_page_title
+
+= render 'form'

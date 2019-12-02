@@ -1,0 +1,15 @@
+<% if @message %>
+$("#database-name-message").html("<%= j(render partial: 'application/alert_message', locals: { message: @message }) %>");
+<% else %>
+<% if @upload_message %>
+$("#upload-message").html("<%= j(render partial: 'application/alert_message', locals: { message: @upload_message }) %>");
+<% end %>
+$("#tab_local_file_contents").html("<%= j(render 'creates/tab/local_file') %>");
+$("#tab_remote_file_contents").html("<%= j(render 'creates/tab/remote_file') %>");
+$("#database-name-message").html("");
+$("#create-dbname-input").prop("disabled", true);
+$("#create-dbname-input").css("margin-bottom", "15px");
+$("#create-dbname-submit").hide();
+$('#contents_uploadcsv').show();
+$('#title_uploadcsv').removeClass('inactive');
+<% end %>

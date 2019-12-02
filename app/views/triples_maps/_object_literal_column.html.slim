@@ -1,0 +1,5 @@
+- @property_bridge_property_setting = @property_set.object_value
+= select :property_bridge_property_setting, :value,
+        column_select_choices(@class_map),
+        {},
+        { name: @property_bridge_property_setting.form_name, id: "object-literal-column_#{@property_set.property_bridge.id}", class: 'form-control' }

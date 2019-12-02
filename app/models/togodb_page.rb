@@ -1,0 +1,2 @@
+class TogodbPage < ApplicationRecord
+end

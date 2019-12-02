@@ -1,0 +1,147 @@
+body {
+    /* font-family: Arial,Helvetica,sans-serif; */
+    /* font-size: 10pt; */
+}
+
+.show_toggle {
+    border: 1px solid #808080;
+    height: 26px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+.show_toggle.ha {
+    height: auto;
+}
+
+.show_toggle b.top {
+    border-bottom: 2px solid #808080;
+    border-left: 0 solid #0066FF;
+    background-color: #E0E0E0;
+    color: #000000;
+    cursor: pointer;
+    display: block;
+    font-size: 10pt;
+    letter-spacing: 2px;
+    padding: 5px;
+    position: relative;
+}
+
+.flexigrid div.bDiv tr.shown td,
+.flexigrid div.bDiv tr.shown td.sorted,
+.flexigrid tr.shown td.sorted,
+.flexigrid tr.shown td {
+    background-color: #FFFFCC;
+}
+
+.popupdiv {
+  position:fixed;
+  left:50px;
+  top:50px;
+  display:none;
+  background-color:transparent;
+}
+
+div#togodb-quickbrowse {
+}
+
+div#togodb-quickbrowse-topbar {
+  vertical-align: center;
+  potision: absolute;
+  top: 0px;
+  left: 0px;
+  height: 20px;
+  scroll: 0pt;
+  background: url(/images/togodb/bg_th2.jpg) repeat-x;
+  text-align: left;
+  overflow: none;
+}
+
+/*
+div.popup {
+  filter: alpha(opacity=95);
+  opacity: 0.95;
+  background-color: white;
+  -moz-opacity: 0.95;
+  border-left: 1px;
+  overflow: auto;
+}
+*/
+div.popup {
+  background: #ffffff;
+}
+
+div#togodb-quickbrowse div#togodb-quickbrowse-bottombar {
+  background: url(/images/togodb/bottombar.png) repeat-x;
+  height: 15px;
+  scroll: 0pt;
+}
+
+.ui-widget .ui-widget {
+  font-size: 0.8em;
+}
+
+div#togodb-qbrowse-edit-button {
+  margin-top: 8px;
+}
+
+/* ad hoc solution to change background color in QuickBrowse */
+.ui-widget-content {
+    background: #ffffff;
+}
+
+/* Database page: advanced search */
+table.togodb_table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    border-spacing: 0pt;
+    margin: 0pt;
+    padding: 0pt;
+    font-size: 12px;
+}
+
+table.togodb_table thead a {
+    display: inline;
+    color: #5496FC;
+    background-color: #C6DBFF;
+}
+
+table.togodb_table thead th {
+    background: #666666 repeat scroll 0%;
+    border: 1px solid #999999;
+    color: #FFFFFF;
+    font-size: 12px;
+    padding: 4px 5px;
+    text-align: left;
+}
+
+table.togodb_table th {
+    background: url(/assets/bg_th.jpg) repeat-x;
+    border: 1px solid #999999;
+    padding: 2px 5px;
+    white-space: nowrap;
+    color: #FFFFFF;
+}
+
+table.togodb_table td {
+    border: 1px solid #999999;
+    text-align: center;
+    padding: 4px 5px;
+    background: #FFFFFF;
+    color: #999999;
+}
+
+p#search-description {
+    /*color: #a94442; */
+    font-size: 12px;
+}
+
+.ui-widget-content {
+    border: 1px solid #999999;
+    color: #999999;
+}
+
+.ui-button-text {
+    /* color: #999999; */
+}

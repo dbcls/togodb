@@ -1,0 +1,12 @@
+.contents_title_selectdb Selected database:
+.contents_title_selectdb_selected
+  select#table_selector
+    - @tables.each do |table|
+      option value=table.name selected=("selected" if table.id == @table.id)
+        = table.name
+#contents_title_selectdb_selected_data
+  .contents_title_selectdb_selected_data
+    = @table.num_records
+    |  records, 
+    = @columns ? @columns.size : 0
+    |  columns 

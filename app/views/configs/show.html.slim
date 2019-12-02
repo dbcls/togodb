@@ -1,0 +1,42 @@
+= content_for :header do
+  meta charset="utf-8"
+  title TogoDB - Configuration
+  = stylesheet_link_tag "style.css"
+  = stylesheet_link_tag "font-awesome"
+  = stylesheet_link_tag "bootstrap"
+  = stylesheet_link_tag "configs"
+  = javascript_include_tag "bootstrap"
+  = javascript_include_tag "configs"
+
+.contents_title_selectdb_box
+  = render partial: 'application/table_selector'
+  = render partial: 'application/config_menu', locals: { selected: :general_settings }
+
+#togodb_page_contents
+  - if flash[:err]
+    = render partial: 'application/alert_message', locals: { message: flash[:err] }
+
+  .contents_selected_menu_title.show_database General settings
+
+  .accordion-group
+    = render partial: 'accordion_heading', locals: { heading: 'Operation', number: 1, collapsed: false }
+    #faqpost_1.accordion-body.collapse.in
+      .accordion-inner
+        #db-operation-update-msg
+        .togodb_generalsettings
+          = render 'operation_area'
+  .accordion-group
+    = render partial: 'accordion_heading', locals: { heading: 'Metadata', number: 2, collapsed: true }
+    #faqpost_2.accordion-body.collapse
+      .accordion-inner
+        #db-metadata-update-msg
+        .togodb_generalsettings
+          = render 'metadata_area'
+  .accordion-group
+    = render partial: 'accordion_heading', locals: { heading: 'User', number: 3, collapsed: true }
+    #faqpost_3.accordion-body.collapse
+      .accordion-inner
+        #togodb-db-user-add-search-msg
+        .togodb_generalsettings
+          = render 'user_area'
+        = render 'add_role_dialog'

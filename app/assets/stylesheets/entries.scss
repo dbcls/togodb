@@ -1,0 +1,28 @@
+// Place all the styles related to the entries controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+table#togodb_show_table {
+    border-collapse: collapse;
+}
+
+table#togodb_show_table .record_name {
+    background: #cccccc;
+    text-align: left;
+    padding: 5px;
+}
+
+table#togodb_show_table .column_label {
+    background: #eeeeee;
+    font-weight: bold;
+    border: solid #cccccc;
+    border-width: 0px 0px 1px 0px;
+    padding: 5px;
+}
+
+table#togodb_show_table .column_value {
+    background: #ffffff;
+    border: solid #cccccc;
+    border-width: 0px 0px 1px 0px;
+    padding: 5px;
+}

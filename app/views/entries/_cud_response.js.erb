@@ -1,0 +1,7 @@
+<% if @error_message.nil? %>
+  $("table#<%= view_table_id(@table.name) %>").flexReload();
+  $("#togodb-view-add-form").dialog("close");
+<% else %>
+  $("#togodb-view-add-form-message").html("<%= j(@error_message) %>");
+  $("#togodb-view-add-form-message").show();
+<% end %>

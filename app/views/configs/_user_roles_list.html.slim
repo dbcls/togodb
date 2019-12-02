@@ -1,0 +1,32 @@
+table.togodb_table.general_settings cellpadding="3" cellspacing="1"
+  tbody
+    tr
+      th Existing users
+      td
+        #togodb_user_setting_existing_users
+          table.togodb_user_setting_existing_users_list
+            tbody
+              tr
+                th User
+                th.text_align_center Admin(all privileges)
+                th.text_align_center Read
+                th.text_align_center Edit
+                th.text_align_center Config
+                th
+              - @roles.each do |role|
+                tr
+                  td
+                    = role.user.login
+                  td.text_align_center
+                    = render partial: 'checkbox_with_hidden', locals: { name: "roles[#{role.id}][role_admin]", checked: role.role_admin }
+                  td.text_align_center
+                    = render partial: 'checkbox_with_hidden', locals: { name: "roles[#{role.id}][role_read]", checked: role.role_read }
+                  td.text_align_center
+                    = render partial: 'checkbox_with_hidden', locals: { name: "roles[#{role.id}][role_write]", checked: role.role_write }
+                  td.text_align_center
+                    = render partial: 'checkbox_with_hidden', locals: { name: "roles[#{role.id}][role_execute]", checked: role.role_execute }
+                  td.text_align_center
+                    .tabble_menu_row_other
+                      .table_menu_actions_other
+                        .delete
+                          = link_to 'Delete', togodb_role_path(role), remote: true, method: :delete, data: { confirm: "Are you sure you want to delete user's privileges ?" }

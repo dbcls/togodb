@@ -1,0 +1,14 @@
+= content_for :header do
+  title TogoDB - Configuration
+  = stylesheet_link_tag "style"
+  = stylesheet_link_tag "font-awesome"
+  = stylesheet_link_tag "bootstrap"
+  = javascript_include_tag "bootstrap"
+  = javascript_include_tag "releases"
+
+.contents_title_selectdb_box
+  = render partial: 'application/table_selector'
+  = render partial: 'application/config_menu', locals: { selected: :release }
+
+#togodb_page_contents
+  = render 'contents'

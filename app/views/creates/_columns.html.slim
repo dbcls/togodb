@@ -1,0 +1,33 @@
+#togodb_create_columns
+  - columns_submit_btn_label ||= "Create table"
+  - @errors ||= {}
+
+  .togodb_import_track_contents
+    - unless @errors.empty?
+      .togodb-import-error-message
+        == @errors.keys.sort.map { |col_id| @errors[col_id] }.join("<br />")
+
+    = form_with url: columns_create_path(@create), method: :post do
+      table.togodb_table_inform.margin_top_28 cellpadding="4" cellspacing="0"
+        tr
+          th Enable
+          th Column name
+          th Column label
+          th Column type
+          th Sample data
+        - @columns.each_with_index do |column, i|
+          - row = "column-#{column.id}"
+          tr id=row class="#{'disable' if !column.enabled?}"
+            td
+              = check_box_tag "column[#{column.id}][enabled]", "1", column[:enabled], onchange: "$('##{row}').toggleClass('disable')"
+            td
+              = text_field_tag "column[#{column.id}][name]", column[:name], class: @errors.key?(column.id) ? "invalid_column" : nil
+            td
+              = text_field_tag "column[#{column.id}][label]", column[:label]
+            td style="text-align: left;"
+              = render partial: 'column_type_select_tag', locals: { column: column }
+            td style="text-align: left;"
+              = @column_samples[i][:sample]
+
+      div style="margin-top: 10px;"
+        = submit_tag columns_submit_btn_label, class: "togodb_btn_single settings margin_top_10 margin_bottom_10"

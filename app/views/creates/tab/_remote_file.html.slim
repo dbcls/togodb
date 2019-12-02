@@ -1,0 +1,29 @@
+= form_with url: upload_create_path(@create) do
+  .remote_file_contents_url.margin_top_28
+    | URL
+    = text_field_tag 'remote_url', '', size: 80
+
+  .horizontal_wrapper.margin_top_10
+    .togodb_table.style
+      span.font_color_black Format:
+      = radio_button_tag 'file_format', 'csv', checked: true
+      = label_tag 'file_format_csv', 'CSV', class: 'padding_right_10'
+      = radio_button_tag 'file_format', 'tsv'
+      = label_tag 'file_format_tsv', 'TSV'
+  = hidden_field_tag 'method', 'download'
+  = submit_tag 'Uplaod', class: 'togodb_btn_single upload margin_bottom_10', 'aria-disabled' => 'false'
+
+  #upload-remote-file-progress style=" display: none;"
+    .horizontal_wrapper
+      #upload-remote-file-progress-message
+      #upload-remote-file-progressbar role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+      #upload-remote-file-percentage.percent_text
+        |  0%
+    #upload-remote-file-result-message.percent_text
+
+.togodb_import_track_contents
+  p.margin_bottom_10
+    |  Note: File must be in a 
+    a.color_FF478A href="http://en.wikipedia.org/wiki/Comma-separated_values"
+      | CSV
+    |  (comma separated values) or TSV (tab separated values) format. 

@@ -1,0 +1,23 @@
+p.modal_content_text
+  | The user 
+  = @searched_user_name
+  |  is found.
+#togodb_user_setting_existing_users
+  table.togodb_table.general_settings.togodb_user_setting_existing_users_list_modal
+    tbody
+      tr
+        th.text_align_center Admin(all privileges)
+        th.text_align_center Read
+        th.text_align_center Edit
+        th.text_align_center Config
+      tr
+        td#generalsettings_user.text_align_center
+          = check_box_tag 'togodb_role[role_admin]', '1'
+        td.text_align_center
+          = check_box_tag 'togodb_role[role_read]', '1'
+        td.text_align_center
+          = check_box_tag 'togodb_role[role_write]', '1'
+        td.text_align_center
+          = check_box_tag 'togodb_role[role_execute]', '1'
+  = hidden_field_tag 'togodb_role[table_id]', table.id
+  = hidden_field_tag 'togodb_role[user_id]', user.id

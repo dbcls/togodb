@@ -1,0 +1,27 @@
+.ui-dialog .ui-dialog-titlebar-prev {
+    position: absolute;
+    width: 21px;
+    height: 20px;
+    padding: 1px;
+    margin: -10px 0 0 0;
+    top: 50%;
+    right: 78px;
+}
+
+.ui-icon-prev {
+    background-position: 1px -16px;
+}
+
+.ui-dialog .ui-dialog-titlebar-next {
+    position: absolute;
+    width: 21px;
+    height: 20px;
+    padding: 1px;
+    margin: -10px 0 0 0;
+    top: 50%;
+    right: 56px;
+}
+
+.ui-icon-next {
+    background-position: -64px -16px;
+}

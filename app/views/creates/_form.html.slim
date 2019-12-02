@@ -1,0 +1,29 @@
+#togodb_page_contents
+  #togodb_create_tabmenu
+    section.togodb_create_db_sectionbox
+      #title_database_name.togodb_create_db_section_title Database name
+      #contents_database_name.togodb_create_db_sectionbox_content
+        = render 'creates/tab/database_name'
+
+    section.togodb_create_db_sectionbox
+      #title_uploadcsv.togodb_create_db_section_title Upload CSV/TSV
+      #upload-message
+      #contents_uploadcsv.togodb_create_db_sectionbox_content
+        .togodb_tab_box.margin_top_28
+          #tab_local_file.togodb_tab.active Local file
+          #tab_remote_file.togodb_tab Remote file
+        #togodb_create_upload
+          #tab_local_file_contents
+          #tab_remote_file_contents style="display: none;"
+
+    section.togodb_create_db_sectionbox
+      #title_editheader.togodb_create_db_section_title Edit header line
+      #contents_editheader.togodb_create_db_sectionbox_content
+
+    section.togodb_create_db_sectionbox
+      #title_editcolumn.togodb_create_db_section_title Edit columns
+      #contents_editcolumn.togodb_create_db_sectionbox_content
+
+    section.togodb_create_db_sectionbox
+      #title_importdata.togodb_create_db_section_title Import data
+      #contents_importdata.togodb_create_db_sectionbox_content

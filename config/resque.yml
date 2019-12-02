@@ -1,0 +1,2 @@
+development: <%= ENV.fetch("REDIS_HOST") { "127.0.0.1" } %>:<%= ENV.fetch("REDIS_PORT") { 6379 } %>
+production: <%= ENV.fetch("REDIS_HOST") { "127.0.0.1" } %>:<%= ENV.fetch("REDIS_PORT") { 6379 } %>

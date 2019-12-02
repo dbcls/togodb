@@ -1,0 +1,10 @@
+- prev_column = ''
+ul#predicate-object-contaier.list-group
+  - f.object.property_sets.each do |property_set|
+    - @property_set = property_set
+    /- next if @property_bridge_property_setting[property_bridge.id].nil?
+    - property_bridge = property_set.property_bridge
+    = render partial: 'property_bridge_form', locals: { first: prev_column != property_bridge.column_name }
+    - prev_column = property_bridge.column_name
+  /- @blank_node.each do |blank_node_id, property|
+  /  = render partial: 'property_bridge_bnode_form', locals: { bnode_property: property }

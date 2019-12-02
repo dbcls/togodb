@@ -1,0 +1,31 @@
+.togodb_import_track_contents
+  = form_with url: upload_create_path(@create), multipart: true do
+    #jquery_wrapped_fine_uploader
+      .drag_area
+        = file_field_tag 'file'
+
+    .horizontal_wrapper
+      .togodb_table.style
+        span.font_color_black Format:
+        = radio_button_tag 'file_format', 'csv', checked: true
+        = label_tag 'file_format_csv', 'CSV', class: 'padding_right_10'
+        = radio_button_tag 'file_format', 'tsv'
+        = label_tag 'file_format_tsv', 'TSV'
+      - if @create.mode != 'create'
+        .togodb_table.style
+          span.font_color_black Mode:
+          = radio_button_tag 'mode', 'append', checked: true
+          = label_tag 'mode_append', 'Append', class: 'padding_right_10'
+          = radio_button_tag 'mode', 'overwrite'
+          = label_tag 'mode_overwrite', 'Overwrite'
+    = hidden_field_tag 'method', 'upload'
+
+    button#create_upload_btn.togodb_btn_single.upload role="button" aria-disabled="false"
+      | Upload
+
+  .togodb_import_track_contents
+    p.margin_bottom_10
+      | Note: File must be in a 
+      a.color_FF478A href="http://en.wikipedia.org/wiki/Comma-separated_values"
+        | CSV
+      |  (comma separated values) or TSV (tab separated values) format.

@@ -1,0 +1,42 @@
+// Place all the styles related to the creates controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+div#togodb-creates {
+  table.togodb-table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    border-spacing: 0pt;
+    margin: 0pt;
+    padding: 0pt;
+
+    th {
+      background: image-url("bg_th.jpg") repeat-x;
+      border: 1px solid #999999;
+      padding: 2px 5px;
+      white-space: nowrap;
+    }
+
+    td {
+      border: 1px solid #999999;
+      text-align: center;
+      padding: 4px 5px;
+      background: #FFFFFF;
+    }
+
+    tr.disable {
+      td {
+        background-color: #CCC;
+      }
+    }
+  }
+}
+
+#contents_editheader {
+  div.togodb_import_track_contents {
+    overflow: scroll;
+  }
+}
+
+#togodb_create_headerline form {
+  display: inline-block;
+}

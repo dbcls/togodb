@@ -1,0 +1,8 @@
+section.togodb_create_db_sectionbox
+  #contents_editcolumn.togodb_create_db_sectionbox_content
+    #togodb_create_columns
+      .togodb_import_track_contents
+        = form_with url: columns_settings_togodb_page_path(@page), method: :patch, id: "tab-column-basic-form" do
+          #column_basic_setting_table
+            = render 'columns_settings_table'
+          = render partial: 'form_buttons', locals: { div_id: "col_settings_btns", form: nil, show_default_btn: false }

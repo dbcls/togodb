@@ -1,0 +1,56 @@
+- @class_map_property_setting = f.object.subject_uri
+
+/ URI format
+.form-group.required.subject-group
+  label.col-sm-2.control-label for="subject-type" Format
+  .col-sm-9
+    .radio
+      - @subject_format_properties[0 .. 1].each do |class_map_property|
+        label
+          = f.radio_button :subject_format_form_value, class_map_property.id,
+                  name: @class_map_property_setting.form_name('class_map_property_id'), class: 'subject-uri-format',
+                  'data-cmpsid' => @class_map_property_setting.id
+          = class_map_property.label
+
+  = render partial: 'tooltip_icon',
+          locals: { title: t('views.triples_maps.help.subject_format.html') }
+
+/ Subject URI
+.form-group.required
+  label.col-sm-2.control-label for="subject-uri-pattern" URI
+  #subject-expression.col-sm-9
+    - if @class_map_property_setting.uri_pattern?
+      = render partial: 'subject_uri_pattern'
+    - elsif @class_map_property_setting.uri_column?
+      = render partial: 'subject_uri_column'
+    / render 'subject_constant_value'
+  = render partial: 'tooltip_icon', locals: { title: t('views.triples_maps.help.subject_uri.html') }
+
+- unless @class_map.for_join?
+  / RDF Class (rdf:type)
+  #subject-rdf-type-wrapper
+    - f.object.subject_rdf_types.each_with_index do |rdf_type, i|
+      = render partial: 'subject_rdf_type_form',
+              locals: { rdf_type_cmps: rdf_type, text_field_order: i, base_uri: @base_uri, first: i == 0 }
+
+  .form-group id="resource-label-object_#{f.object.subject_label.id}"
+    / Resource label (rdfs:label)
+    span.required
+      label.col-sm-2.control-label for=f.object.subject_label.form_id rdfs:label
+      .col-sm-6
+        = f.text_field :subject_label_value, name: f.object.subject_label.form_name,
+              id: f.object.subject_label.form_id, class: 'form-control input-sm'
+
+    / Language
+    label.col-sm-2.control-label for=f.object.subject_language.form_id Language
+    .col-sm-1
+      = f.text_field :subject_lang_value, name: f.object.subject_language.form_name,
+              id: f.object.subject_language.form_id, class: 'form-control input-sm'
+
+  / WHERE condition
+  /.form-group
+    label.col-sm-2.control-label for=f.object.subject_condition.form_id WHERE condition
+    .col-sm-9
+      = f.text_field :subject_cond_value, name: f.object.subject_condition.form_name,
+              id: f.object.subject_condition.form_id, class: 'form-control'
+    = render partial: 'tooltip_icon', locals: { title: t('views.triples_maps.help.class_map_condition.html') }

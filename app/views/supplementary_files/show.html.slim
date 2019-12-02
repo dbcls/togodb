@@ -1,0 +1,64 @@
+= content_for :header do
+  title TogoDB - Configuration
+  = stylesheet_link_tag "style"
+  = stylesheet_link_tag "font-awesome"
+  = stylesheet_link_tag "bootstrap"
+  = stylesheet_link_tag "jqtree"
+  = stylesheet_link_tag "supplementary_files"
+  css:
+    .jqtree-tree { margin-top: 0px; }
+  = javascript_include_tag "bootstrap"
+  = javascript_include_tag "tree.jquery"
+  = javascript_include_tag "upload_files"
+  - if @tree_json_data
+    javascript:
+      $(function () {
+          const $tree = $('#jqtree');
+          $tree.tree({
+          onCreateLi: function (node, $li) {
+            if (node.url) {
+              $li.find('.jqtree-element').append(
+                '<span class="togodb_supfile_link">[<a href="' + node.url + '" target="_blank" data-node-id="' + node.id + '">Link</a>]</span>'
+              );
+            }
+          },
+          autoOpen: true,
+          useContextMenu: false,
+          data: #{{@tree_json_data}}
+        });
+
+        $tree.on('tree.click', function (event) {
+          event.preventDefault();
+        });
+
+        $tree.on('click', '.togodb_supfile_link', function (e) {
+            const node_id = $(e.target).data('node-id');
+            const node = $tree.tree('getNodeById', node_id);
+            if (node) {
+            // Display the node name
+            //alert(node.name);
+          }
+        });
+      });
+
+.contents_title_selectdb_box
+  = render partial: 'table_selector'
+  = render partial: 'config_menu', locals: { selected: :upload_files }
+
+#togodb_page_contents
+  .contents_selected_menu_title Upload a zip file
+  - if flash[:err]
+    = render partial: 'application/alert_message', locals: { message: flash[:err] }
+  div style="margin-top:30px;"
+    = form_with model: @supplementary_file, multipart: true, local: true do
+      .drag_area
+        = file_field_tag 'supplementary_file'
+      = hidden_field_tag 'table_id', @table.id
+      = submit_tag 'Upload a zip file', class: "togodb_btn_single upload"
+    - unless @supplementary_file.new_record?
+      div style="margin-top:30px;"
+        #supplementary-files style="margin-top:20px;"
+          |  Uploaded zip file: 
+          = @supplementary_file.original_filename
+          = link_to 'Delete file', togodb_supplementary_file_path(@supplementary_file), method: :delete, data: { confirm: 'Are you sure you want to delete the file?' }
+        #jqtree

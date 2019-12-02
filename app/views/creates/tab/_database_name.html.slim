@@ -1,0 +1,10 @@
+#togodb_create_dbname
+  #database-name-message
+  = form_with url: creates_path do
+    - if @create.mode == 'append'
+      = text_field_tag :table_name, @table.name, id: "create-dbname-input", class: "togodb_input_databse_name", disabled: true
+    - else
+      - name = @create.table_id ? @create.table.name : ''
+      = text_field_tag :table_name, name, id: "create-dbname-input", class: "togodb_input_databse_name", disabled: !name.blank?
+      - if name.blank?
+        = submit_tag "OK", id: "create-dbname-submit", class: "togodb_btn_single margin_bottom_10", role: "button", "aria-disabled" => "false"

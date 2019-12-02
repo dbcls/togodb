@@ -1,0 +1,18 @@
+<%
+case @property_bridge_property.id
+when PropertyBridgeProperty.uri_pattern.id
+  html = j(render 'object_uri_pattern')
+when PropertyBridgeProperty.uri_column.id
+  html = j(render 'object_uri_column')
+when PropertyBridgeProperty.literal_pattern.id
+  html = j(render 'object_literal_pattern')
+when PropertyBridgeProperty.literal_column.id
+  html = j(render 'object_literal_column')
+end
+%>
+$("#object-value_<%= @property_set.property_bridge.id %>").html("<%= html %>");
+<% if @property_set.object_value.uri_object? %>
+  $("#object-language-datatype-<%= @property_set.property_bridge.id %>").hide();
+<% else %>
+  $("#object-language-datatype-<%= @property_set.property_bridge.id %>").show();
+<% end %>

@@ -1,0 +1,21 @@
+- case column.data_type.to_s
+- when 'string'
+  = f.text_field column.internal_name, size: '80'
+- when 'integer'
+  = f.text_field column.internal_name, size: '10'
+- when 'float'
+  = f.text_field column.internal_name, size: '10'
+- when 'decimal'
+  = f.text_field column.internal_name, size: '10'
+- when 'text'
+  = f.text_area column.internal_name, size: '80x3'
+- when 'boolean'
+  = f.select column.internal_name, [['True', 'true'], ['False', 'false']], include_blank: true
+- when 'date'
+  = f.text_field column.internal_name, size: '10'
+- when 'time'
+  = f.text_field column.internal_name, size: '10'
+- when 'datetime'
+  = f.text_field column.internal_name, size: '20'
+- else
+  = f.text_field column.internal_name, size: '80'

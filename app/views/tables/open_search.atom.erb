@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+      xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">
+  <title>TogoDB <%= @table.name %> search: <%= @query %></title>
+  <link><%= @app_server %>/search/<%= @table.name %>/<%= @query %></link>
+  <updated><%= Time.now.iso8601 %></updated>
+  <author>
+    <name>TogoDB <%= @table.name %> database (<%= @app_server %>/db/<%= @table.name %></name>
+  </author>
+  <opensearch:totalResults><%= @num_hits %></opensearch:totalResults>
+  <opensearch:startIndex><%= @page %></opensearch:startIndex>
+  <opensearch:itemsPerPage><%= @num_records_per_page %></opensearch:itemsPerPage>
+  <opensearch:Query role="request" searchTerms="<%= @query %>" startPage="1" />
+  <link rel="alternate" href="<%= @app_server %>/db/<%= @table.name %>/<%= @query %>/<%= @page %>" type="text/html" />
+  <link rel="self" href="<%= @app_server %>/search/<%= @table.name %>/<%= @query %>/<%= @page %>" type="application/atom+xml" />
+  <link rel="first" href="<%= @app_server %>/search/<%= @table.name %>/<%= @query %>/1" type="application/atom+xml" />
+  <link rel="previous" href="<%= @app_server %>/search/<%= @table.name %>/<%= @query %>/<%= @page > 1 ? @page - 1 : 1 %>" type="application/atom+xml" />
+  <link rel="next" href="<%= @app_server %>/search/<%= @table.name %>/<%= @query %>/<%= @page < @last_page ? @page + 1 : @last_page %>" type="application/atom+xml" />
+  <link rel="last" href="<%= @app_server %>/search/<%= @table.name %>/<%= @query %>/<%= @last_page %>" type="application/atom+xml" />
+  <link rel="search" type="application/opensearchdescription+xml" href="<%= @app_server %>/search/<%= @table.name %>.xml" />
+  <%- @records.each do |record| -%>
+    <entry>
+      <title><%= record.id %></title>
+      <link href="<%= @app_server %>/entry/<%= @table.name %>/<%= record.id %>" />
+      <content type="text"><%= content_for_opensearch(@query, record, @columns) %></content>
+    </entry>
+  <%- end -%>
+</feed>

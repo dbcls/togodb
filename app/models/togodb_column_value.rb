@@ -1,0 +1,2 @@
+class TogodbColumnValue < ApplicationRecord
+end

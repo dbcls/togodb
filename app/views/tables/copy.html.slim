@@ -1,0 +1,55 @@
+- content_for :header do
+  title TogoDB - Copy database
+  link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet"
+  = stylesheet_link_tag "style"
+  = stylesheet_link_tag "font-awesome"
+  = stylesheet_link_tag "bootstrap"
+  = stylesheet_link_tag "copy"
+  = javascript_include_tag "bootstrap"
+  = javascript_include_tag "copy"
+
+= render 'application/page_header'
+
+#copy-database-title.contents_title Copy Database
+#database-copy-wrapper
+  #database-copy-message
+  = form_with url: copy_table_path(@table), id: 'togodb-db-copy-form' do
+    table.togodb_table.togodb_table_inform cellpadding="5" cellspacing="0"
+      tbody
+        tr
+          th Original database name :
+          td
+            span#copy-src-name.create_append-copy_dbname
+              = @table.name
+        tr
+          th New database name :
+          td
+            = text_field_tag 'dst_dbname', '', id: 'dst_dbname', size: 40, style: 'padding-left: 8px;'
+        tr
+          th Copy data ?
+          td
+            = select_tag :copy_data, options_for_select([["Yes", 1], ["No", 0]])
+        - unless @authorized_users.empty?
+          tr
+            th Copy authorized user(s) ?
+            td
+              - @authorized_users.each do |user|
+                - element_id = "user#{user.id}"
+                .authorized_user
+                  = check_box_tag 'authorized_users[]', user.id, true, id: element_id
+                  label for=element_id
+                    = user.login
+    #database-copy-submit.togodb_btns style="margin-bottom: 20px;"
+      = submit_tag 'Start copy', id: 'start-copy-btn', class: 'togodb_btn_double copy', role: 'button', 'aria-disabled' => 'false'
+
+    #database-copy-progress-wrapper
+      #database-copy-progress-container
+        #copy-db-progress-message
+          | Copying database settings ...
+        #copy-db-progressbar-wrapper
+          #copy-db-progressbar
+        #copy-db-percentage
+          | 0%
+    #copy-db-message
+
+= render 'application/page_footer'

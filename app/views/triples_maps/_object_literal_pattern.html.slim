@@ -1,0 +1,5 @@
+- @property_bridge_property_setting = @property_set.object_value
+- name = @property_bridge_property_setting.form_name
+- html_opts = { id: "object-literal-pattern_#{@property_set.property_bridge.id }", class: 'form-control' }
+
+= text_field_tag name, @property_bridge_property_setting.value, html_opts

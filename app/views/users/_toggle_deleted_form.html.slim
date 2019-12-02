@@ -1,0 +1,14 @@
+- onoff_action = @user.deleted ? 'enable' : 'disable'
+= form_with url: user_path(@user), method: :delete, local: true do
+  p
+    span.ui-icon.ui-icon-alert style="float:left; margin:0 7px 20px 0;"
+    | Are you sure you want to 
+    = onoff_action
+    = @user.login
+    |  ?
+  = hidden_field_tag "user[deleted]", @user.deleted ? "0" : "1"
+
+  div style="margin-top:10px; text-align:center;"
+    = submit_tag "#{onoff_action.capitalize} user", id: "togodb-user-toggle-deleted-form-submit-btn", data: { comfirm: 'Are you sure ?', disable_with: 'Saving ...' }
+    button#togodb-user-toggle-deleted-form-cancel-btn type="button" style="margin-left:20px;"
+      | Cancel

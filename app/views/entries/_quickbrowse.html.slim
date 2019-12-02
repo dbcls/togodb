@@ -1,0 +1,5 @@
+div.popup id="togodb-quickbrowse-#{@table.name}" style="display: none;"
+  #togodb-quickbrowse-body
+  - if @writable
+    #togodb-quickbrowse-button-wrapper
+      = button_tag 'Edit this record', type: 'button', id: 'togodb-quickbrowse-edit-button'

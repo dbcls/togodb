@@ -1,0 +1,15 @@
+.togodb_tab_box.left
+  #entry_code_body.togodb_tab.active Body
+  #entry_code_header.togodb_tab Header
+  #entry_code_css.togodb_tab CSS
+  #entry_code_columns_settings.togodb_tab Columns settings
+  #entry_code_columns_link.togodb_tab Columns link
+
+= form_with model: @page, method: :patch, id: "entry-page-form" do |f|
+  #entry_code_body_contents
+    = f.text_area :show_body, id: "entry_code_textarea_body"
+  #entry_code_header_contents
+    = f.text_area :show_header, id: "entry_code_textarea_header"
+  #entry_code_css_contents
+    = f.text_area :show_css, id: "entry_code_textarea_css"
+  = render partial: 'form_buttons', locals: { div_id: "entry_btns", form: f, show_default_btn: true }

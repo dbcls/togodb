@@ -1,0 +1,19 @@
+- text_field_id = "subject_rdf_type-#{defined?(text_field_order) ? text_field_order : Time.now.to_i.to_s}"
+
+.form-group class=("required" if first && !rdf_type_cmps.class_map.for_bnode?)
+  label.col-sm-2.control-label for=text_field_id rdf:type
+  - if first
+    span
+      button#add-class-btn.btn.btn-primary[type="button" style="width:36px; height:32px; margin:0px; padding:0px;"]
+        i.fa.fa-plus[style="width:11px; height:11px; text-align:center; font-size:16px; margin:0px; padding:0px;"]
+  - else
+    span
+      button.subject-del-rdf-type-btn.btn.btn-default.btn-delete[type="button" style="width:36px; height:32px; margin:0px; padding:0px;"]
+        i.fa.fa-trash-o[style="width:11px; height:11px; text-align:center; font-size:18px; margin:0px; padding:0px;"]
+
+  #subject-expression.col-sm-9
+    - if rdf_type_cmps.nil?
+      = text_field_tag 'subject_rdf_types[]', '', id: text_field_id, class: 'form-control'
+    - else
+      = text_field_tag rdf_type_cmps.form_name, absolute_uri(base_uri, rdf_type_cmps.value),
+              id: text_field_id, class: 'form-control input-sm'

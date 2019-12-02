@@ -1,0 +1,23 @@
+ruby:
+  if @record&.new_record?
+    url = create_entry_path
+    method = 'post'
+  else
+    url = update_entry_path(db: @table.name, id: @record)
+    method = 'patch'
+  end
+
+#togodb-view-add-form-message style="color: #FF0000; display: none; margin-top: 10px; margin-bottom: 10px;"
+= form_with model: @record, url: url, method: method, id: 'entry-form' do |f|
+  table.togodb_table cellspacing="5"
+    - @table.enabled_columns.each do |column|
+      - next if column.name == 'id'
+      tr
+        th
+          = column.name
+        td style="text-align: left;"
+          = render partial: 'column_form_element', locals: { f: f, column: column }
+  = hidden_field_tag :db, @table.name
+  div style="margin-top: 10px;"
+    = button_tag "Submit", class: "togodb-view-add-form-submit"
+    = button_tag "Cancel", class: "togodb-view-add-form-cancel", type: "button"

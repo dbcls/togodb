@@ -1,0 +1,44 @@
+- if @property_set
+  - property_bridge = @property_set.property_bridge
+
+- if defined?(bnode)
+  - column_name = "Blank node: #{bnode.label}"
+- else
+  - column_name = @class_map_type == 'T' ? property_bridge.real_column_name : ""
+
+.checkbox
+  a [data-toggle="collapse"
+      href="#collapse#{property_bridge.id}"
+      aria-expanded="false"
+      aria-controls="collapse#{property_bridge.id}"]
+    i.fa.fa-chevron-circle-down
+    label.column-name
+      = column_name
+
+  label
+    = hidden_field :property_set, 'enable?', name: @property_set.enable_form_name,  id: @property_set.enable_form_id
+
+    button type="button" class="#{column_rdf_button_class(property_bridge)}" id="column-rdf-btn-#{property_bridge.id}"
+    span
+      - if first
+        button.add-property-bridge-btn.btn.btn-primary type="button"
+          i.fa.fa-plus
+      - else
+        button.del-property-bridge-btn.btn.btn-default.btn-delete type="button" data-pbid="#{property_bridge.id}"
+          i.fa.fa-trash-o
+
+  - if defined?(bnode)
+    span.value
+      span.icon-set
+        | P
+      = bnode_property[:predicates].map { |predicate| uri_for_disp(@base_uri, @namespace_prefixes, predicate.value) }.join(', ')
+  - else
+    /- if property_bridge_property_setting && property_bridge_property_setting[:predicates]
+    - if @property_set.predicates
+      span.value
+        span.icon-set
+          | P
+        = @property_set.predicates.map { |predicate| uri_for_disp(@base_uri, @namespace_prefixes, predicate.value).gsub('col_', '') }.join(', ')
+        span.icon-set.bg-primary
+          | O
+        = object_value_for_disp(@base_uri, @namespace_prefixes, @property_set.object_value).gsub('col_', '')

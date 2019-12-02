@@ -1,0 +1,25 @@
+/ form_tag(triples_map_path(@class_map), method: :patch, class: "form-horizontal") do
+= form_for @triples_map_form, url: triples_map_path(@class_map), method: :patch, html: { class: 'form-horizontal configure-mapping' } do |f|
+  h1.heading01 Configure mapping
+  = render 'flash_message'
+
+  - if @table_not_found
+    |  Table not found in database. 
+  - else
+    h2.heading02 Example records
+    = render 'example_records'
+
+    .panel.panel-default
+      .panel-body
+        - if @class_map.for_bnode?
+          = render 'subject_area_for_bnode'
+        - else
+          = render partial: 'subject_area', locals: { f: f }
+
+        / Predicate-object Form
+        = render partial: 'properties_form', locals: { f: f }
+
+    .submit.form-group
+      button.btn.btn-primary type="submit"
+        i.fa.fa-heart
+        | Save
