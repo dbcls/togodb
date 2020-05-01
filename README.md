@@ -61,9 +61,12 @@ $ vi .env
 |RAPPER_PATH|rapperコマンドのパス名|
 |NKF_PATH|nkfコマンドのパス名|
 |D2RQ_DIR|D2RQのディレクトリ（dump-rdfファイル、d2r-queryファイルがあるディレクトリ）|
+|PSQL_PATH|psqlコマンドのパス名|
 |DATA_DIR|TogoDBで作成、利用されるファイル（アップロードされたファイル、リリース機能で生成されるファイル）を保存するディレクトリ|
 |TMP_DIR|TogoDBで一時ファイルを作成するディレクトリ|
 |BASE_URI_HOST|RDFのBaseURIに使用するホスト名|
+|USE_GRAPHDB|RDFストアとしてGraphDBを利用するかどうか|
+|GRAPHDB_SERVER|GraphDBのURL（GraphDBを利用しない場合は設定不要）|
 
 ## TogoDBのセットアップ
 TogoDBアプリケーションのセットアップは以下の手順で行います。
