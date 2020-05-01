@@ -11,6 +11,9 @@ class SparqlController < D2rqMapperController
   before_action :set_html_body_class
   protect_from_forgery except: [:search]
 
+  RESPONSE_MIME_TYPE_JSON = 'application/sparql-results+json'
+  RESPONSE_MIME_TYPE_XML = 'application/sparql-results+xml'
+
   def show
     if params[:query]
       if request.headers['Accept'].blank? || request.headers['Accept'] != '*/*'
@@ -19,12 +22,17 @@ class SparqlController < D2rqMapperController
         format = 'json'
       end
       content_type = content_type_by_format(format)
-      execute_sparql(params[:query], format)
 
-      if @status.success?
-        render plain: @result, content_type: content_type
+      if Togodb.use_graphdb
+        result = sparql_query_to_graphdb(@work.name, params[:query], format)
+        render plain: result, content_type: content_type
       else
-        render plain: @stderr, status: :bad_request
+        execute_sparql(params[:query], format)
+        if @status.success?
+          render plain: @result, content_type: content_type
+        else
+          render plain: @stderr, status: :bad_request
+        end
       end
     else
       referer = request.headers['Referer']
@@ -40,13 +48,23 @@ class SparqlController < D2rqMapperController
   end
 
   def search
+    database_name = params[:id]
     sparql = params[:query].to_s.strip
     format = params[:output_format]
-
-    execute_sparql(sparql, format)
+    if params[:sparql_backend].to_s == 'd2rq' || !Togodb.use_graphdb
+      execute_sparql(sparql, format)
+    else
+      @result = sparql_query_to_graphdb(database_name, sparql, format)
+    end
   end
 
   private
+
+  def sparql_query_to_graphdb(database_name, sparql, format)
+    graphdb_uri = URI.parse(Togodb.graphdb_server)
+    grapdb = Graphdb::Rest.new(graphdb_uri.host, graphdb_uri.port, graphdb_uri.scheme == 'https')
+    grapdb.sparql_query(database_name, sparql, format)
+  end
 
   def execute_sparql(sparql, format)
     set_instance_variables_for_mapping_data(@class_map.table_name)
@@ -80,11 +98,20 @@ class SparqlController < D2rqMapperController
     logger.debug "===== STATUS =====\n#{@status}"
   end
 
+  def response_mime_type_by_accept_header(accept_header)
+    cts = accept_header.to_s.split(';').first.split(',')
+    if cts.include?(RESPONSE_MIME_TYPE_XML)
+      RESPONSE_MIME_TYPE_XML
+    else
+      RESPONSE_MIME_TYPE_JSON
+    end
+  end
+
   def format_by_accept_header(accept_header)
     cts = accept_header.split(';')[0].split(',')
-    if cts.include?('application/sparql-results+xml')
+    if cts.include?(RESPONSE_MIME_TYPE_XML)
       'xml'
-    elsif cts.include?('application/sparql-results+json')
+    elsif cts.include?(RESPONSE_MIME_TYPE_JSON)
       'json'
     else
       'json'
@@ -93,10 +120,12 @@ class SparqlController < D2rqMapperController
 
   def content_type_by_format(format)
     case format.to_s
-    when 'xml', 'json'
-      "application/sparql-results+#{format}"
+    when 'json'
+      RESPONSE_MIME_TYPE_JSON
+    when 'xml'
+      RESPONSE_MIME_TYPE_XML
     else
-      'application/sparql-results+json'
+      RESPONSE_MIME_TYPE_JSON
     end
   end
 

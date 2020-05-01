@@ -4,7 +4,7 @@ module TogoMapper
       include TogoMapper::Mapping
       include TogoMapper::Namespace
 
-      attr_writer :password, :configuration_property, :database_property
+      attr_writer :password, :configuration_property, :database_property, :ignore_idsep_column
 
       PREFIXES = {
           map: '#',
@@ -21,6 +21,8 @@ module TogoMapper
         @configuration_property = {}
 
         @output_resource_class = true
+
+        @ignore_idsep_column = false
       end
 
       def prepare_by_work(work)
@@ -108,6 +110,14 @@ module TogoMapper
             next unless column_exists?(property_bridge)
             next if property_bridge.class_map.for_bnode? && property_bridge.for_label?
             next unless property_bridge.has_property?
+
+            if @ignore_idsep_column
+              table = TogodbTable.find_by(name: @work.name)
+              unless table.nil?
+                column = TogodbColumn.find_by(table_id: table.id, internal_name: property_bridge.column_name)
+                next if column&.has_id_separator?
+              end
+            end
 
             begin
               class_map = property_bridge.class_map

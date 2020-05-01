@@ -40,6 +40,7 @@
   padding: 0 15px;
   text-align: left;
   border: none;
+    vertical-align: top;
 }
 
 #togodb-table-view .togodb_export_table_label {
@@ -56,7 +57,7 @@
 #togodb-table-view .togodb_export_icon_box {
   display: inline-block;
   position: relative;
-  cursor: pointer;
+  /* cursor: pointer; */
   margin: 4px 4px 0;
 }
 
@@ -105,6 +106,14 @@
   background-image: url("/img/icon_fasta.svg");
   background-size: 18px 22px;
   background-position: 52% 43%;
+}
+
+#togodb-table-view .togodb_export_icon_circle.na {
+    background-image: url("/img/icon_na.svg");
+    background-size: 25px 30px;
+    background-position: 53% 50%;
+    background-repeat: no-repeat;
+    background-color: #bfbfbf;
 }
 
 #togodb-table-view .togodb_export_icon_circle p {

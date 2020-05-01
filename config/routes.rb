@@ -145,7 +145,10 @@ Rails.application.routes.draw do
     resources :ontologies, shallow: true, as: :namespace_settings
   end
   get '/namespaces/new_namespace_form/:id', to: 'namespaces#new_namespace_form', as: :new_namespace_form
-  get '/ontologies/:namespace_id/:ontology_name', to: 'ontologies#content'
+  get '/ontologies/:id/:ontology_name', to: 'ontologies#content'
+
+  # Ontology
+  get '/ontology/:id', to: 'ontologies#content'
 
   resources :d2rq_mapping do
     member do

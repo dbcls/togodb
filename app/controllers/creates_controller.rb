@@ -79,8 +79,6 @@ class CreatesController < ApplicationController
           case @create.mode
           when 'create'
             @columns = create_columns
-            create_page
-            Togodb::DataRelease.create_default_dataset(@table.id)
           when 'append'
             column_names = JSON.parse(@create.sample_data).map { |data| data['name'] }
           when 'overwrite'
@@ -124,10 +122,12 @@ class CreatesController < ApplicationController
       column.save!
     end
 
+    create_page
+    Togodb::DataRelease.create_default_dataset(@table.id)
     @table.create_table
     @key = enqueue_data_import_job
 
-    render 'import'
+    render action: :import, content_type: 'text/javascript'
   end
 
   def progress(klass = Togodb::DataImporter)

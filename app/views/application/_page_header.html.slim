@@ -1,8 +1,7 @@
 #togodb_page_header
   #togodb_menu
-    / TODO サーバ名をrequetヘッダからとれるかどうか
-    a href="#{@app_server}/"
-    span#togodb_title TogoDB
+    = link_to root_path do
+      span#togodb_title TogoDB
     - if @user
       #togodb_user
         | Logged in as 

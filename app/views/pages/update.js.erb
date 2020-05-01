@@ -1,5 +1,5 @@
 <% if @success %>
-  $("#preview-btn").click();
+  reload_preview();
   $("#config-html-setting-message").html("<%= j(render partial: 'application/success_message', locals: { message: 'HTML setting has been updated successfully.' }) %>");
 <% else %>
   $("#config-html-setting-message").html("ERROR: Failed to save the HTML setting.");

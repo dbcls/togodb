@@ -125,6 +125,20 @@ class TablesController < ApplicationController
       return
     end
 
+    page_name = table_params[:page_name].to_s.strip
+    if page_name.present? && !table.valid_name?(page_name)
+      @error_msg = "Alias name '#{page_name}' is used by another user. Please specify another name."
+      render
+      return
+    end
+
+    dl_file_name = table_params[:dl_file_name].to_s.strip
+    if dl_file_name.present? && !table.valid_name?(dl_file_name)
+      @error_msg = "Download file name '#{dl_file_name}' is used by another user. Please specify another name."
+      render
+      return
+    end
+
     begin
       change_pkey = false
       orig_page_name = table.page_name
@@ -243,21 +257,9 @@ class TablesController < ApplicationController
   end
 
   def destroy
-    release_file_paths = release_files
+    @table.delete_database
 
-    ActiveRecord::Base.transaction do
-      work = Work.find_by(name: @table.name)
-      work.destroy! if work
-
-      @table.drop_table
-      @table.destroy!
-
-      release_file_paths.each do |file_path|
-        FileUtils.rm(file_path) if File.exist?(file_path)
-      end
-
-      flash[:notice] = "The database '#{@table.name}' has been deleted successfully."
-    end
+    flash[:notice] = "The database '#{@table.name}' has been deleted successfully."
   rescue => e
     logger.fatal e.inspect
     logger.fatal e.backtrace.join("\n")
@@ -368,56 +370,7 @@ class TablesController < ApplicationController
   end
 
   def download
-    #unless allow_read_data?(current_user, @db)
-    #  raise Togodb::AccessDenied
-    #end
-
-    if page_key = params[:togodb_view_page_key]
-      #search_condition_file = search_condition_file_path(page_key)
-      search_condition_file = "#{Rails.root}/tmp/togodb/#{page_key}.json"
-      if File.exist?(search_condition_file)
-        search_condition_hash_ary = JSON.parse(File.read search_condition_file)
-      end
-      conditions = data_search_conditions(search_condition_hash_ary)
-    else
-      conditions = data_search_conditions(search_condition_hash_ary_by_param(params))
-    end
-
-    if conditions.kind_of?(Array)
-      statement, *values = conditions
-      conn = ActiveRecord::Base.connection
-      conditions = statement.gsub('?') { conn.quote(values.shift) }
-    end
-
-    pkey_colname = TogodbTable.actual_primary_key(@table.name)
-    sortname = params[:sortname].blank? ? pkey_colname : params[:sortname]
-    sortorder = params[:sortorder].blank? ? 'asc' : params[:sortorder]
-
-    drs = TogodbDataset.where(table_id: @table.id, name: 'default').first
-    columns = if drs
-                drs.column_list
-              else
-                @table.columns
-              end
-    header_names = columns.map(&:label)
-    col_names = columns.map(&:internal_name).join(',')
-
-    csv_file_path = generate_csv(@table.name, "#{Rails.root}/tmp/togodb", :select => col_names, :conditions => conditions, :order => "#{sortname} #{sortorder}")
-
-    send_file_path = csv_file_path + '.send'
-    CSV.open(send_file_path, 'wb') do |csv|
-      csv << header_names
-    end
-
-    require 'browser'
-    browser = Browser.new(request.env['HTTP_USER_AGENT'])
-    if browser.platform.windows?
-      system "nkf -s -Lw -c --overwrite #{send_file_path}"
-      system "nkf -s -Lw -c #{csv_file_path} >> #{send_file_path}"
-    else
-      system "cat #{csv_file_path} >> #{send_file_path}"
-    end
-
+    send_file_path = generate_csv_for_download
     dl_file_name = @table.dl_file_name.blank? ? @table.name : @table.dl_file_name
     send_file send_file_path, :filename => "#{dl_file_name}.csv", :type => 'text/csv'
   end
@@ -475,6 +428,7 @@ class TablesController < ApplicationController
   end
 
   def fetch_for_flexigrid
+    @togodb_columns = @table.columns
     search_condition = search_condition_by_param(@table, params.dup)
 
     page = search_condition[:page]
@@ -501,6 +455,7 @@ class TablesController < ApplicationController
 
       # TODO サーバ名をrequetヘッダからとれるかどうか
       record_data[:cell] << %Q(<a href="#{@app_server}/entry/#{@table.representative_name}/#{record.id}" target="_blank">Show</a>)
+      @all_data = @table.active_record.find(record.id)
       columns.each do |column|
         record_data[:cell] << html_value(record, column)
       end
@@ -711,6 +666,7 @@ class TablesController < ApplicationController
     if column_attr
       column_attr = JSON.parse(column_attr)
       column_attr.each do |column_id, attr|
+        attr.delete('id_separator_pdl')
         column = TogodbColumn.find(column_id)
         column.update!(attr)
       end
@@ -734,15 +690,96 @@ class TablesController < ApplicationController
     }
   end
 
-  def release_files
-    files = []
-    @table.togodb_datasets.each do |dataset|
-      %w(csv json ttl rdf fasta).each do |file_format|
-        files << Togodb::DataRelease.output_file_path(@table.name, dataset.name, file_format)
+  def generate_csv_for_download(use_psql_copy = true)
+    search_condition = search_condition_by_param(@table, params)
+    sortname = search_condition[:sortname]
+    sortorder = search_condition[:sortorder]
+    search_condition_hash_ary = search_condition[:condition]
+    conditions = data_search_conditions(search_condition_hash_ary)
+
+    drs = TogodbDataset.where(table_id: @table.id, name: 'default').first
+    columns = if drs
+                drs.column_list
+              else
+                @table.columns
+              end
+    header_names = columns.map(&:label)
+    col_names = columns.map(&:internal_name)
+
+    if use_psql_copy
+      generate_selected_record_csv_using_psql_copy(sortname, sortorder, conditions, header_names, col_names)
+    else
+      generate_selected_record_csv(sortname, sortorder, conditions, header_names, col_names)
+    end
+  end
+
+  def generate_selected_record_csv(sortname, sortorder, conditions, header_names, col_names)
+    csv_file_path = "#{Togodb.tmp_dir}/togodb_dl_#{@table.name}_#{random_str(8)}.csv"
+    CSV.open(csv_file_path, 'wb') do |csv|
+      csv << header_names
+      @table.active_record.select(col_names).where(conditions).order(%Q("#{sortname}" #{sortorder})).each do |record|
+        csv << col_names.map{ |col_name| record[col_name] }
       end
     end
 
-    files
+    require 'browser'
+    browser = Browser.new(request.env['HTTP_USER_AGENT'])
+    if browser.platform.windows?
+      system "nkf -s -Lw -c --overwrite #{csv_file_path}"
+    end
+
+    csv_file_path
+  end
+
+  def generate_selected_record_csv_using_psql_copy(sortname, sortorder, conditions, header_names, col_names, use_client_psql = true)
+    key = random_str(8)
+    csv_file_path = "#{Togodb.tmp_dir}/togodb_dl_#{@table.name}_#{key}.csv"
+
+    if use_client_psql
+      sql = @table.active_record.select(col_names).where(conditions).order(%Q("#{sortname}" #{sortorder})).to_sql
+      sql_file_path = "#{Togodb.tmp_dir}/togodb_dl_#{@table.name}_#{key}.sql"
+      File.open(sql_file_path, 'w') do |f|
+        f.puts "\\copy (#{sql}) to '#{csv_file_path}' WITH DELIMITER ',' CSV"
+      end
+      psql_option = [
+          { h: ENV['DATABASE_HOST'] },
+          { p: ENV['DATABASE_PORT'] },
+          { U: ENV['DATABASE_USER'] },
+          { w: nil },
+          { f: sql_file_path }
+      ].map{ |opt| "-#{opt.keys.at(0)} #{opt[opt.keys.at(0)]}" }.join(' ')
+
+      cmd = %Q(PGPASSWORD=#{ENV['DATABASE_PASSWORD']} #{Togodb.psql_path} #{psql_option} #{ENV["DATABASE_NAME_#{Rails.env.upcase}"]})
+      logger.debug cmd
+
+      require 'open3'
+      stdout, stderr, status = Open3.capture3(cmd)
+      if status.success?
+        logger.debug "SQL command of CSV export success."
+      else
+        logger.debug "SQL command of CSV export failure."
+      end
+      logger.debug stdout
+      logger.debug stderr
+    else
+      @table.active_record.select(col_names).where(conditions).order(%Q("#{sortname}" #{sortorder})).copy_to(csv_file_path, header: false)
+    end
+
+    send_file_path = csv_file_path + '.send'
+    CSV.open(send_file_path, 'wb') do |csv|
+      csv << header_names
+    end
+
+    require 'browser'
+    browser = Browser.new(request.env['HTTP_USER_AGENT'])
+    if browser.platform.windows?
+      system "nkf -s -Lw -c --overwrite #{send_file_path}"
+      system "nkf -s -Lw -c #{csv_file_path} >> #{send_file_path}"
+    else
+      system "cat #{csv_file_path} >> #{send_file_path}"
+    end
+
+    send_file_path
   end
 
 end

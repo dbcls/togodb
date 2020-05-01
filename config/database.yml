@@ -9,7 +9,7 @@ default: &default
 
 development:
   <<: *default
-  database: <%= ENV.fetch("DATABASE_NAME_DEVEROPMENT") { "togodb_development" } %>
+  database: <%= ENV.fetch("DATABASE_NAME_DEVELOPMENT") { "togodb_development" } %>
 
 test:
   <<: *default

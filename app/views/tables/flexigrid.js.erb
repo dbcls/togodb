@@ -3,6 +3,10 @@
 <%= render partial: "quickbrowse", formats: [:js] %>
 
 window.onload = function () {
+    var quickbrowse_data_elem_id = function () {
+        return "<%= quickbrowse_data_elem_id(@table.representative_name) %>";
+    };
+
     $("button").button();
 
     $("#togodb-view-advanced-search-submit").click(function () {

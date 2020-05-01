@@ -177,17 +177,34 @@ module Togodb::Search
   def stmt_array_for_exact(search_condition)
     stmts = []
     values = []
-    search_condition.each do |name, value|
-      ope = name[-1, 1]
+    search_condition.each do |key, value|
+      column_name = key[0 .. -2]
+      ope = key[-1, 1]
       ope << '=' if %w[< >].include?(ope)
-      if value[0, 1] == '/'
-        # Regexp search
-        ope = '~'
-        value = value[1 .. -2]
-      end
-      stmts << %Q("#{name[0 .. -2]}"#{ope}?)
 
-      values << value
+      column = TogodbColumn.find_by(table_id: @table.id, internal_name: column_name)
+      next if column.nil?
+
+      if column.data_type == 'date' && ope == '=' && /\A(\d{4}\-\d{2}\-\d{2})\-(\d{4}\-\d{2}\-\d{2})\z/ =~ value
+        stmts << %Q("#{column_name}">=?)
+        values << $1 # from date
+        stmts << %Q("#{column_name}"<=?)
+        values << $2 # to date
+      else
+        if value[0, 1] == '/'
+          # Regexp search
+          if value[-2, 2] == '/i'
+            # ignore case
+            ope = '~*'
+            value = value[1 .. -3]
+          else
+            ope = '~'
+            value = value[1 .. -2]
+          end
+        end
+        stmts << %Q("#{column_name}"#{ope}?)
+        values << value
+      end
     end
 
     [stmts.join(' AND ')] + values

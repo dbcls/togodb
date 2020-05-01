@@ -1,0 +1,27 @@
+{
+  "importSettings": {
+    "name": "<%= database_name %>_default.ttl",
+    "status": "NONE",
+    "message": "",
+    "context": "",
+    "replaceGraphs": [],
+    "baseURI": null,
+    "forceSerial": false,
+    "type": "file",
+    "format": null,
+    "data": null,
+    "timestamp": <%= Time.now.to_i %>,
+    "parserSettings": {
+      "preserveBNodeIds": false,
+      "failOnUnknownDataTypes": false,
+      "verifyDataTypeValues": false,
+      "normalizeDataTypeValues": false,
+      "failOnUnknownLanguageTags": false,
+      "verifyLanguageTags": true,
+      "normalizeLanguageTags": false,
+      "stopOnError": true
+    },
+    "xRequestIdHeaders": null
+  },
+  "fileNames": ["<%= database_name %>_default.ttl"]
+}

@@ -86,6 +86,34 @@
       or <a href="terms_ja.html" class="color_FF478A">Japanese</a> version of the "Terms of Service" for more
       details.</p>
   </section>
+
+  <section>
+    <div class="contents_subtitle">Public databases</div>
+      <table id="togodb_database_list" class="datatables display">
+        <thead class="database_list_databases_header" style="display: block;">
+        <tr>
+          <th style="width: 400px;">Name</th>
+          <th style="width: 220px;">Num records</th>
+          <th style="width: 200px;">Date created</th>
+        </tr>
+        </thead>
+        <tbody class="database_list_databases_body" style="display: block; overflow: auto; overflow-x: hidden; height: 300px;">
+        <% @public_databases.each do |table| %>
+        <tr>
+          <td style="width: 400px;" class="left sorting_1 style style_fontsize_14">
+            <%= link_to table.name, data_list_path(table.name), target: '_blank' %>
+          </td>
+          <td style="width: 220px; padding-right: 100px;" align="right">
+            <%= number_with_delimiter(table.num_records) %>
+          </td>
+          <td style="width: 200px">
+            <%= table.created_at %>
+          </td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+  </section>
 </div>
 
 <%= render 'application/page_footer' %>

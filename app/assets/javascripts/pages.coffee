@@ -2,6 +2,40 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+@editors = {}
+@reload_preview = ->
+  target = selected_preview_tab()
+  editor_tab = selected_editor_tab(target)
+
+  if editor_tab is "columns settings" or editor_tab is "columns link"
+    reload_all_previews()
+  else
+    reload_target_preview target
+
+
+@reload_target_preview = (target) ->
+  columns_form_params = $("#tab-column-basic-form").serializeArray()
+  link_form_params = $("#tab-column-link-form").serializeArray()
+
+  param =
+    "body": editors[target]["body"].getValue()
+    "header": editors[target]["header"].getValue()
+    "css": editors[target]["css"].getValue()
+    "columns_settings": columns_form_params
+    "columns_link": link_form_params
+
+  $.post "/preview/#{target}/#{table_name}", param, (html)->
+    previewFrame = document.getElementById "#{target}_code_preview"
+    preview = previewFrame.contentDocument || previewFrame.contentWindow.document
+    preview.open()
+    preview.write html
+    preview.close()
+
+
+@reload_all_previews = ->
+  reload_target_preview "entry"
+  reload_target_preview "table"
+
 page_types = ['body', 'header', 'css']
 
 editManager = (prefix) ->
@@ -60,9 +94,8 @@ selected_editor_tab = (preview_tab) ->
 
 
 $ ->
-  editors =
-    "entry": editManager("entry_code")
-    "table": editManager("table_code")
+  editors["entry"] = editManager("entry_code")
+  editors["table"] = editManager("table_code")
 
   tabManagerPrview = new TabManager()
   tabEntry = new Tab("entry_edit", tabManagerPrview)
@@ -83,23 +116,7 @@ $ ->
 
 
   $(".preview-btn").click ->
-    target = selected_preview_tab()
-    columns_form_params = $("#tab-column-basic-form").serializeArray()
-    link_form_params = $("#tab-column-link-form").serializeArray()
-
-    param =
-      "body": editors[target]["body"].getValue()
-      "header": editors[target]["header"].getValue()
-      "css": editors[target]["css"].getValue()
-      "columns_settings": columns_form_params
-      "columns_link": link_form_params
-
-    $.post "/preview/#{target}/#{table_name}", param, (html)->
-      previewFrame = document.getElementById "#{target}_code_preview"
-      preview = previewFrame.contentDocument || previewFrame.contentWindow.document
-      preview.open()
-      preview.write html
-      preview.close()
+    reload_preview()
 
 
   $(".revert-default-btn").click ->
@@ -122,6 +139,21 @@ $ ->
     $.ajax ajax_param
 
 
+  $(".id-separator-selector").change ->
+    column_id = $(this).data "colid"
+    selected = $("##{$(this).attr("id")} option:selected").val()
+    $("#togodb_column_#{column_id}_id_separator").val selected
+
+  $(".id-separator-text").keyup ->
+    column_id = $(this).data "colid"
+    id_separator_text = $(this).val()
+    blank = $("#togodb_column_#{column_id}_id_separator_pdl option[value='']")
+    target = $("#togodb_column_#{column_id}_id_separator_pdl option[value='" + id_separator_text + "']")
+    if target.length is 1
+      target.prop("selected", true)
+    else
+      blank.prop("selected", true)
+
   $(".link-other-type-selector").change ->
     column_id = $(this).data "colid"
     column_name = $(this).data "colname"
@@ -132,3 +164,17 @@ $ ->
     else
       $("##{link_text_field_id}").val html_link[selected].replace("{id}", "{#{column_name}}")
 
+  $(".html-link-text").keyup ->
+    column_id = $(this).data "colid"
+    column_name = $(this).data "colname"
+    text_field_value = $(this).val()
+    compared_text = text_field_value.replace "{#{column_name}}", "{id}"
+    blank = $("#togodb_column_#{column_id}_other_type option[value='']")
+
+    other_types = Object.keys(html_link)
+    for other_type in other_types
+      if compared_text is html_link[other_type]
+        select_option = $("#togodb_column_#{column_id}_other_type option[value='" + other_type + "']")
+        select_option.prop "selected", true
+        break
+      blank.prop "selected", true

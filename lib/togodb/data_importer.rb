@@ -110,7 +110,7 @@ class Togodb::DataImporter
       create_indexes(conn)
 
       if Togodb.create_release_files
-        Togodb::DataRelease.enqueue_job(def_ds_id, Togodb.create_new_repository)
+        Togodb::DataRelease.enqueue_job(def_ds_id, Togodb.use_graphdb)
       end
     rescue => e
       conn&.exec('ROLLBACK')

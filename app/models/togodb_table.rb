@@ -20,6 +20,9 @@ class TogodbTable < ApplicationRecord
       end
     end
 
+    def exist?(name)
+      !where(name: name).or(where(page_name: name)).or(where(dl_file_name: name)).empty?
+    end
   end
 
 
@@ -73,6 +76,10 @@ class TogodbTable < ApplicationRecord
     end
 
     false
+  end
+
+  def id_separator_columns
+    columns.select(&:has_id_separator?)
   end
 
   def class_name
@@ -148,6 +155,7 @@ class TogodbTable < ApplicationRecord
     model = Object.const_get class_name
   ensure
     model.table_name = name
+    model.acts_as_copy_target
 
     model
   end
@@ -232,4 +240,42 @@ class TogodbTable < ApplicationRecord
     TogodbDataset.find_by(name: 'default', table_id: self.id)
   end
 
+  def valid_name?(name)
+    valid_name = true
+    TogodbTable.where(name: name).or(TogodbTable.where(page_name: name)).or(TogodbTable.where(dl_file_name: name)).each do |table|
+      if table.id != self.id
+        valid_name = false
+        break
+      end
+    end
+
+    valid_name
+  end
+
+  def delete_database
+    release_file_paths = release_files
+
+    ActiveRecord::Base.transaction do
+      work = Work.find_by(name: name)
+      work.destroy! if work
+
+      drop_table
+      destroy!
+
+      release_file_paths.each do |file_path|
+        File.delete(file_path) if File.exist?(file_path)
+      end
+    end
+  end
+
+  def release_files
+    files = []
+    togodb_datasets.each do |dataset|
+      %w(csv json ttl rdf fasta).each do |file_format|
+        files << Togodb::DataRelease.output_file_path(name, dataset.name, file_format)
+      end
+    end
+
+    files
+  end
 end

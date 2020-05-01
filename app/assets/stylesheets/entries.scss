@@ -1,7 +1,24 @@
 // Place all the styles related to the entries controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+a {
+  text-decoration: none;
+  color: #FF478A;
+  transition: color 0.3s;
+  &:before {
+    font-family: "FontAwesome";
+    content: "\f0c5";
+    padding-right: 3px;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+  }
+}
 
+/*
 table#togodb_show_table {
     border-collapse: collapse;
 }
@@ -26,3 +43,4 @@ table#togodb_show_table .column_value {
     border-width: 0px 0px 1px 0px;
     padding: 5px;
 }
+*/

@@ -4,7 +4,7 @@ class PagesController < ApplicationController
   before_action :set_table, only: [:show]
   before_action :set_page, except: [:show]
   before_action :read_user_required, except: [:update]
-  before_action :execute_user_required, only: %i[update columns_settings columns_link]
+  before_action :execute_user_required, only: %i[show update columns_settings columns_link]
 
   def show
     #request.headers.sort.map { |k, v| logger.info "#{k}:#{v}" }

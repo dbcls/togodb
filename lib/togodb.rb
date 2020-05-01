@@ -7,12 +7,14 @@ module Togodb
   mattr_accessor :app_server
   mattr_accessor :redis_host, :redis_port
   mattr_accessor :tmp_dir, :upfile_saved_dir, :dataset_dir, :supfile_dir
-  mattr_accessor :data_download_queue, :data_import_queue, :db_copy_queue, :data_release_queue
+  mattr_accessor :data_download_queue, :data_import_queue, :db_copy_queue, :data_release_queue, :new_rdf_repository_queue
   mattr_accessor :create_release_files, :create_new_repository
-  mattr_accessor :use_owlim
-  mattr_accessor :rapper_path, :nkf_path
+  mattr_accessor :use_graphdb
+  mattr_accessor :graphdb_server
+  mattr_accessor :rapper_path, :nkf_path, :psql_path
   mattr_accessor :d2rq_base_uri
   mattr_accessor :enable_open_search, :open_search_admin_mail
+  mattr_accessor :encrypt_password
 
 
   def self.valid_table_name?(name)

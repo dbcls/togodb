@@ -28,6 +28,11 @@ class TogodbRole < ApplicationRecord
     def executable_table_ids(user_id)
       TogodbRole.where("SUBSTR(roles, 1, 1) = '1'").or(TogodbRole.where("SUBSTR(roles, 4, 1) = '1'")).where(user_id: user_id).map(&:table_id)
     end
+
+    def readable_table_ids(user_id)
+      #TogodbRole.where("SUBSTR(roles, 1, 1) = '1' OR SUBSTR(roles, 2, 1) = '1' OR SUBSTR(roles, 3, 1) = '1'").where(user_id: user_id).map(&:table_id)
+      TogodbRole.where("SUBSTR(roles, 1, 1) = '1' OR SUBSTR(roles, 2, 1) = '1'").where(user_id: user_id).map(&:table_id)
+    end
   end
 
 end

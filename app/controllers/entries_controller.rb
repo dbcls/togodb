@@ -31,7 +31,7 @@ class EntriesController < ApplicationController
       else
         pk_column_name = TogodbTable.actual_primary_key(@table.name)
         @record = @table.active_record.order(pk_column_name).first
-        @id = record[pk_column_name]
+        @id = @record[pk_column_name]
       end
       @record_name = record_name(@table, @record)
     end
@@ -164,6 +164,7 @@ class EntriesController < ApplicationController
     @columns = []
     model_attr.keys.each do |id|
       column = TogodbColumn.find(id)
+      model_attr[id].delete('id_separator_pdl')
       column.update!(model_attr[id])
       @columns << column
     end
@@ -238,12 +239,12 @@ class EntriesController < ApplicationController
     FS.register_helper("id_value") { id_value }
     @columns.each do |column|
       FS.register_helper("#{column.name}_label") { column.label }
-
-      v = if column.sequence_type?
-            html_value(@record, column)
-          else
-            @record[column.internal_name]
-          end
+      #v = if column.sequence_type?
+      #      html_value(@record, column)
+      #    else
+      #      @record[column.internal_name]
+      #    end
+      v = html_value(@record, column)
       FS.register_helper("#{column.name}_value") { v }
     end
   end

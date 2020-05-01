@@ -11,11 +11,16 @@ class TogodbUser < ApplicationRecord
 
     def authorize(login, password)
       user = find_by_login(login.to_s)
+      return nil if user.nil?
 
-      if user.nil? || !user.local_account? || decrypt(user.password.to_s) != password.to_s
-        nil
-      else
+      if user.guest_user?
         user
+      else
+        if user.nil? || !user.local_account? || decrypt(user.password.to_s) != password.to_s
+          nil
+        else
+          user
+        end
       end
     end
 
@@ -48,17 +53,24 @@ class TogodbUser < ApplicationRecord
     end
 
     def encrypt(password)
-      crypt = ActiveSupport::MessageEncryptor.new(SECURE, cipher: CIPHER)
-      crypt.encrypt_and_sign(password)
+      if Togodb.encrypt_password
+        crypt = ActiveSupport::MessageEncryptor.new(SECURE, cipher: CIPHER)
+        crypt.encrypt_and_sign(password)
+      else
+        password
+      end
     end
 
     def decrypt(password)
-      crypt = ActiveSupport::MessageEncryptor.new(SECURE, cipher: CIPHER)
-      crypt.decrypt_and_verify(password)
+      if Togodb.encrypt_password
+        crypt = ActiveSupport::MessageEncryptor.new(SECURE, cipher: CIPHER)
+        crypt.decrypt_and_verify(password)
+      else
+        password
+      end
     end
 
   end
-
 
   def configurable_tables(order = 'name')
     if superuser?
@@ -67,6 +79,17 @@ class TogodbUser < ApplicationRecord
       my_table_ids = TogodbTable.where(creator_id: id).map(&:id)
       executable_table_ids = TogodbRole.executable_table_ids(id)
       TogodbTable.where(id: my_table_ids + executable_table_ids).order(order)
+    end
+  end
+
+  def readable_configurable_tables(order = 'name')
+    if superuser?
+      TogodbTable.all.order(order)
+    else
+      my_table_ids = TogodbTable.where(creator_id: id).map(&:id)
+      executable_table_ids = TogodbRole.executable_table_ids(id)
+      readable_table_ids = TogodbRole.readable_table_ids(id)
+      TogodbTable.where(id: my_table_ids + executable_table_ids + readable_table_ids).order(order)
     end
   end
 

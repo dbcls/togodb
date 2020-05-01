@@ -13,6 +13,9 @@ ruby:
     .col-sm-9
       = select_tag :output_format, options_for_select(options_for_format), id: "query-result-format", class: "form-control"
 
+  - if @show_left_menu
+    = hidden_field_tag 'sparql_backend', 'd2rq'
+
   .submit.form-group
     button#sparql-submit.btn.btn-primary[type="submit"]
       i.fa.fa-search

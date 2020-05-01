@@ -2,26 +2,23 @@
   title = @table.label
 
   javascript:
-    const writable = "#{@writable}";
-    const table_id = "#{@table.id}";
-    const database = "#{@table.name}";
-    const new_form_url = function () {
+    var writable = "#{@writable}";
+    var table_id = "#{@table.id}";
+    var database = "#{@table.name}";
+    var new_form_url = function () {
         return "#{{entry_form_path(db: @table.name)}}";
     };
-    const edit_form_url = function (record_id) {
+    var edit_form_url = function (record_id) {
         return "#{{entry_form_path(db: @table.name)}}" + "/" + record_id;
     };
-    const delete_entries_url = function () {
+    var delete_entries_url = function () {
         return "#{{delete_entries_path(db: @table.name)}}";
     };
-    const quickbrowse_form_url = function (record_id) {
+    var quickbrowse_form_url = function (record_id) {
         return "#{{quickbrowse_form_path(db: @table.name, id: 1)}}".replace('/1', '/' + record_id);
     };
-    const view_table_id = function () {
+    var view_table_id = function () {
         return "#{{view_table_id(@table.name)}}";
-    };
-    const quickbrowse_data_elem_id = function () {
-        return "#{{quickbrowse_data_elem_id(@table.representative_name)}}";
     };
 
   / for QuickBrowse

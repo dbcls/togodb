@@ -1,6 +1,9 @@
 require 'open3'
 
 class OntologiesController < ApplicationController
+  before_action :set_table, only: %i[content]
+  before_action :read_user_required, only: %i[content]
+
   before_action :set_work, only: %i[content]
   before_action :set_namespace_setting, only: %i[update]
 
@@ -23,6 +26,10 @@ class OntologiesController < ApplicationController
     uri = "http://#{Togodb.app_server}/ontologies/#{@work.name}/#{params[:ontology_name]}#"
     namespace = Namespace.find_by(uri: uri)
     if namespace.nil?
+      namespace = Namespace.find_by(prefix: @work.name)
+    end
+
+    if namespace.nil?
       head :not_found
     else
       namespace_setting = NamespaceSetting.find_by(work_id: @work.id, namespace_id: namespace.id)
@@ -37,10 +44,10 @@ class OntologiesController < ApplicationController
   private
 
   def set_work
-    @work = if params[:namespace_id] =~ /\A\d+\z/
-              Work.find(params[:namespace_id])
+    @work = if params[:id] =~ /\A\d+\z/
+              Work.find(params[:id])
             else
-              Work.find_by(name: params[:namespace_id])
+              Work.find_by(name: params[:id])
             end
   end
 

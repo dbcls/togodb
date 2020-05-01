@@ -13,4 +13,15 @@ namespace "togodb" do
     pid_dir = Rails.root.join('tmp', 'pids')
     FileUtils.mkdir_p(pid_dir) unless File.exist?(pid_dir)
   end
+
+  desc "Delete guest user's database"
+  task :destroy_guest_user_databases => :environment do
+    guest_user = TogodbUser.find_by(login: 'guest')
+    return if guest_user.nil?
+
+    TogodbTable.where('creator_id = ? AND created_at < ?', guest_user.id, 12.hours.ago).each do |table|
+      table.delete_database
+      puts "#{Time.now} '#{table.name}' is deleted."
+    end
+  end
 end

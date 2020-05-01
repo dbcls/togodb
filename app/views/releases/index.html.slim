@@ -4,6 +4,7 @@
   = stylesheet_link_tag "style"
   = stylesheet_link_tag "bootstrap"
   = stylesheet_link_tag "font-awesome"
+  = stylesheet_link_tag "info"
   = javascript_include_tag "bootstrap"
 
 #togodb_mydatabases_page_contents
@@ -11,7 +12,7 @@
     div style="height:50px;"
     .togodb_database_title Release List
     #togodb-database-release-message
-    table#dataset_list.togodb_table_release
+    table#togodb-table-view.togodb_table_release
       thead.database_list_databases_header
         tr
           th
@@ -44,8 +45,8 @@
       tbody.database_list_databases_body
         - @tables.each do |table|
           - dataset = table.default_dataset
-          - dataset_name = dataset.name
-          - latest_history = dataset.latest_history
+          - dataset_name = dataset.nil? ? '' : dataset.name
+          - latest_history = dataset.nil? ? nil : dataset.latest_history
           tr
             td
               = table.name
@@ -57,4 +58,5 @@
             td
               = latest_history.nil? ? '' : latest_history.status
             td.release_info_data_tabble_menu
-              = render partial: 'action_td_content', locals: { dataset: dataset }
+              - unless dataset.nil?
+                = render partial: 'action_td_content', locals: { dataset: dataset }

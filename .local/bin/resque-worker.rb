@@ -6,7 +6,7 @@ Rails.application.require_environment!
 
 class ResqueWorkerDaemon < DaemonSpawn::Base
   def start(args)
-    @worker = Resque::Worker.new('togodb_v4_dl', 'togodb_v4_di', 'togodb_v4_cp', 'togodb_v4_re')
+    @worker = Resque::Worker.new('togodb_v4_dl', 'togodb_v4_di', 'togodb_v4_cp', 'togodb_v4_re', 'togodb_v4_nr')
     @worker.verbose = true
     @worker.work
   end

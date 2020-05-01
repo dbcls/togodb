@@ -85,6 +85,10 @@ class TogodbColumn < ApplicationRecord
     !html_link_prefix.to_s.strip.empty?
   end
 
+  def has_id_separator?
+    id_separator.present?
+  end
+
   def sequence_type?
     other_type == 'sequence'
   end

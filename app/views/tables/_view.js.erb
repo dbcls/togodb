@@ -1,19 +1,19 @@
 <%# The JavaScript code blow is part of "flexigrid.js" %>
 <%# The code is rendered at "flexigrid.js" %>
 
-const entry_form = function () {
+var entry_form = function () {
     return document.getElementById("entry-form");
 };
 
-const advanced_search_pressed = function (command, grid) {
+var advanced_search_pressed = function (command, grid) {
     $("#togodb-view-advanced-search").dialog("open");
 };
 
-const add_pressed = function (command, grid) {
+var add_pressed = function (command, grid) {
     $.getScript(new_form_url());
 };
 
-const edit_pressed = function (command, grid) {
+var edit_pressed = function (command, grid) {
     const items = $(".trSelected", grid);
     const num_records = items.length;
     if (num_records == 0) {
@@ -28,7 +28,7 @@ const edit_pressed = function (command, grid) {
     $.getScript(edit_form_url(record_id));
 }
 
-const delete_pressed = function (command, grid) {
+var delete_pressed = function (command, grid) {
     const items = $(".trSelected", grid);
     const num_records = items.length;
     if (num_records <= 0) {
@@ -63,7 +63,7 @@ const delete_pressed = function (command, grid) {
     });
 };
 
-const quickbrowse_edit_pressed = function () {
+var quickbrowse_edit_pressed = function () {
     const records = $(".shown", "#" + view_table_id());
     if (records.length != 1) {
         return;

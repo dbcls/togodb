@@ -42,7 +42,7 @@ module Togodb
         history.released_at = Time.now
 
         if update_rdf_repository
-          Resque.enqueue(Togodb::NewRdfRepositoryJob, job.table.id, job.output_file_path('rdf'))
+          Resque.enqueue(Togodb::NewRdfRepositoryJob, job.table.name)
         end
       rescue => e
         if history
@@ -89,8 +89,16 @@ module Togodb
     def execute
       export_base
 
-      ntriples_generator = TogoMapper::D2rq::NtriplesGenerator.new(@work, @dataset.name)
+      id_separator_columns = @table.id_separator_columns
+      ignore_id_sep_column = !id_separator_columns.empty?
+
+      ntriples_generator = TogoMapper::D2rq::NtriplesGenerator.new(@work, @dataset.name, nil, true, ignore_id_sep_column)
       nt_file_path = ntriples_generator.generate(true)
+
+      if ignore_id_sep_column
+        #apply_id_separator(nt_file_path, id_separator_columns)
+        add_idsep_column_ntriples(nt_file_path, id_separator_columns)
+      end
 
       turtle_generator = TogoMapper::D2rq::TtlGenerator.new(@work, @dataset.name)
       turtle_generator.convert_from_ntriples(nt_file_path)
@@ -270,5 +278,207 @@ module Togodb
       pkeys.map { |p| p[:column_name] }
     end
 
+    def add_idsep_column_ntriples(nt_file_path, id_separator_columns)
+      File.open(nt_file_path, 'a') do |f|
+        @table.active_record.all.each do |record|
+          subject = subject_uri(record)
+          id_separator_columns.each do |column|
+            property_bridge = PropertyBridge.find_by(work_id: @work.id, column_name: column.internal_name)
+            predicate_uris_by_property_bridge(property_bridge).each do |predicate|
+              property_values_with_idsep(property_bridge, record, column).each do |object|
+                f.puts [subject, predicate, object, '.'].join(' ')
+              end
+            end
+          end
+        end
+      end
+    end
+
+    def subject_uri(record)
+      subject_config = ClassMapPropertySetting.where(class_map_id: @class_map.id).select(&:subject?).first
+      class_map_property = ClassMapProperty.find(subject_config.class_map_property_id)
+      case class_map_property.property
+      when 'd2rq:uriPattern'
+        subject_uri = subject_config.value
+        absolute_uri(apply_d2rq_pattern(subject_uri, record))
+      when 'd2rq:uriColumn'
+        column_name = subject_config.value.split('.', 2).at(1)
+        record[column_name]
+      end
+    end
+
+    def property_value(property_bridge, record)
+      pbps = PropertyBridgePropertySetting.where(property_bridge_id: property_bridge.id).select(&:property_value?).first
+      if pbps
+        property_bridge_property = PropertyBridgeProperty.find(pbps.property_bridge_property_id)
+        case property_bridge_property.property
+        when 'd2rq:column'
+          object_value(pbps, property_raw_value(pbps, record))
+        when 'd2rq:pattern'
+          object_value(pbps, apply_d2rq_pattern(pbps.value, record))
+        when 'd2rq:uriColumn'
+          absolute_uri(property_raw_value(pbps, record))
+        when 'd2rq:uriPattern'
+          absolute_uri(apply_d2rq_pattern(pbps.value, record))
+        end
+      else
+        ''
+      end
+    end
+
+    def property_values_with_idsep(property_bridge, record, id_separator_column)
+      pbps = PropertyBridgePropertySetting.where(property_bridge_id: property_bridge.id).select(&:property_value?).first
+      if pbps
+        property_bridge_property = PropertyBridgeProperty.find(pbps.property_bridge_property_id)
+        case property_bridge_property.property
+        when 'd2rq:column'
+          property_raw_value(pbps, record).split(compile_id_separator(id_separator_column.id_separator)).map do |v|
+            object_value(pbps, v)
+          end
+        when 'd2rq:pattern'
+          apply_d2rq_pattern(pbps.value, record, id_separator_column).map do |v|
+            object_value(pbps, v)
+          end
+        when 'd2rq:uriColumn'
+          property_raw_value(pbps, record).split(compile_id_separator(id_separator_column.id_separator)).map do |v|
+            if v.start_with?('http')
+              absolute_uri("<#{v}>")
+            else
+              absolute_uri(v)
+            end
+          end
+        when 'd2rq:uriPattern'
+          apply_d2rq_pattern(pbps.value, record, id_separator_column).map do |v|
+            absolute_uri(v)
+          end
+        end
+      else
+        []
+      end
+    end
+
+    def apply_d2rq_pattern(pattern, record, id_separator_column = nil)
+      value = pattern.dup
+      tmpl = pattern.dup
+      values = []
+
+      while /@@(.+?)@@/ =~ tmpl
+        tbl_col = $1
+        column_name = tbl_col.split('.', 2).at(1)
+        unless column_name.nil?
+          if column_name == 'id'
+            value = value.gsub("@@#{tbl_col}@@", record['id'].to_s)
+          else
+            column = TogodbColumn.find_by(table_id: @table.id, name: column_name)
+            unless column.nil?
+              if id_separator_column.nil? || column.id != id_separator_column.id
+                value = value.gsub("@@#{tbl_col}@@", record[column.internal_name].to_s)
+              else
+                record[column.internal_name].to_s.split(compile_id_separator(id_separator_column.id_separator)).each do |v|
+                  values << value.gsub("@@#{tbl_col}@@", v)
+                end
+              end
+            end
+          end
+        end
+        tmpl = $'
+      end
+
+      if id_separator_column.nil?
+        value
+      else
+        values
+      end
+    end
+
+    def predicate_uris_by_property_bridge(property_bridge)
+      uris = []
+
+      PropertyBridgePropertySetting.where(
+          property_bridge_id: property_bridge.id,
+          property_bridge_property_id: PropertyBridgeProperty.predicate_properties.map(&:id)
+      ).each do |predicate_setting|
+        predicate_uri = predicate_uri_by_property_bridge_property_setting(predicate_setting)
+        uris << predicate_uri unless predicate_uri.nil?
+      end
+
+      uris
+    end
+
+    def predicate_uri_by_property_bridge_property_setting(property_bridge_property_setting)
+      predicate = property_bridge_property_setting.value.to_s
+      if predicate.empty?
+        nil
+      else
+        absolute_uri(predicate)
+      end
+    end
+
+    def absolute_uri(uri)
+      if /\A<(.+)>\z/ =~ uri
+        scheme = $1.split(':/').at(0)
+        if scheme.start_with?('http')
+          uri
+        else
+          "<#{Togodb.d2rq_base_uri}#{$1}>"
+        end
+      else
+        prefix, local_part = uri.split(':', 2)
+        if prefix.to_s.empty?
+          uri
+        else
+          namespace = Namespace.find_by(id: NamespaceSetting.where(work_id: @work.id).map(&:namespace_id), prefix: prefix)
+          if namespace.nil?
+            uri
+          else
+            "<#{namespace.uri}#{local_part}>"
+          end
+        end
+      end
+    end
+
+    def object_value(pbps, value)
+      v = %Q("#{value}")
+
+      lang = PropertyBridgePropertySetting.for_lang(pbps.id)
+      if lang
+        v = "#{v}@#{lang.value}"
+      else
+        datatype = PropertyBridgePropertySetting.for_datatype(pbps.id)
+        if datatype
+          v = "#{v}^^#{absolute_uri(datatype.value)}"
+        end
+      end
+
+      v
+    end
+
+    def property_raw_value(pbps, record)
+      property_bridge_property = PropertyBridgeProperty.find(pbps.property_bridge_property_id)
+      case property_bridge_property.property
+      when 'd2rq:column', 'd2rq:uriColumn'
+        column_name = pbps.value.split('.', 2).at(1)
+        if column_name == 'id'
+          record['id']
+        else
+          column = TogodbColumn.find_by(table_id: @table.id, name: column_name)
+          if column
+            record[column.internal_name]
+          else
+            ''
+          end
+        end
+      when 'd2rq:pattern', 'd2rq:uriPattern'
+        pbps.value
+      end
+    end
+
+    def compile_id_separator(id_separator)
+      if /\A\/(.+)\/(.*)\z/ =~ id_separator
+        Regexp.compile(Regexp.escape $1)
+      else
+        column.id_separator
+      end
+    end
   end
 end

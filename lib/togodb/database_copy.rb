@@ -103,6 +103,7 @@ module Togodb
 
       setup_new_mapping_for_togodb(@dst_dbname, @user_id)
     rescue => e
+      puts e.backtrace.join("\n")
       @redis.set total_key, 1
       @redis.set populated_key, 1
       @redis.set error_msg_key, "#$!"

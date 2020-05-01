@@ -1100,6 +1100,7 @@ select {
   background-color: #ffbd52;
 }
 
+/*
 .togodb_export_icon_box {
   display: inline-block;
   position: relative;
@@ -1167,7 +1168,7 @@ select {
   padding: 5px 0px;
   line-height: 12px;
 }
-
+*/
 .togodb_release {
   padding-top: 40px;
 }
@@ -1221,6 +1222,7 @@ span.reload_button {
 
 .release_info_data_table + .release_data_table {
   text-align: center;
+  vertical-align: top;
 }
 
 .release_info_data_table.release_info_data_time {

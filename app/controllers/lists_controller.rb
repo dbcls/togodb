@@ -31,7 +31,7 @@ class ListsController < ApplicationController
               'name'
             end
 
-    @tables = @user.configurable_tables(order)
+    @tables = @user.readable_configurable_tables(order)
   end
 
   def datatable_columns

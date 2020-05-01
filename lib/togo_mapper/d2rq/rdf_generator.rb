@@ -13,7 +13,7 @@ module TogoMapper
 
       include Togodb::StringUtils
 
-      def initialize(work, dataset_name = nil, result_size_limit = nil, serve_vocabulary = true)
+      def initialize(work, dataset_name = nil, result_size_limit = nil, serve_vocabulary = true, ignore_idsep_column = false)
         @work = work
         @db_conn = DbConnection.find_by(work_id: @work.id)
 
@@ -25,6 +25,7 @@ module TogoMapper
 
         @result_size_limit = result_size_limit
         @serve_vocabulary = serve_vocabulary
+        @ignore_idsep_column = ignore_idsep_column
 
         @namespace = {}
         NamespaceSetting.where(work_id: work.id).each do |namespace_setting|
@@ -70,6 +71,7 @@ module TogoMapper
 
       def generate_mapping_file
         mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+        mapping_generator.ignore_idsep_column = @ignore_idsep_column
 
         unless @result_size_limit.nil?
           mapping_generator.database_property = {

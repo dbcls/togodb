@@ -4,7 +4,11 @@ module TablesHelper
 
   def html_value(record, column)
     begin
-      all_data = @table.active_record.find(record.id)
+      if @all_data
+        all_data = @all_data
+      else
+        all_data = @table.active_record.find(record.id)
+      end
     rescue
       all_data = record
     end
@@ -25,13 +29,13 @@ module TablesHelper
       when 'tables'
         value = add_html_link(all_data, column, value)
       when 'entries'
-        if value.to_s =~ /\A<[A-Za-z]+/
+        if column.html_link_prefix.start_with?('http') || value.to_s =~ /\A<[A-Za-z]+/
           value = add_html_link(all_data, column, value)
         end
       end
     end
 
-    if column.sequence_type?
+    if !value.nil? && column.sequence_type?
       value = if /(\r|\n)/ =~ value
                 nl2br(value)
               else
@@ -114,7 +118,8 @@ module TablesHelper
     end
 
     @table = TogodbTable.find(column.table_id) unless @table
-    link = replace_colname_to_value(link, record, @table.columns)
+    togodb_columns = @togodb_columns || @table.columns
+    link = replace_colname_to_value(link, record, togodb_columns)
 
     if link[0, 2].to_s.downcase != '<a' && link[0, 4].to_s.downcase != '<img'
       link = %(<a href="#{link}" target="_blank">#{value}</a>)
@@ -159,8 +164,43 @@ module TablesHelper
     end
   end
 
+  def apply_column_tmpl(record, column, link_tmpl, column_value, add_atag = true)
+    togodb_columns = @togodb_columns || @table.columns
+
+    r = if record.is_a?(ActiveRecord)
+          record.attributes
+        else
+          record.dup
+        end
+    r[column.internal_name] = column_value
+    if add_atag
+      %(<a href="#{replace_colname_to_value(link_tmpl, r, togodb_columns)}" target="_blank">#{column_value}</a>)
+    else
+      replace_colname_to_value(link_tmpl, r, togodb_columns).to_s
+    end
+  end
+
   def value_by_id_separator(record, column, link_tmpl, add_atag = true)
     values = []
+
+    id_separator = column.id_separator.to_s.strip
+    if id_separator != '/' && id_separator[0, 1] == '/' && id_separator[-1, 1] == '/'
+      id_separator = Regexp.compile(id_separator[1 .. -2].gsub("¥", "\\"))
+    else
+      id_separator = Regexp.compile(Regexp.escape id_separator)
+    end
+
+    column_value = record[column.internal_name].to_s
+    while id_separator =~ column_value
+      values << apply_column_tmpl(record, column, link_tmpl, $`, add_atag)
+      values << $&
+
+      column_value = $'
+    end
+    values << apply_column_tmpl(record, column, link_tmpl, column_value, add_atag) unless column_value.nil?
+
+    values.join
+=begin
     actual_separator = actual_separator(record[column.internal_name].to_s, column.id_separator)
     split_by_separator(record[column.internal_name].to_s, column.id_separator).each do |v|
       r = if record.is_a?(ActiveRecord)
@@ -181,6 +221,7 @@ module TablesHelper
     else
       values.join(actual_separator)
     end
+=end
   end
 
   def split_by_separator(text, separator)

@@ -1,7 +1,9 @@
 class ReleasesController < ApplicationController
   include Togodb::Management
 
-  before_action :set_table, only: %i[redraw download]
+  before_action :require_login, except: [:download]
+  before_action :set_table, only: [:redraw]
+  before_action :set_table_for_dl, only: [:download]
   before_action :set_dataset, only: %i[run]
   before_action :read_user_required, only: [:download]
 
@@ -42,6 +44,11 @@ class ReleasesController < ApplicationController
 
   def set_dataset
     @togodb_dataset = TogodbDataset.find(params[:id])
+  end
+
+  def set_table_for_dl
+    @table = TogodbTable.find_by(dl_file_name: params[:id])
+    set_table if @table.nil?
   end
 
   def prepare_download

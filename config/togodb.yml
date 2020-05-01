@@ -4,6 +4,7 @@ default: &default
     data_import_queue: togodb_v4_di
     db_copy_queue: togodb_v4_cp
     data_release_queue: togodb_v4_re
+    new_rdf_repository_queue: togodb_v4_nr
 
   run_data_release_after_import: true
 

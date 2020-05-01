@@ -1,5 +1,6 @@
 - multiple_header = @page_setting && @page_setting.header_footer_lang > 0 && @page_setting.multiple_language
 - content_for :header do
+  = stylesheet_link_tag 'entries'
   == @page_head.to_s
   - if @preview
     css:

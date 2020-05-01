@@ -11,6 +11,8 @@ class SupplementaryFilesController < ApplicationController
   before_action :read_user_required, only: %i[show send_supplementary_file]
   before_action :execute_user_required, only: %i[show create destroy]
 
+  protect_from_forgery except: :send_supplementary_file
+
   class NoZipFileUploaded < StandardError; end
 
   def show

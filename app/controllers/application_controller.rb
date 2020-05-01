@@ -146,7 +146,7 @@ class ApplicationController < ActionController::Base
   end
 
   def update_rdf_repository_after_release?(dataset)
-    Togodb.use_owlim && Togodb.create_new_repository && @togodb_dataset.update_rdf_repository?
+    Togodb.use_graphdb && Togodb.create_new_repository && dataset.update_rdf_repository?
   end
 
   def columns(table)
