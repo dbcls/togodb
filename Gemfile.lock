@@ -127,7 +127,9 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (1.0.0)
-    mimemagic (0.3.5)
+    mimemagic (0.3.10)
+      nokogiri (~> 1)
+      rake
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
     mini_racer (0.2.15)
@@ -150,7 +152,8 @@ GEM
       pg (>= 0.17)
       responders
     public_suffix (4.0.5)
-    puma (3.12.6)
+    puma (4.3.12)
+      nio4r (~> 2.0)
     rack (2.2.3)
     rack-openid (1.4.2)
       rack (>= 1.1.0)
@@ -334,7 +337,7 @@ DEPENDENCIES
   open_id_authentication
   pg (>= 0.18, < 2.0)
   postgres-copy
-  puma (~> 3.12)
+  puma (~> 4.3)
   rails (~> 5.2.4, >= 5.2.4.3)
   rdf
   rdf-rdfxml
