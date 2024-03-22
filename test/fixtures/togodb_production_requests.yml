@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  requestor_id: 1
+  email: MyString
+  request_comment: MyString
+  respons_comment: MyString
+  accept: false
+
+two:
+  requestor_id: 1
+  email: MyString
+  request_comment: MyString
+  respons_comment: MyString
+  accept: false

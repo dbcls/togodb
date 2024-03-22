@@ -1,0 +1,36 @@
+<div class="modal fade" id="togodb-process-request" tabindex="-1"
+     role="dialog" aria-labelledby="label1" aria-hidden="true">
+  <div class="modal-dialog" role="form">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="label1">Process request</h3>
+        <!--
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        -->
+      </div>
+      <%= form_tag '/admin/process_production_request', id: 'process-request-form', method: :post do %>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="accept-reject-request">Accept or Reject this request:</label>
+            <select name="accept" id="accept-reject-request" class="form-select" style="height: fit-content;">
+              <option value="1">Accept</option>
+              <option value="0">Pending</option>
+              <option value="-1">Reject</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message-text" name="response_comment"></textarea>
+          </div>
+          <%= hidden_field_tag 'production_request_id' %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">OK</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

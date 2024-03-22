@@ -1,4 +1,4 @@
-class D2rqMapperController < ApplicationController
+class D2RQMapperController < ApplicationController
 
   class AccessDenied < StandardError;
   end

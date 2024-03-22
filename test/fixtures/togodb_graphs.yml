@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  togodb_column: one
+  embed_tag: MyText
+
+two:
+  togodb_column: two
+  embed_tag: MyText

@@ -26,7 +26,7 @@ module Togodb
     end
 
     def allow_read_data?(user, db)
-      db.enabled || (user&.read_table?(db))
+      db.enabled || user&.read_table?(db)
     end
 
     def allow_write_data?(user, db)

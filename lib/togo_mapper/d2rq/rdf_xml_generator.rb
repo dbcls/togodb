@@ -1,8 +1,6 @@
-require 'togo_mapper/d2rq/rdf_generator'
-
 module TogoMapper
-  module D2rq
-    class RdfXmlGenerator < RdfGenerator
+  module D2RQ
+    class RDFXmlGenerator < RDFGenerator
 
       def dump_rdf_format
         'RDF/XML-ABBREV'

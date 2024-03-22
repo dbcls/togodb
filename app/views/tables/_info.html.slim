@@ -12,8 +12,10 @@ table.togodb_export_table
       th.togodb_export_table_label JSON
       th.togodb_export_table_label RDF(turtle)
       th.togodb_export_table_label RDF(XML)
-      th.togodb_export_table_label FASTA
+      - if release_file_exist?(@table.name, @table.default_dataset.name, 'fasta')
+        th.togodb_export_table_label FASTA
     tr
       - %w(csv json ttl rdf fasta).each do |format|
-        td.release_info_data_table.release_data_table
-          = render partial: 'releases/release_file_td', locals: { table: @table, dataset_name: @table.default_dataset.name, format: format }
+        - if format != 'fasta' || release_file_exist?(@table.name, @table.default_dataset.name, 'fasta')
+          td.release_info_data_table.release_data_table
+            = render partial: 'releases/release_file_td', locals: { table: @table, dataset_name: @table.default_dataset.name, format: format }

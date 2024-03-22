@@ -2,9 +2,9 @@ module Togodb
   class Metadata
 
     def initialize(id)
-      @metadata = TogodbDbMetadata.find(id)
-      @pubmeds = TogodbDbMetadataPubmed.where(db_metadata_id: @metadata.id)
-      @dois = TogodbDbMetadataDoi.where(db_metadata_id: @metadata.id)
+      @metadata = TogodbDBMetadata.find(id)
+      @pubmeds = TogodbDBMetadataPubmed.where(db_metadata_id: @metadata.id)
+      @dois = TogodbDBMetadataDoi.where(db_metadata_id: @metadata.id)
     end
 
     def generate_rdf(format)

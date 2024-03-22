@@ -1,8 +1,6 @@
-require 'togo_mapper/d2rq/rdf_generator'
-
 module TogoMapper
-  module D2rq
-    class TtlGenerator < RdfGenerator
+  module D2RQ
+    class TtlGenerator < RDFGenerator
 
       def dump_rdf_format
         'TURTLE'

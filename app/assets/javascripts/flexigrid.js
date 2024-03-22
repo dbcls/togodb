@@ -1591,11 +1591,14 @@
                 $(sDiv3).append(advancedSearchDiv);
 
                 //--> Download buttons (CSV, Released data)
+                /*
                 var sDiv4 = document.createElement('div');
                 sDiv4.id = "togodb-" + p.dbname + "-dl-csv";
                 sDiv4.className = 'sDiv4';
+                */
 
-                if (p.is_released_data) {
+                // if (p.is_released_data) {
+                if (false) {
                     //--> All buttons (show release data dialog when clicked.)
                     var sDiv6 = document.createElement('div');
                     sDiv6.className = 'sDiv6';
@@ -1651,7 +1654,7 @@
                 }
                 $(g.sDiv).append(sDiv2);
                 $(g.sDiv).append(sDiv3);
-                $(g.sDiv).append(sDiv4);
+                // $(g.sDiv).append(sDiv4);
                 if (sDiv6) {
                     $(g.sDiv).append(sDiv6);
                 }
@@ -1663,7 +1666,8 @@
         $(g.pDiv, g.sDiv).append("<div style='clear:both'></div>");
 
         // add title
-        if (p.title) {
+        // if (p.title) {
+        if (false) {
             var showQuickbrowseButtonHtml = '<div class="quickbrowse_btn" title="QuickBrowse"><span></span></div>';
             var showToggleButtonHtml = '<div class="ptogtitle" title="Minimize/Maximize Table"><span></span></div>';
             g.mDiv.className = 'mDiv';
@@ -1968,6 +1972,7 @@
     }; //end noSelect
 
     // --> tns
+    /*
     $.fn.flexDownload = function () {
         return this.each(function () {
             if (this.grid) {
@@ -1975,5 +1980,5 @@
             }
         });
     }; // end flexDownload
-
+    */
 })(jQuery);

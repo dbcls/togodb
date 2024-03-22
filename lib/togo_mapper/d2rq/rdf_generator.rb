@@ -1,11 +1,12 @@
 require 'open3'
 require 'tempfile'
+require 'fileutils'
 require 'togodb/data_release'
 require 'togo_mapper/d2rq/mapping_generator'
 
 module TogoMapper
-  module D2rq
-    class RdfGenerator
+  module D2RQ
+    class RDFGenerator
       class D2RQDumpError < StandardError;
       end
       class RapperError < StandardError;
@@ -15,7 +16,7 @@ module TogoMapper
 
       def initialize(work, dataset_name = nil, result_size_limit = nil, serve_vocabulary = true, ignore_idsep_column = false)
         @work = work
-        @db_conn = DbConnection.find_by(work_id: @work.id)
+        @db_conn = DBConnection.find_by(work_id: @work.id)
 
         @dataset_name = if dataset_name.nil?
                           random_str(16)
@@ -70,7 +71,7 @@ module TogoMapper
       end
 
       def generate_mapping_file
-        mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+        mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
         mapping_generator.ignore_idsep_column = @ignore_idsep_column
 
         unless @result_size_limit.nil?
@@ -109,7 +110,8 @@ module TogoMapper
         cmd = "cd #{File.dirname(tmp_f)}; #{Togodb.rapper_path} #{rapper_f_opt} -i ntriples -o #{rapper_o_opt} #{infile} > #{tmp_f}"
         stdout, stderr, status = Open3.capture3(cmd)
         if status.success?
-          File.rename(tmp_f, out_f)
+          # File.rename(tmp_f, out_f)
+          ::FileUtils.move(tmp_f, out_f)
         else
           raise RapperError, stderr
         end

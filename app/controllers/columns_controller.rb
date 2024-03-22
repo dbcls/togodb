@@ -20,6 +20,16 @@ class ColumnsController < ApplicationController
     end
   end
 
+  def graph_edit_html
+    column = TogodbColumn.find(params[:id])
+    table = TogodbTable.find(column.table_id)
+    @columns = columns(table)
+    @togodb_graph =
+      TogodbGraph.find_by(togodb_column_id: column.id) || TogodbGraph.create!(togodb_column_id: column.id)
+
+    render partial: 'configs/columns_graph_contents'
+  end
+
   private
 
   def validate_new_column

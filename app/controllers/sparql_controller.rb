@@ -3,13 +3,13 @@ require 'open3'
 require 'togo_mapper/d2rq/mapping_generator'
 require 'togo_mapper/namespace'
 
-class SparqlController < D2rqMapperController
+class SparqlController < D2RQMapperController
   include TogoMapper::Namespace
 
   before_action :set_work
   before_action :read_user_required
   before_action :set_html_body_class
-  protect_from_forgery except: [:search]
+  protect_from_forgery except: [:show, :search]
 
   RESPONSE_MIME_TYPE_JSON = 'application/sparql-results+json'
   RESPONSE_MIME_TYPE_XML = 'application/sparql-results+xml'
@@ -55,6 +55,7 @@ class SparqlController < D2rqMapperController
       execute_sparql(sparql, format)
     else
       @result = sparql_query_to_graphdb(database_name, sparql, format)
+      @result.force_encoding('UTF-8')
     end
   end
 
@@ -70,7 +71,7 @@ class SparqlController < D2rqMapperController
     set_instance_variables_for_mapping_data(@class_map.table_name)
     @password = @db_connection.decrypt_password
 
-    mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+    mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
     mapping_generator.prepare_by_work(@work)
     mapping_generator.password = @password
     mapping_file_path = Tempfile.open(['d2rq-', '-mapping.ttl'], "#{Rails.root}/tmp") do |fp|

@@ -1,5 +1,3 @@
-require 'togo_mapper/db/common'
-
 module TogoMapper
   class DB
     attr_reader :client
@@ -8,13 +6,13 @@ module TogoMapper
       adapter = connection_config.delete(:adapter)
       case adapter
       when 'mysql2'
-        require 'togo_mapper/db/mysql'
+        require_relative 'db/mysql'
         @client = TogoMapper::DB::Mysql.new(connection_config)
       when 'postgresql'
-        require 'togo_mapper/db/pgsql'
+        require_relative 'db/pgsql'
         @client = TogoMapper::DB::Pgsql.new(connection_config)
       when 'sqlite3'
-        require 'togo_mapper/db/sqlite'
+        require_relative 'db/sqlite'
         @client = TogoMapper::DB::SQLite.new(connection_config)
       end
     end

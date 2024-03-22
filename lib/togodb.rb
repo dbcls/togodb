@@ -1,9 +1,12 @@
+require 'rbconfig'
+
 module Togodb
   COLUMN_PREFIX = 'col_'.freeze
 
   class ExpectedError < RuntimeError; end
   class FileNotFound < StandardError; end
 
+  mattr_accessor :environment
   mattr_accessor :app_server
   mattr_accessor :redis_host, :redis_port
   mattr_accessor :tmp_dir, :upfile_saved_dir, :dataset_dir, :supfile_dir
@@ -16,6 +19,25 @@ module Togodb
   mattr_accessor :enable_open_search, :open_search_admin_mail
   mattr_accessor :encrypt_password
 
+  @os ||= begin
+    host_os = RbConfig::CONFIG['host_os']
+    case host_os
+    when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+      :windows
+    when /darwin|mac os/
+      :macosx
+    when /linux/
+      :linux
+    when /solaris|bsd/
+      :unix
+    else
+      :unknown
+    end
+  end
+
+  def self.os_is_window?
+    @os == :windows
+  end
 
   def self.valid_table_name?(name)
     /\A[a-z][a-z0-9_]*[a-z0-9]\z/ === name.to_s
@@ -63,7 +85,7 @@ module Togodb
     }
 
     yaml = Rails.root.join('config', 'database.yml')
-    db_config = YAML.load(ERB.new(yaml.read).result)
+    db_config = YAML.load(ERB.new(yaml.read).result, aliases: true)
     if db_config
       {
           adapter: db_config[rails_env]['adapter'] || default_config[:adapter],
@@ -78,4 +100,18 @@ module Togodb
     end
   end
 
+  def self.url_scheme
+    ENV.fetch('URL_SCHEME') { 'https' }
+  end
+
+  def self.api_server
+    ENV.fetch('SERVER_NAME') { 'localhost:3000' }
+  end
+
+  def self.togodb_base_url
+    scheme = ENV.fetch('URL_SCHEME') { 'http' }
+    host = ENV.fetch('SERVER_NAME') { 'localhost:3000' }
+
+    "#{scheme}://#{host}"
+  end
 end

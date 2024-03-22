@@ -1,8 +1,8 @@
 require 'togo_mapper/d2rq/rdf_generator'
 
 module TogoMapper
-  module D2rq
-    class NtriplesGenerator < RdfGenerator
+  module D2RQ
+    class NtriplesGenerator < RDFGenerator
 
       def dump_rdf_format
         'N-TRIPLE'

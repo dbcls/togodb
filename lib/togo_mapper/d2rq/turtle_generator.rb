@@ -1,8 +1,9 @@
 require 'open3'
 require 'tempfile'
+require 'fileutils'
 
 module TogoMapper
-  module D2rq
+  module D2RQ
     class TurtleGenerator
 
       class GenerateError < StandardError;
@@ -19,7 +20,7 @@ module TogoMapper
           @generation = nil
         end
 
-        @db_conn = DbConnection.where(work_id: @work.id).first
+        @db_conn = DBConnection.where(work_id: @work.id).first
       end
 
       def generate
@@ -30,7 +31,7 @@ module TogoMapper
             @generation.save!
           end
 
-          mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+          mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
           mapping_generator.prepare_by_work(@work)
           mapping_generator.password = @db_conn.decrypt_password
 
@@ -40,7 +41,8 @@ module TogoMapper
           end
 
           exec_dump_rdf(path, tmp_turtle_file_path)
-          File.rename(tmp_turtle_file_path, turtle_file_path)
+          # File.rename(tmp_turtle_file_path, turtle_file_path)
+          FileUtils.move(tmp_turtle_file_path, turtle_file_path)
 
           if @generation
             @generation.status = 'SUCCESS'

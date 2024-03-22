@@ -1,5 +1,5 @@
 module TogoMapper
-  module D2rq
+  module D2RQ
     class MappingGenerator
       include TogoMapper::Mapping
       include TogoMapper::Namespace
@@ -281,7 +281,11 @@ module TogoMapper
       end
 
       def generate_property_bridge_mapping(writer, property_bridge)
-        s = RDF::URI(map_uri(property_bridge.map_name))
+        if ENV['IN_DEVELOP']
+          s = RDF::URI(map_uri(property_bridge.map_name.to_s.gsub('.', '_')))
+        else
+          s = RDF::URI(map_uri(property_bridge.map_name))
+        end
         writer << RDF::Statement(
             s,
             RDF.type,

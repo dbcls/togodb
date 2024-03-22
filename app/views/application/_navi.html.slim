@@ -9,4 +9,5 @@ span#togodb_navi
     = link_to "Release", releases_path
   |  | 
   span
-    = link_to "Logout", logout_path
+    /= link_to "Logout", logout_path
+    = link_to 'Logout', destroy_togodb_account_session_path, method: :delete

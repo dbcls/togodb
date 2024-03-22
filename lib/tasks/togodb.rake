@@ -1,6 +1,11 @@
 require 'fileutils'
 
 namespace "togodb" do
+  desc 'Create admin account'
+  task :create_admin_account => :environment do
+    TogodbUser.regist(ENV['TOGODB_ADMIN_USER'], ENV['TOGODB_ADMIN_PASSWORD'], true)
+  end
+
   desc "Setup TogoDB application"
   task :setup => :environment do
     env_file = Rails.root.join('.env')

@@ -1,4 +1,4 @@
-class TriplesMapsController < D2rqMapperController
+class TriplesMapsController < D2RQMapperController
   protect_from_forgery
 
   include TogoMapper::Mapping
@@ -27,7 +27,7 @@ class TriplesMapsController < D2rqMapperController
     @table_not_found = false
 
     begin
-      db_conn = DbConnection.where(work_id: @class_map.work_id).first
+      db_conn = DBConnection.where(work_id: @class_map.work_id).first
     rescue => e
       flash[:err] = e.message.force_encoding('UTF-8')
       redirect_to config_path(@class_map.work.name)
@@ -146,7 +146,7 @@ class TriplesMapsController < D2rqMapperController
   end
 
   def set_instance_variables(class_map)
-    @db_connection = DbConnection.where(work_id: @work.id).first
+    @db_connection = DBConnection.where(work_id: @work.id).first
 
     @table_join = class_map.table_join
     @class_map_type = if @table_join

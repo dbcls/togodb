@@ -4,7 +4,7 @@ class MetadataController < ApplicationController
     @msg_item_id = "db-metadata-update-msg"
 
     begin
-      metadata = TogodbDbMetadata.find(params[:id])
+      metadata = TogodbDBMetadata.find(params[:id])
     rescue
       message = "ERROR: Database metadata not found."
       render partial: 'set_error_message', locals: { element_id: @msg_item_id, message: message }
@@ -28,20 +28,20 @@ class MetadataController < ApplicationController
     begin
       metadata.update!(metadata_params)
 
-      TogodbDbMetadataPubmed.where(db_metadata_id: metadata.id).delete_all
+      TogodbDBMetadataPubmed.where(db_metadata_id: metadata.id).delete_all
       if params[:pubmeds]
         params[:pubmeds].each do |pubmed|
-          TogodbDbMetadataPubmed.create!(
+          TogodbDBMetadataPubmed.create!(
               pubmed_id: pubmed,
               db_metadata_id: metadata.id
           )
         end
       end
 
-      TogodbDbMetadataDoi.where(db_metadata_id: metadata.id).delete_all
+      TogodbDBMetadataDoi.where(db_metadata_id: metadata.id).delete_all
       if params[:dois]
         params[:dois].each do |doi|
-          TogodbDbMetadataDoi.create!(
+          TogodbDBMetadataDoi.create!(
               doi: doi,
               db_metadata_id: metadata.id
           )

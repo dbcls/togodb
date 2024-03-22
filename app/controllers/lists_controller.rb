@@ -1,8 +1,15 @@
 class ListsController < ApplicationController
-  before_action :require_login
+  # before_action :require_login
+  before_action :authenticate_togodb_account!
 
   def show
     set_tables(order: 'name')
+
+    if current_user.superuser?
+      @production_requests = TogodbProductionRequest.where(accept: nil)
+    else
+      @requested_tables = []
+    end
 
     @columns = datatable_columns
   end
@@ -31,7 +38,7 @@ class ListsController < ApplicationController
               'name'
             end
 
-    @tables = @user.readable_configurable_tables(order)
+    @tables = current_user.readable_configurable_tables(order)
   end
 
   def datatable_columns

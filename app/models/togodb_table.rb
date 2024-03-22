@@ -2,10 +2,11 @@ class TogodbTable < ApplicationRecord
   has_many :togodb_columns, class_name: 'TogodbColumn', foreign_key: 'table_id', dependent: :delete_all
   has_many :togodb_datasets, class_name: 'TogodbDataset', foreign_key: 'table_id', dependent: :delete_all
   has_one :page, class_name: 'TogodbPage', foreign_key: 'table_id', dependent: :delete
-  belongs_to :creator, class_name: 'TogodbUser', foreign_key: 'creator_id'
+  #--> belongs_to :creator, class_name: 'TogodbUser', foreign_key: 'creator_id'
+  belongs_to :creator, class_name: 'TogodbAccount', foreign_key: 'creator_id'
   has_many :roles, class_name: 'TogodbRole', foreign_key: 'table_id', dependent: :delete_all
   has_one :supplementary_files, class_name: 'TogodbSupplementaryFile', foreign_key: 'togodb_table_id', dependent: :destroy
-  has_one :metadata, class_name: 'TogodbDbMetadata', foreign_key: 'table_id', dependent: :delete
+  has_one :metadata, class_name: 'TogodbDBMetadata', foreign_key: 'table_id', dependent: :delete
 
   class << self
 
@@ -28,6 +29,10 @@ class TogodbTable < ApplicationRecord
 
   def columns
     TogodbColumn.where(table_id: id).order(:position)
+  end
+
+  def columns_for_entry
+    TogodbColumn.where(table_id: id, enabled: true).order('list_disp_order')
   end
 
   def csv_cols_for_data_import_job
@@ -277,5 +282,51 @@ class TogodbTable < ApplicationRecord
     end
 
     files
+  end
+
+  def environment_text
+    case environment
+    when 0
+      if requested
+        'Test (Requesting release to production environment)'
+      else
+        'Test'
+      end
+    when 1
+      'Production'
+    else
+      ''
+    end
+  end
+
+  def test_env?
+    environment.zero?
+  end
+
+  def production_env?
+    environment == 1
+  end
+
+  def exist_in_environment?
+    case Togodb.environment
+    when 'test'
+      test_env?
+    when 'production'
+      production_env?
+    else
+      false
+    end
+  end
+
+  def in_requesting?
+    requested
+  end
+
+  def release_to_production
+    update!(environment: 1)
+  end
+
+  def processed_release_request
+    update!(requested: false)
   end
 end

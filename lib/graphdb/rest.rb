@@ -167,7 +167,11 @@ module Graphdb
     end
 
     def import_rdf_uri_path(repository_id)
-      "/rest/data/import/server/#{repository_id}"
+      # GraphDB 9.x
+      # "/rest/data/import/server/#{repository_id}"
+
+      # GraphDB 10.x
+      "/rest/repositories/#{repository_id}/import/server"
     end
 
     def rdf4j_repository_uri_path(repository_id)

@@ -5,21 +5,120 @@ require 'json'
 require 'uri'
 require 'open3'
 require 'tempfile'
-
-require 'togodb/search/condition_builder'
-require 'togodb/db/pgsql'
-require 'togodb/string_utils'
-require 'togo_mapper/d2rq/ntriples_generator'
-require 'togo_mapper/d2rq/ttl_generator'
-require 'togo_mapper/d2rq/rdf_xml_generator'
+require 'fileutils'
+require 'raptor/converter'
 
 module Togodb
   class DataReleaseJob
+    include Raptor::Converter
     include Togodb::RDF
     include Togodb::DB::Pgsql
     include Togodb::StringUtils
 
-    class PrimaryKeyNotFound < StandardError;
+    class PrimaryKeyNotFound < StandardError; end
+
+    class BaseWriter
+      def initialize(file_path)
+        @file_path = file_path
+        @fh = nil
+      end
+
+      def flush
+        @fh&.flush
+      end
+
+      def close
+        @fh&.close
+      end
+    end
+
+    class CSVWriter < BaseWriter
+      def initialize(file_path, columns)
+        super(file_path)
+
+        @columns = columns
+      end
+
+      def <<(record)
+        if @fh.nil?
+          @fh = CSV.open(@file_path, 'w')
+
+          # CSV header
+          @fh << @columns.map(&:name)
+        end
+
+        @fh << record
+      end
+    end
+
+    class JSONWriter < BaseWriter
+      def initialize(file_path)
+        super
+
+        @before_obj = ''
+        @indent = 2
+      end
+
+      def <<(obj)
+        if @fh.nil?
+          @fh = File.open(@file_path, 'w')
+          # @fh.sync = true
+          @fh.puts '['
+        else
+          @fh.puts(",\n")
+        end
+
+        _write(obj)
+      end
+
+      def close
+        return if @fh.nil?
+
+        @fh.puts "\n]"
+        @fh.close
+      end
+
+      private
+
+      def _write(obj)
+        @fh.write _to_json(obj).split("\n").map { |line| "#{_indent}#{line}" }.join("\n")
+      end
+
+      def _to_json(obj)
+        JSON.pretty_generate(obj)
+      end
+
+      def _indent
+        ' ' * @indent
+      end
+    end
+
+    class FASTAWriter < BaseWriter
+      def initialize(file_path, table_name, pk_column_name)
+        super(file_path)
+
+        @table_name = table_name
+        @pk_column_name = pk_column_name
+      end
+
+      def <<(sequence)
+        @fh = File.open(file_path, 'w') if @fh.nil?
+
+        _write(sequence)
+      end
+
+      private
+
+      def _write(sequence)
+        return if sequence.to_s.strip.empty?
+
+        @fh.puts ">#{record[@pk_column_name]} http://#{Togodb.app_server}/entry/#{table_name}/#{record[@pk_column_name]}"
+        if /\n/ =~ sequence
+          @fh.puts sequence
+        else
+          @fh.puts sequence.scan(/.{1,50}/).join("\n")
+        end
+      end
     end
 
     @queue = Togodb.data_release_queue
@@ -41,9 +140,7 @@ module Togodb
         history.status = 'SUCCESS'
         history.released_at = Time.now
 
-        if update_rdf_repository
-          Resque.enqueue(Togodb::NewRdfRepositoryJob, job.table.name)
-        end
+        Resque.enqueue(Togodb::NewRDFRepositoryJob, job.table.name) if update_rdf_repository
       rescue => e
         if history
           history.status = 'ERROR'
@@ -76,61 +173,23 @@ module Togodb
       @output_dir = output_dir
       @tmp_dir = tmp_dir
 
-      @file_formats = %w(csv json fasta rdf)
       @output_file = {}
 
       #-->@search_conditions = search_conditions
       @search_conditions = nil
 
       @pkeys = check_pkey
-      @statements = []
+
+      setup_writer
     end
 
     def execute
-      export_base
-
-      id_separator_columns = @table.id_separator_columns
-      ignore_id_sep_column = !id_separator_columns.empty?
-
-      ntriples_generator = TogoMapper::D2rq::NtriplesGenerator.new(@work, @dataset.name, nil, true, ignore_id_sep_column)
-      nt_file_path = ntriples_generator.generate(true)
-
-      if ignore_id_sep_column
-        #apply_id_separator(nt_file_path, id_separator_columns)
-        add_idsep_column_ntriples(nt_file_path, id_separator_columns)
-      end
-
-      turtle_generator = TogoMapper::D2rq::TtlGenerator.new(@work, @dataset.name)
-      turtle_generator.convert_from_ntriples(nt_file_path)
-
-      rdfxml_generator = TogoMapper::D2rq::RdfXmlGenerator.new(@work, @dataset.name)
-      rdfxml_generator.convert_from_ntriples(nt_file_path)
+      generate_non_rdf_files
+      generate_rdf_files
+      move_to_release_dir
     end
 
-    def export_base
-      csv_tmp_f = tmp_file_path('csv')
-      csv_out_f = output_file_path('csv')
-
-      json_tmp_f = tmp_file_path('json')
-      json_out_f = output_file_path('json')
-
-      @csv = CSV.open(csv_tmp_f, 'w')
-      @json = []
-
-      # FASTA
-      generate_fasta = false
-      sequence_type_columns = @table.columns.select(&:sequence_type?)
-      unless sequence_type_columns.empty?
-        generate_fasta = true
-        fasta_tmp_f = tmp_file_path('fasta')
-        fasta_out_f = output_file_path('fasta')
-        @fasta = File.open(fasta_tmp_f, 'w')
-        @pk_column_internal_name = @table.pk_column_internal_name
-      end
-
-      # CSV header
-      @csv << @columns.map(&:name)
-
+    def generate_non_rdf_files
       offset = 0
       records = limited_records(offset, NUM_RECORDS_PER_READ)
       until records.empty?
@@ -143,24 +202,39 @@ module Togodb
         records = limited_records(offset, NUM_RECORDS_PER_READ)
       end
 
-      # Version information (for RDF)
-      #statements_for_version_info.each do |statement|
-      #  rdf << statement
-      #end
-      #rdf.flush
-
       @csv.close
-      File.rename(csv_tmp_f, csv_out_f)
+      @json.close
+      @fasta&.close
+    end
 
-      File.open(json_tmp_f, 'w') do |f|
-        f.puts JSON.pretty_generate(@json)
-      end
-      File.rename(json_tmp_f, json_out_f)
+    def generate_rdf_files
+      ntriples_file = generate_ntriples
+      generate_turtle(ntriples_file)
+      generate_rdfxml(ntriples_file)
+    end
 
-      return unless generate_fasta
+    def generate_ntriples
+      id_separator_columns = @table.id_separator_columns
+      ignore_id_sep_column = !id_separator_columns.empty?
 
-      @fasta.close
-      File.rename(fasta_tmp_f, fasta_out_f)
+      ntriples_generator = TogoMapper::D2RQ::NtriplesGenerator.new(@work, @dataset.name, nil, true, ignore_id_sep_column)
+      ntriples_file_path = ntriples_generator.generate(true)
+      puts "----- ntriples -----"
+      puts File.read(ntriples_file_path)
+
+      add_idsep_column_ntriples(ntriples_file_path, id_separator_columns) if ignore_id_sep_column
+
+      ntriples_file_path
+    end
+
+    def generate_turtle(ntriples_file_path)
+      @turtle_file_path = tmp_file_path('ttl')
+      convert_by_ntriples(ntriples_file_path, 'ttl', @turtle_file_path, namespace: namespace)
+    end
+
+    def generate_rdfxml(ntriples_file_path)
+      @rdfxml_file_path = tmp_file_path('rdf')
+      convert_by_ntriples(ntriples_file_path, 'rdf', @rdfxml_file_path, namespace: namespace)
     end
 
     def search_conditions
@@ -190,9 +264,7 @@ module Togodb
       end
 
       sql_parts = [%/COPY (SELECT "#{@table.primary_key}" FROM "#{@table.name}"/]
-      if where.to_s.strip != ''
-        sql_parts << "WHERE #{where}"
-      end
+      sql_parts << "WHERE #{where}" if where.to_s.strip != ''
       sql_parts << %/ORDER BY "#{@table.primary_key}") TO '#{tf.path}'/
       conn.execute(sql_parts.join(' '))
 
@@ -220,9 +292,7 @@ module Togodb
     def run_formatdb
       base_db = @output_file['fasta']
       pos = base_db.rindex('.')
-      unless pos.nil?
-        base_db = base_db[0..pos - 1]
-      end
+      base_db = base_db[0..pos - 1] unless pos.nil?
       log_file = "#{base_db}_formatdb.log"
 
       p_opt = if @fasta_seq_column.other_type == 'DNA_Sequence'
@@ -236,38 +306,64 @@ module Togodb
 
     private
 
+    def setup_writer
+      @csv_tmp_f = tmp_file_path('csv')
+      @csv = CSVWriter.new(@csv_tmp_f, @columns)
+
+      @json_tmp_f = tmp_file_path('json')
+      @json = JSONWriter.new(@json_tmp_f)
+
+      # FASTA
+      sequence_type_columns = @table.columns.select(&:sequence_type?)
+      @fasta = if sequence_type_columns.empty?
+                 nil
+               else
+                 @fasta_tmp_f = tmp_file_path('fasta')
+                 FASTAWriter.new(@fasta_tmp_f, @table.name, @table.pk_column_internal_name)
+               end
+    end
+
     def handle_one_record(record)
-      @csv_row_data = []
-      @json_row_data = {}
+      csv_row = []
+      json_row = {}
       @columns.each do |column|
-        handle_one_column(record, column)
+        column_value = handle_one_column(record, column)
+        csv_row << column_value
+        json_row[column.name] = column_value
+        @fasta << column_value if column.sequence_type?
       end
 
-      @csv << @csv_row_data
-      @json << @json_row_data
+      @csv << csv_row
+      @json << json_row
     end
 
     def handle_one_column(record, column)
-      col_value = if column['type'] == 'datetime'
-                    record[column.internal_name].to_s.split(/ /)[0..1].join(' ')
-                  else
-                    record[column.internal_name]
-                  end
-
-      @csv_row_data << col_value
-      @json_row_data[column.name] = col_value
-
-      return unless column.sequence_type?
-
-      @fasta.puts ">#{record[@pk_column_internal_name]} http://#{Togodb.app_server}/entry/#{@table.name}/#{record[@pk_column_internal_name]}"
-      seq = record[column.internal_name]
-      seq = '' if seq.nil?
-      if /\n/ =~ seq
-        @fasta.puts seq
+      if column['type'] == 'datetime'
+        record[column.internal_name].to_s.split(/ /)[0..1].join(' ')
       else
-        @fasta.puts seq.scan(/.{1,50}/).join("\n")
+        record[column.internal_name]
       end
     end
+
+    def move_to_release_dir
+      ::FileUtils.move(@csv_tmp_f, output_file_path('csv'))
+      ::FileUtils.move(@json_tmp_f, output_file_path('json'))
+      ::FileUtils.move(@fasta_tmp_f, output_file_path('fasta')) unless @fasta_tmp_f.nil?
+
+      ::FileUtils.move(@turtle_file_path, output_file_path('ttl'))
+      ::FileUtils.move(@rdfxml_file_path, output_file_path('rdf'))
+    end
+
+    # def write_fasta(record, column)
+    #   @fasta.puts ">#{record[@pk_column_internal_name]} http://#{Togodb.app_server}/entry/#{@table.name}/#{record[@pk_column_internal_name]}"
+    #   seq = record[column.internal_name]
+    #   seq = '' if seq.nil?
+    #   if /\n/ =~ seq
+    #     @fasta.puts seq
+    #   else
+    #     @fasta.puts seq.scan(/.{1,50}/).join("\n")
+    #   end
+    # end
 
     def check_pkey
       pkeys = primary_key_infos(@table.name)
@@ -445,9 +541,7 @@ module Togodb
         v = "#{v}@#{lang.value}"
       else
         datatype = PropertyBridgePropertySetting.for_datatype(pbps.id)
-        if datatype
-          v = "#{v}^^#{absolute_uri(datatype.value)}"
-        end
+        v = "#{v}^^#{absolute_uri(datatype.value)}" if datatype
       end
 
       v
@@ -479,6 +573,20 @@ module Togodb
       else
         column.id_separator
       end
+    end
+
+    def namespace
+      if @namespace.nil?
+        @namespace = {}
+        NamespaceSetting.where(work_id: @work.id).each do |namespace_setting|
+          namespace = ::Namespace.find(namespace_setting.namespace_id)
+          next if %w[map d2rq jdbc].include?(namespace.prefix)
+
+          @namespace[namespace.prefix.to_sym] = ::RDF::URI.new(namespace.uri)
+        end
+      end
+
+      @namespace
     end
   end
 end

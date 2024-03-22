@@ -12,7 +12,7 @@ ruby:
     num_decimal_places_elem_style << " display: none;"
   end
 
-= select_tag select_tag_name, grouped_options_for_select(Togodb::ColumnTypes.select_tag_options, column_type), id: select_tag_id
+= select_tag select_tag_name, grouped_options_for_select(@select_tag_options, column_type), id: select_tag_id
 
 div id=num_decimal_places_elem_id style=num_decimal_places_elem_style
   = render partial: 'creates/num_decimal_places', locals: { column: column }

@@ -1,8 +1,5 @@
-require 'togo_mapper/r2rml'
-require 'togo_mapper/namespace'
-
-class R2rmlMappingController < D2rqMapperController
-  include TogoMapper::R2rml
+class R2RMLMappingController < D2RQMapperController
+  include TogoMapper::R2RML
   include TogoMapper::Namespace
 
   before_action :set_table

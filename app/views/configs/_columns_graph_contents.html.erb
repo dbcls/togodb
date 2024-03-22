@@ -1,0 +1,14 @@
+<div style="margin-top: 10px; font-size: 14px;">
+  <div style="display: flex;">
+    <div id="togodb-chart-column-links">
+      <% @columns.each do |column| %>
+      <div style="font-size: 14px; margin-bottom: 5px;">
+        <%= link_to column.name, chart_tab_path(column.id), data: { remote: true } %>
+      </div>
+      <% end %>
+    </div>
+    <div id="togodb-chart-form">
+      <%= render 'chart_form' %>
+    </div>
+  </div>
+</div>

@@ -77,6 +77,10 @@ class TogodbColumn < ApplicationRecord
     other_type == 'list'
   end
 
+  def boolean?
+    data_type == 'boolean'
+  end
+
   def has_data_type?
     !other_type.to_s.strip.empty?
   end

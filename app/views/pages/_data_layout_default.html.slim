@@ -2,7 +2,8 @@ table.togodb_entry_table
   - @columns.each do |column|
     tr
       td.togodb_column_label id="togodb-#{@table.name}-#{column.name}-label" ="{{#{column.name}_label}}"
-      - if column.html_link_prefix.blank?
+      td.togodb_column_value id="togodb-#{@table.name}-#{column.name}-value" = "{{#{column.name}_value}}"
+      /- if column.html_link_prefix.blank?
         td.togodb_column_value id="togodb-#{@table.name}-#{column.name}-value" = "{{#{column.name}_value}}"
-      - else
+      /- else
         td.togodb_column_value id="togodb-#{@table.name}-#{column.name}-value" == link_html_tmpl_for_entry(column)

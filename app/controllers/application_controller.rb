@@ -1,5 +1,3 @@
-require 'togo_mapper/d2rq'
-
 class ApplicationController < ActionController::Base
   include Togodb::Management
 
@@ -28,7 +26,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_user
-    @user = current_user
+    @user = current_togodb_account
     @tables = @user&.configurable_tables
   end
 
@@ -39,9 +37,8 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-    TogodbUser.find(session[login_user_session_key])
-  rescue
-    nil
+    #--> TogodbUser.find(session[login_user_session_key])
+    current_togodb_account
   end
 
   def set_current_user(user_id)
@@ -49,9 +46,9 @@ class ApplicationController < ActionController::Base
   end
 
   def read_user_required
-    if @table && !@table.enabled && !allow_read_data?(@user, @table)
-      raise UnauthorizedAccess
-    end
+    return if @table&.exist_in_environment? && (@table&.enabled || allow_read_data?(@user, @table))
+
+    raise UnauthorizedAccess
   end
 
   def write_user_required
@@ -60,6 +57,10 @@ class ApplicationController < ActionController::Base
 
   def execute_user_required
     raise UnauthorizedAccess if @user.nil? || !allow_execute?(@user, @table)
+  end
+
+  def super_user_required
+    raise UnauthorizedAccess if @user.nil? || !@user.superuser?
   end
 
   def login_required?
@@ -146,7 +147,7 @@ class ApplicationController < ActionController::Base
   end
 
   def update_rdf_repository_after_release?(dataset)
-    Togodb.use_graphdb && Togodb.create_new_repository && dataset.update_rdf_repository?
+    Togodb.use_graphdb && Togodb.create_new_repository && @togodb_dataset.update_rdf_repository?
   end
 
   def columns(table)
@@ -183,6 +184,9 @@ class ApplicationController < ActionController::Base
     end
 
     model_attr
+  rescue StandardError
+    # TODO: 暫定措置なので見直す
+    {}
   end
 
   def redis_key_for_column_attr(key)
@@ -220,7 +224,8 @@ class ApplicationController < ActionController::Base
   end
 
   def db_body_default
-    Slim::Engine.with_options(pretty: true) do
+    @pagination_table = MetaStanza::PaginationTable.new(@table)
+    Slim::Engine.with_options(pretty: true, sort_attrs: false) do
       render_to_string(partial: 'pages/view_body_default')
     end
   end
@@ -252,4 +257,7 @@ class ApplicationController < ActionController::Base
     @columns = TogodbColumn.where(table_id: @table.id).order(:position)
   end
 
+  def after_sign_in_path_for(togodb_account)
+    list_path
+  end
 end

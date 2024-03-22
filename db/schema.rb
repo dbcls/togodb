@@ -2,15 +2,16 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_20_113643) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_19_064400) do
+  create_schema "pgpool_catalog"
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -20,8 +21,8 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.integer "work_id"
     t.integer "class_map_id"
     t.integer "property_bridge_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "property_bridge_ids"
   end
 
@@ -29,16 +30,16 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.string "property"
     t.string "label"
     t.boolean "is_literal"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "class_map_property_settings", id: :serial, force: :cascade do |t|
     t.integer "class_map_id"
     t.integer "class_map_property_id"
     t.text "value"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "class_maps", id: :serial, force: :cascade do |t|
@@ -50,8 +51,8 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.integer "bnode_id"
     t.integer "er_xpos"
     t.integer "er_ypos"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "db_connections", id: :serial, force: :cascade do |t|
@@ -62,15 +63,15 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.string "username"
     t.integer "work_id"
     t.text "password"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "namespace_settings", id: :serial, force: :cascade do |t|
     t.integer "work_id"
     t.integer "namespace_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "ontology"
     t.string "original_filename"
     t.boolean "is_ontology", default: false, null: false
@@ -80,8 +81,8 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.string "prefix"
     t.string "uri"
     t.boolean "is_default"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "ontologies", id: :serial, force: :cascade do |t|
@@ -89,30 +90,30 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.text "ontology"
     t.string "file_name"
     t.string "file_format"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "property_bridge_properties", id: :serial, force: :cascade do |t|
     t.string "property"
     t.string "label"
     t.boolean "is_literal"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "property_bridge_property_settings", id: :serial, force: :cascade do |t|
     t.integer "property_bridge_id"
     t.integer "property_bridge_property_id"
     t.text "value"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "property_bridge_types", id: :serial, force: :cascade do |t|
     t.string "symbol"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "property_bridges", id: :serial, force: :cascade do |t|
@@ -124,17 +125,8 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.boolean "enable"
     t.integer "property_bridge_type_id"
     t.integer "bnode_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "sessions", id: :serial, force: :cascade do |t|
-    t.string "session_id", limit: 255, null: false
-    t.text "data"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["session_id"], name: "index_sessions_on_session_id"
-    t.index ["updated_at"], name: "index_sessions_on_updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "table_joins", id: :serial, force: :cascade do |t|
@@ -148,8 +140,27 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.integer "i_table_r_property_bridge_id"
     t.integer "class_map_id"
     t.integer "property_bridge_id"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+  end
+
+  create_table "togodb_accounts", force: :cascade do |t|
+    t.string "email"
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string "oauth_name", default: "", null: false
+    t.string "provider"
+    t.string "uid", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "flags", default: "01", null: false
+    t.string "tables"
+    t.boolean "deleted", default: false, null: false
+    t.string "name"
+    t.index ["email"], name: "index_togodb_accounts_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_togodb_accounts_on_reset_password_token", unique: true
   end
 
   create_table "togodb_cc_mappings", id: :serial, force: :cascade do |t|
@@ -192,28 +203,29 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.string "rdf_o_class", limit: 255
     t.string "id_separator", limit: 255
     t.integer "table_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "togodb_creates", id: :serial, force: :cascade do |t|
     t.integer "table_id"
+    t.integer "user_id"
+    t.string "mode"
     t.text "uploded_file_path"
+    t.text "utf8_file_path"
     t.string "file_format"
+    t.string "input_file_encoding"
     t.boolean "header_line"
     t.integer "num_columns"
     t.text "sample_data"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.text "utf8_file_path"
-    t.integer "user_id"
-    t.string "mode"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "togodb_data_release_histories", id: :serial, force: :cascade do |t|
     t.integer "dataset_id"
-    t.datetime "released_at"
-    t.datetime "submitted_at"
+    t.datetime "released_at", precision: nil
+    t.datetime "submitted_at", precision: nil
     t.string "status", limit: 255
     t.text "message"
     t.text "search_condition"
@@ -228,22 +240,22 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.string "output_file_path", limit: 255
     t.integer "fasta_seq_column_id"
     t.text "filter_condition"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "togodb_db_metadata_dois", id: :serial, force: :cascade do |t|
     t.string "doi"
     t.integer "db_metadata_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "togodb_db_metadata_pubmeds", id: :serial, force: :cascade do |t|
     t.integer "pubmed_id"
     t.integer "db_metadata_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "togodb_db_metadatas", id: :serial, force: :cascade do |t|
@@ -279,12 +291,23 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.text "wikipedia_url"
     t.text "tools_available"
     t.integer "table_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "pubmed", limit: 255
     t.string "doi", limit: 255
     t.boolean "confirm_license", default: false
-    t.index ["table_id"], name: "togodb_db_metadatas_table_id_key", unique: true
+
+    t.unique_constraint ["table_id"], name: "togodb_db_metadatas_table_id_key"
+  end
+
+  create_table "togodb_graphs", force: :cascade do |t|
+    t.bigint "togodb_column_id", null: false
+    t.text "embed_tag"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "chart_type"
+    t.text "css"
+    t.index ["togodb_column_id"], name: "index_togodb_graphs_on_togodb_column_id"
   end
 
   create_table "togodb_lexvo_mappings", id: :serial, force: :cascade do |t|
@@ -307,16 +330,29 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.boolean "use_show_column_order", default: false
     t.boolean "disp_search_help", default: false
     t.string "search_help_lang", limit: 255, default: "1"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["table_id"], name: "togodb_pages_table_id_key", unique: true
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+
+    t.unique_constraint ["table_id"], name: "togodb_pages_table_id_key"
+  end
+
+  create_table "togodb_production_requests", force: :cascade do |t|
+    t.integer "table_id", null: false
+    t.integer "requester_id"
+    t.string "email"
+    t.string "request_comment"
+    t.string "response_comment"
+    t.integer "accept"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "togodb_roles", id: :serial, force: :cascade do |t|
     t.string "roles", limit: 255
     t.integer "table_id"
     t.integer "user_id"
-    t.index ["table_id", "user_id"], name: "togodb_roles_table_id_user_id_key", unique: true
+
+    t.unique_constraint ["table_id", "user_id"], name: "togodb_roles_table_id_user_id_key"
   end
 
   create_table "togodb_settings", id: :serial, force: :cascade do |t|
@@ -334,25 +370,25 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
   create_table "togodb_supplementary_files", id: :serial, force: :cascade do |t|
     t.string "original_filename"
     t.integer "togodb_table_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "json_for_file_tree"
     t.index ["togodb_table_id"], name: "index_togodb_supplementary_files_on_togodb_table_id"
-    t.index ["togodb_table_id"], name: "togodb_supplementary_files_togodb_table_id_key", unique: true
+    t.unique_constraint ["togodb_table_id"], name: "togodb_supplementary_files_togodb_table_id_key"
   end
 
   create_table "togodb_syslogs", id: :serial, force: :cascade do |t|
     t.integer "priority", default: 1
     t.text "message"
     t.string "group", limit: 255
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
   end
 
   create_table "togodb_tables", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
     t.boolean "enabled"
     t.boolean "imported"
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.boolean "sortable", default: true
     t.string "page_name", limit: 255
     t.string "dl_file_name", limit: 255
@@ -365,12 +401,16 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.string "record_name", limit: 255
     t.boolean "confirm_licence", default: false
     t.text "owl"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.string "resource_class", limit: 255
     t.string "resource_label", limit: 255
     t.string "migrate_ver", limit: 255
     t.integer "work_id"
-    t.index ["name"], name: "togodb_tables_name_key", unique: true
+    t.integer "environment", default: 0
+    t.boolean "requested", default: false
+    t.text "metastanza_table_json"
+
+    t.unique_constraint ["name"], name: "togodb_tables_name_key"
   end
 
   create_table "togodb_users", id: :serial, force: :cascade do |t|
@@ -379,19 +419,20 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.string "flags", limit: 255
     t.string "tables", limit: 255
     t.boolean "deleted", default: false
-    t.index ["login"], name: "togodb_users_login_key", unique: true
+
+    t.unique_constraint ["login"], name: "togodb_users_login_key"
   end
 
   create_table "turtle_generations", id: :serial, force: :cascade do |t|
     t.integer "work_id"
-    t.datetime "start_date"
-    t.datetime "end_date"
+    t.datetime "start_date", precision: nil
+    t.datetime "end_date", precision: nil
     t.integer "pid"
     t.string "status"
     t.string "path"
     t.text "error_message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "works", id: :serial, force: :cascade do |t|
@@ -400,11 +441,12 @@ ActiveRecord::Schema.define(version: 2019_06_20_113643) do
     t.string "base_uri"
     t.integer "user_id"
     t.text "er_data"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "mapping_updated"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "mapping_updated", precision: nil
   end
 
+  add_foreign_key "togodb_graphs", "togodb_columns"
   add_foreign_key "togodb_supplementary_files", "togodb_tables"
   add_foreign_key "togodb_tables", "works", name: "togodb_tables_work_id_fkey"
 end

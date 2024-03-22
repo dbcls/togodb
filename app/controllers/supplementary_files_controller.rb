@@ -6,9 +6,9 @@ class SupplementaryFilesController < ApplicationController
 
   # Since @table instance is used by *_user_required, set_table and set_supplementary_file is called before *_user_required.
   before_action :set_table, only: %i[show create send_supplementary_file]
-  before_action :set_supplementary_file, only: %i[update destroy]
+  before_action :set_supplementary_file, only: %i[update destroy dl]
 
-  before_action :read_user_required, only: %i[show send_supplementary_file]
+  before_action :read_user_required, only: %i[show send_supplementary_file dl]
   before_action :execute_user_required, only: %i[show create destroy]
 
   protect_from_forgery except: :send_supplementary_file
@@ -36,6 +36,14 @@ class SupplementaryFilesController < ApplicationController
     @supplementary_file.destroy!
 
     redirect_to upload_files_url(@table.name)
+  end
+
+  def dl
+    zip_file_path = @supplementary_file.zip_file_path.to_path
+    send_file zip_file_path,
+              filename: @supplementary_file.original_filename,
+              type: 'application/zip',
+              length: File.size(zip_file_path)
   end
 
   def send_supplementary_file
@@ -68,13 +76,15 @@ class SupplementaryFilesController < ApplicationController
 
   def handle_uploaded_file
     TogodbSupplementaryFile.transaction do
-      uploaded_file = params[:supplementary_file]
+      # uploaded_file = params[:supplementary_file]
+      qqfile = params[:qqfile]
+      uploaded_file = qqfile.tempfile
       raise NoZipFileUploaded if uploaded_file.nil?
 
       unless @supplementary_file
         @supplementary_file = TogodbSupplementaryFile.create!(
             togodb_table_id: @table.id,
-            original_filename: uploaded_file.original_filename
+            original_filename: qqfile.original_filename
         )
       end
 
@@ -91,7 +101,9 @@ class SupplementaryFilesController < ApplicationController
 
       # Since the new files were saved, delete the old files and move new file
       @supplementary_file.update!(
-          original_filename: uploaded_file.original_filename
+        # original_filename: uploaded_file.original_filename,
+        original_filename: qqfile.original_filename,
+          json_for_file_tree: ''
       )
       @supplementary_file.move_files(uploaded_file_save_path, zip_extract_dir_path)
     end
@@ -106,7 +118,8 @@ class SupplementaryFilesController < ApplicationController
     logger.fatal e.backtrace.join("\n")
     flash[:err] = 'Sorry, system error has occurred.'
   ensure
-    redirect_to upload_files_url(@table.name)
+    # redirect_to upload_files_url(@table.name)
+    render json: { success: true }.to_json
   end
 
   def uploaded_file_save_path

@@ -1,4 +1,4 @@
-class TogodbDbMetadata < ApplicationRecord
+class TogodbDBMetadata < ApplicationRecord
   self.table_name = 'togodb_db_metadatas'
 
   class << self
@@ -19,7 +19,7 @@ class TogodbDbMetadata < ApplicationRecord
 
   def license_html
     if license_is_creative_commons?
-      TogodbDbMetadata.creative_commons[creative_commons][:label]
+      TogodbDBMetadata.creative_commons[creative_commons][:label]
     else
       licence
     end

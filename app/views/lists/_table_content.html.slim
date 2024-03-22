@@ -1,9 +1,13 @@
 table#togodb_database_list.datatables.display
   thead.database_list_databases_header
     tr
-      th
+      th colspan=2
         | Name
         span#name-sorter.table_select
+      - if current_togodb_account.superuser
+        th
+          | Environment
+          span#env-sorter.table_select
       th
         | Access
         span#access-sorter.table_select

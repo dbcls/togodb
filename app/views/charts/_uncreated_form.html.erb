@@ -1,0 +1,25 @@
+<%= form_with do  %>
+  <% if false %>
+  <div>JSON data setting</div>
+  <div style="padding: 10px;">
+    ToDo: ここに MetaStanza が TogoDB から取得するJSONの生成条件を設定するフォームを表示する。<br>
+    例えば、BarchartのX軸の設定（分割数もしくはX軸の幅（100）等）
+  </div>
+  <% end %>
+
+  <div style="display: flex; margin-top: 10px;">
+    <div style="padding-right: 10px;">
+      <div>Metastanza tag</div>
+      <textarea style="width: 340px; height: 300px;"><%== @metastanza_tag %></textarea>
+    </div>
+
+    <div>
+      <div>CSS</div>
+      <textarea style="width: 340px; height: 300px;"><%== @css %></textarea>
+    </div>
+  </div>
+
+  <div class="togodb_btns">
+    <%= submit_tag 'Save', id: 'col_settings_btn', class: 'togodb_btn_double update', role: 'button', 'aria-disabled' => 'false' %>
+  </div>
+<% end %>

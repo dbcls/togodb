@@ -1,6 +1,14 @@
 - content_for :header do
   title = @table.label
 
+  sass:
+    #togodb-quickbrowse-body
+      min-width: 600px
+    #qb-ifm
+      border: none
+      min-width: 810px
+      width: 100%
+
   javascript:
     var writable = "#{@writable}";
     var table_id = "#{@table.id}";
@@ -21,6 +29,43 @@
         return "#{{view_table_id(@table.name)}}";
     };
 
+    const resize_qb = function () {
+        // console.log(document.body.clientWidth);
+        // console.log("onload QuickBrowse: ");
+        const qb_ifm = document.getElementById("qb-ifm");
+        const ifm_width = qb_ifm.contentWindow.document.body.scrollWidth;
+        const ifm_height = qb_ifm.contentWindow.document.body.scrollHeight + 16;
+        // console.log("width = " + ifm_width + ", height = " + ifm_height);
+        if (ifm_width > document.body.clientWidth - 100) {
+            // qb_ifm.style.width = document.body.clientWidth - 100 + "px";
+        } else {
+            // qb_ifm.style.width = ifm_width + "px";
+        }
+        if (ifm_height > document.body.clientHeight - 100) {
+            qb_ifm.style.height = document.body.clientHeight - 100 + "px";
+        } else {
+            qb_ifm.style.height = ifm_height + "px";
+        }
+        // console.log("width = " + qb_ifm.style.width + ", height = " + qb_ifm.style.height);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const paginationTable = document.getElementsByTagName('togostanza-pagination-table')[0];
+        const paginationTableOutgoingEvents = ['xaxis', 'yaxis', 'zaxis', 'filter', 'nextRow'];
+        paginationTableOutgoingEvents.forEach((eventType) => {
+            paginationTable.addEventListener(eventType, (event) => {
+                // console.log(`paginationTable received "${eventType}" event.`, event);
+                // console.log(event.detail);
+            });
+        });
+
+        const quickBrowseStanza = document.getElementsByTagName('togostanza-key-value')[0];
+        quickBrowseStanza.addEventListener('nextRow', (event) => {
+            // console.log('quickBrowseStanza received event.', event);
+            // console.log(event.detail);
+        });
+    });
+
   / for QuickBrowse
   - if @table.name != 'antmossdb'
     == @entry_head_html
@@ -37,6 +82,7 @@
   = javascript_include_tag "jquery-ui"
   = javascript_include_tag "flexigrid"
   = javascript_include_tag "jquery.cookie"
+  = javascript_include_tag "quick_browse"
 
   - if Togodb.enable_open_search && @table.enabled?
     link rel="search" type="application/opensearchdescription+xml" href="#{@app_server}/search/#{@table.name}.xml" title="TogoDB #{@table.name} search"
@@ -60,3 +106,19 @@
 - if @table.metadata&.has_license?
   = render partial: 'dl_confirm_dialog', locals: { dialog_id: 'togodb-db-dl-confirm-dialog' }
   = render partial: 'dl_confirm_dialog', locals: { dialog_id: 'togodb-released-data-dl-confirm-dialog' }
+
+/ QuickBrowse
+== render(partial: "entries/quickbrowse", formats: [ :html ]).gsub(/\n/, "")
+
+/togostanza--container
+  togostanza--event-map[
+    on="nextRow"
+    receiver="togostanza-key-value"
+    value-path="value"
+    target-attribute="v"]
+  togostanza-pagination-table
+  togostanza-key-value
+
+/togostanza--container
+  togostanza-pagination-table
+  togostanza-key-value

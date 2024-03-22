@@ -164,6 +164,7 @@ thead th:last-child {
 
 .database_list_databases_header tr th {
   width: 0%;
+  white-space: nowrap;
 }
 
 .database_list_databases_header tr th.database_list_mydatabases_action_width {
@@ -176,11 +177,17 @@ thead th:last-child {
 
 .database_list_databases_body tr td {
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .database_list_databases_body tr .style_fontsize_14 {
   font-size: 14px;
   width: 300px;
+}
+
+.database_list_databases_body tr td.num-records {
+  text-align: right;
+  padding-right: 10px;
 }
 
 tbody tr {
@@ -1231,7 +1238,7 @@ span.reload_button {
 
 .release_info_data_table.release_info_data_tabble_menu {
   max-width: 110px;
-  padding-left: 20px;
+  /* ----- padding-left: 20px; -----*/
 }
 
 .general_settings th, .form_table th {
@@ -1887,7 +1894,7 @@ span.create_append-copy_dbname {
 
 .tabble_menu_row_other .table_menu_actions_other {
   display: inline-block;
-  float: right;
+  /* ----- float: right; -----*/
 }
 
 .tabble_menu_row_other .table_menu_actions_other div {
@@ -2083,7 +2090,6 @@ span.create_append-copy_dbname {
 }
 
 span.table_arrow {
-  float: right;
   padding-right: 10px;
 }
 

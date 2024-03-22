@@ -128,8 +128,13 @@ module TablesHelper
     link
   end
 
-  def quickbrowse_data_elem_id(name)
-    "togodb-quickbrowse-#{name}"
+  def quickbrowse_data_elem_id(table)
+    case table
+    when TogodbTable
+      "togodb-quickbrowse-#{table.name}"
+    else
+      "togodb-quickbrowse-#{table}"
+    end
   end
 
   def content_for_opensearch(query, record, columns)

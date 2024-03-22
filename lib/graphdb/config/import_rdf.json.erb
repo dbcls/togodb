@@ -1,4 +1,5 @@
 {
+  "fileNames": ["<%= database_name %>_default.ttl"],
   "importSettings": {
     "name": "<%= database_name %>_default.ttl",
     "status": "NONE",
@@ -10,7 +11,7 @@
     "type": "file",
     "format": null,
     "data": null,
-    "timestamp": <%= Time.now.to_i %>,
+    "timestamp": "<%= Time.now.to_i %>",
     "parserSettings": {
       "preserveBNodeIds": false,
       "failOnUnknownDataTypes": false,
@@ -22,6 +23,5 @@
       "stopOnError": true
     },
     "xRequestIdHeaders": null
-  },
-  "fileNames": ["<%= database_name %>_default.ttl"]
+  }
 }

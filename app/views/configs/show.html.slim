@@ -40,3 +40,9 @@
         .togodb_generalsettings
           = render 'user_area'
         = render 'add_role_dialog'
+
+= content_for :end_of_body do
+  javascript:
+    const user_id = "#{current_togodb_account.id}";
+    const table_id = "#{@table.id}";
+  = javascript_include_tag "official_release"

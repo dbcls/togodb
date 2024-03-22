@@ -1,0 +1,11 @@
+.login_title Login with social account
+
+ul style="display: flex; justify-content: center;"
+  li
+    = button_to "Sign in with Google",
+            omniauth_authorize_path(resource_name, :google_oauth2),
+            class: "btn btn-default", style: "margin-right: 24px;", data: { turbo: false }
+  li
+    = button_to "Sign in with Github",
+            omniauth_authorize_path(resource_name, :github),
+            class: "btn btn-default", data: { turbo: false }

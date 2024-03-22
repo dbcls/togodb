@@ -1,7 +1,7 @@
 module Togodb
   class DatabaseCopy
     include Togodb::DB::Pgsql
-    include D2rqMapper
+    include D2RQMapper
 
     class << self
       def total_key(key)
@@ -241,8 +241,8 @@ module Togodb
     end
 
     def copy_db_metadata_record(src_table_id, dst_table_id)
-      attr_names = TogodbDbMetadata.column_names - %w(id table_id created_at updated_at)
-      db_metadata = TogodbDbMetadata.find_by_table_id(src_table_id)
+      attr_names = TogodbDBMetadata.column_names - %w(id table_id created_at updated_at)
+      db_metadata = TogodbDBMetadata.find_by_table_id(src_table_id)
       return unless db_metadata
 
       new_attrs = {}
@@ -250,7 +250,7 @@ module Togodb
         new_attrs[name] = db_metadata[name]
       end
       new_attrs['table_id'] = dst_table_id
-      TogodbDbMetadata.create!(new_attrs)
+      TogodbDBMetadata.create!(new_attrs)
     end
 
     def copy_data(src_table_name, dst_table_name)

@@ -3,7 +3,7 @@ require 'uri'
 require 'graphdb/rest'
 
 module Togodb
-  class NewRdfRepositoryJob
+  class NewRDFRepositoryJob
     @queue = Togodb.new_rdf_repository_queue
 
     def self.perform(database_name)

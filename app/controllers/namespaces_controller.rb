@@ -1,6 +1,6 @@
 require 'togo_mapper/namespace'
 
-class NamespacesController < D2rqMapperController
+class NamespacesController < D2RQMapperController
   protect_from_forgery
 
   include TogoMapper::Namespace

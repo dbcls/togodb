@@ -1,0 +1,60 @@
+<%
+  togodb_column = @column
+  togodb_table = TogodbTable.find(togodb_column.table_id)
+  togodb_charts = TogodbGraph.where(togodb_column_id: togodb_column.id).order(:chart_type).reject { |chart| chart.embed_tag.blank? }
+  chart_types = [
+    { name: 'Barchart', url: 'https://togostanza.github.io/metastanza-devel/barchart.html' },
+    { name: 'Piechart', url: 'https://togostanza.github.io/metastanza-devel/piechart.html' },
+    { name: 'Linechart', url: 'https://togostanza.github.io/metastanza-devel/linechart.html' },
+    { name: 'Heatmap', url: 'https://togostanza.github.io/metastanza-devel/heatmap.html'},
+    { name: 'Scatter plot', url: 'https://togostanza.github.io/metastanza-devel/scatter-plot.html' },
+    { name: 'Layered graph', url: 'https://togostanza.github.io/metastanza-devel/layered-graph.html' },
+    { name: 'Force graph', url: 'https://togostanza.github.io/metastanza-devel/force-graph.html' }
+  ]
+  created_chart_types = togodb_charts.map { |chart| chart.chart_type.capitalize }
+%>
+
+<div style="padding-bottom: 10px;">Column: <%= @column.name %></div>
+
+<% unless togodb_charts.empty? %>
+  <div style="padding: 5px; margin-bottom: 8px; background-color: #ccc;">Configured charts</div>
+  <div style="display: flex; margin-bottom: 20px;">
+    <% togodb_charts.each_with_index do |chart| %>
+      <%
+        embed_tag = chart.embed_tag.sub(/(<togostanza\-\w+)(\s+)/) { "\n#{$1} data-url=#{chart.api_url}#{$2}" }
+      %>
+
+      <div <% if chart.chart_type == 'piechart' %>style="width: 180px; margin-bottom: 10px;"<% end %>>
+        <div style="font-weight: bold; size: 1.1em; margin-bottom: 5px;">
+          <%= chart.chart_type.capitalize %> [
+            <%= link_to 'Edit', chart_form_path(chart.id), data: { remote: true } %> |
+            <a href="https://togostanza.github.io/metastanza-devel/<%= chart.chart_type %>.html?<%= chart.metastanza_help_query_string %>" target="metastanza_<%= chart.chart_type %>">Help</a>
+          ]
+      </div>
+      <%== embed_tag %>
+    </div>
+    <% end %>
+  </div>
+<% end %>
+
+<div style="padding: 5px; margin-bottom: 8px; background-color: #ccc;">Unconfigured charts</div>
+<div style="display: flex;">
+  <% chart_types.each do |chart_type| %>
+    <% next if created_chart_types.include?(chart_type[:name]) %>
+    <div style="font-weight: bold; size: 1.1em; margin-bottom: 5px; margin-right: 10px;">
+      <%= chart_type[:name] %><br>
+      [
+      <%= link_to 'Edit', chart_uncreated_form_path(togodb_column.id, chart_type[:name]), data: { remote: true } %> |
+      <a href="<%= chart_type[:url] %>" target="metastanza_<%= chart_type[:name] %>">Help</a>
+      ]
+    </div>
+  <% end %>
+</div>
+
+<div id="togodb-chart-form-elements">
+<% if @chart %>
+  <%= render 'charts/form' %>
+<% else %>
+  <%= render 'charts/uncreated_form' %>
+<% end %>
+</div>

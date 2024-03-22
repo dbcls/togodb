@@ -24,15 +24,7 @@ function Tab(tab_id, delegate) {
                 self.$other_content.hide();
             }
         } else {
-            if (clicked_tab === 'entry_code_columns_settings') {
-                $("#columns_settings_contents").prependTo(self.$tab_content);
-            } else if (clicked_tab === 'table_code_columns_settings') {
-                $("#columns_settings_contents").prependTo(self.$tab_content);
-            } else if (clicked_tab === 'entry_code_columns_link') {
-                $("#columns_link_contents").prependTo(self.$tab_content);
-            } else if (clicked_tab === 'table_code_columns_link') {
-                $("#columns_link_contents").prependTo(self.$tab_content);
-            } else if (clicked_tab === 'entry_edit') {
+            if (clicked_tab === 'entry_edit') {
                 $("#columns_settings_contents").prependTo($("#entry_code_columns_settings_contents"));
                 $("#columns_link_contents").prependTo($("#entry_code_columns_link_contents"));
             } else if (clicked_tab === 'table_edit') {

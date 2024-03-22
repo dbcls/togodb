@@ -1,0 +1,25 @@
+= content_for :header do
+  title TogoDB - Login
+  = stylesheet_link_tag 'style'
+  = stylesheet_link_tag 'bootstrap'
+  = stylesheet_link_tag 'font-awesome'
+  = javascript_include_tag 'tools'
+
+  script
+    = render partial: 'logins/tab', formats: [:js]
+
+#togodb_page_contents
+  #login_box
+    #togodb_login_tabmenu
+      .togodb_tab_box
+        a href="#togodb_login_sns_account"
+        #tab_login_sns_account.togodb_tab SNS account
+
+        a href="#togodb_login_admin"
+        #tab_login_admin.togodb_tab Local account
+
+    #tab_login_sns_account_contents
+      = render 'devise/shared/oauth'
+
+    #tab_login_admin_contents
+      = render 'devise/shared/local_account'

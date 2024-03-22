@@ -1,15 +1,17 @@
 $(function() {
-    let tabManager = new TabManager();
-    let tabLoginOpenid = new Tab("tab_login_openid", tabManager);
-    let tabLoginAdmin = new Tab("tab_login_admin", tabManager);
+    const tabManager = new TabManager();
+    const tabLoginSocialAccount = new Tab("tab_login_sns_account", tabManager);
+    // const tabLoginOpenid = new Tab("tab_login_openid", tabManager);
+    const tabLoginAdmin = new Tab("tab_login_admin", tabManager);
 
-    tabManager.addTab(tabLoginOpenid);
+    tabManager.addTab(tabLoginSocialAccount);
+    // tabManager.addTab(tabLoginOpenid);
     tabManager.addTab(tabLoginAdmin);
     <% if flash[:account_login_error] %>
-    $("#tab_login_admin").addClass("active");
-    $("#tab_login_openid_contents").hide();
+      $("#tab_login_admin").addClass("active");
+      $("#tab_login_sns_account_contents").hide();
     <% else %>
-    $("#tab_login_openid").addClass("active");
-    $("#tab_login_admin_contents").hide();
+      $("#tab_login_sns_account_contents").addClass("active");
+      $("#tab_login_admin_contents").hide();
     <% end %>
 });

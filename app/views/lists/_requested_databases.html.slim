@@ -1,0 +1,24 @@
+.togodb_database_title Database being requested for release to production environment
+
+table#togodb_requested_databases.datatables.display
+  thead.database_list_databases_header
+    tr
+      th colspan=2
+        | Name
+        span#name-sorter.table_select
+      th
+        | Access
+        span#access-sorter.table_select
+      th
+        | records
+        span#records-sorter.table_select
+      th
+        | Date created
+        span#date-sorter.table_select
+      th
+        | Creator
+        span#creator-sorter.table_select
+      th.database_list_mydatabases_action_width
+
+  tbody.database_list_databases_body
+    = render partial: 'requested_table_row', collection: @production_requests, as: 'production_request'

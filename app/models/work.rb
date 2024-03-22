@@ -12,7 +12,7 @@ class Work < ApplicationRecord
 
 
   def db_connection
-    DbConnection.where(work_id: self.id).first
+    DBConnection.where(work_id: self.id).first
   end
 
   def table_exists?(table_name)

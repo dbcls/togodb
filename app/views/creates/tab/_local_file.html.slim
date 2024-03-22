@@ -1,5 +1,5 @@
 .togodb_import_track_contents
-  = form_with url: upload_create_path(@create), multipart: true do
+  = form_with url: upload_create_path(@create), multipart: true, local: true do
     #jquery_wrapped_fine_uploader
       .drag_area
         = file_field_tag 'file'

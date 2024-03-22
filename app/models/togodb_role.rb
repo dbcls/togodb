@@ -1,7 +1,8 @@
 class TogodbRole < ApplicationRecord
 
   belongs_to :table, class_name: 'TogodbTable', foreign_key: 'table_id'
-  belongs_to :user, class_name: 'TogodbUser', foreign_key: 'user_id'
+  #--> belongs_to :user, class_name: 'TogodbUser', foreign_key: 'user_id'
+  belongs_to :user, class_name: 'TogodbAccount', foreign_key: 'user_id'
 
   include ActsAsBits
   acts_as_bits :roles,  %w( admin read write execute ), prefix: true

@@ -1,9 +1,19 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
+  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
+  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  # Defines the root path route ("/")
+  # root "posts#index"
+
+  # Devise
+  devise_for :togodb_accounts, controllers: { omniauth_callbacks: 'togodb_accounts/omniauth_callbacks' }
 
   resource :login, only: [:show] do
     member do
-      post :openid
+      #--> post :openid
       post :account
     end
   end
@@ -19,16 +29,28 @@ Rails.application.routes.draw do
 
   resources :config, only: [:show], controller: :configs do
     member do
+      patch :columns_basic
+      patch :columns_link
+      patch :columns_graph, as: :togodb_graph
+      post :request_official
+      post :process_production_request
       post :find_user
       patch :update_roles
+      get :records
     end
   end
+
+  resources :togodb_graphs, only: %i[show update] do
+    member do
+      get :edit_html
+    end
+  end
+
+  get '/config_columns/:id', to: 'configs#index_columns', as: :config_columns
 
   get '/config_html/:id', to: 'pages#show', as: :config_html
   resources :togodb_pages, only: %i[edit update], controller: :pages do
     member do
-      patch :columns_settings
-      patch :columns_link
       get :view_css_default
       get :view_header_default
       get :view_body_default
@@ -40,7 +62,11 @@ Rails.application.routes.draw do
   end
 
   # Uploaded files (Supplementary files)
-  resources :togodb_supplementary_files, controller: :supplementary_files, only: %i[create update destroy]
+  resources :togodb_supplementary_files, controller: :supplementary_files, only: %i[create update destroy] do
+    member do
+      get :dl
+    end
+  end
   get '/upload_files/:id', to: 'supplementary_files#show', as: :upload_files
   get '/supplementary_files/:id/:dirpath', to: 'supplementary_files#list', dirpath: /.+/
   get '/files/:id/:fpath', to: 'supplementary_files#send_supplementary_file', fpath: /.+/
@@ -59,7 +85,11 @@ Rails.application.routes.draw do
   end
 
   resources :togodb_tables, controller: :tables
-  resources :togodb_columns, controller: :columns
+  resources :togodb_columns, controller: :columns do
+    member do
+      get :graph_edit_html
+    end
+  end
 
   # Entry
   get '/entry/:db(/:id)', to: 'entries#show'
@@ -94,7 +124,6 @@ Rails.application.routes.draw do
       get  :progress
       get  :status
       get  :populated_percentage
-      get  :convert_progress
     end
   end
 
@@ -131,6 +160,12 @@ Rails.application.routes.draw do
   get '/togodb/flexigrid/:id', to: 'tables#flexigrid'
   get '/togodb/fetch/:id', to: 'tables#fetch', as: :flexigrid_fetch
   get '/togodb/info/:id', to: 'tables#info'
+
+  # Chart
+  get '/chart/:id/form', to: 'charts#form', as: :chart_form
+  get '/chart/:id/uncreated_form/:chart_type', to: 'charts#uncreated_form', as: :chart_uncreated_form
+  get '/chart/:chart_type/:table/:column', to: 'charts#show'
+  get '/chart_tab/:column_id', to: 'charts#tab_contents', as: :chart_tab
 
   #----- D2RQ Mapper -----#
   resources :triples_maps, except: [:show]
@@ -181,6 +216,12 @@ Rails.application.routes.draw do
   # Search API (Like REST API)
   get '/search/:id(/:query(/:page))(.:format)', to: 'tables#open_search', query: /[^\/]*/
   get '/db/:id(/:search(/:page))(.:format)', to: 'tables#show'
+
+  # Admin
+  post '/admin/process_production_request', to: 'admin#process_production_request'
+
+  # records
+  get '/records/:id', to: 'configs#edit_record', as: :edit_record
 
   #----- root -----#
   root 'welcome#index'

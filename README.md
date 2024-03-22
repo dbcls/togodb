@@ -3,7 +3,7 @@
 ## 必要なソフトウェア
 ### PostgreSQL
 postgresql-serverが稼働しており、TogoDB（Railsアプリケーション）からpostgresql-serverにアクセスできる必要があります。
-* Version 9.x, 10.x, 11.xで動作を確認しています。
+* Version 15.x, 16.xで動作を確認しています。
 * pg_trgmを利用しています。そのためpostgresql-contribをインストールするかPostgreSQLのcontribからpg_trgmをインストールする必要があります。
 
 ### Redis

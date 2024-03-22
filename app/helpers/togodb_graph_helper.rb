@@ -1,0 +1,2 @@
+module TogodbGraphHelper
+end

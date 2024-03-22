@@ -160,7 +160,7 @@ module TogoMapper
     def delete_work(work_id)
       work = Work.find(work_id)
 
-      DbConnection.destroy_all(work_id: work.id)
+      DBConnection.destroy_all(work_id: work.id)
 
       ClassMapPropertySetting.destroy_all(
           class_map_id: work.class_maps.map(&:id)
@@ -187,7 +187,7 @@ module TogoMapper
       deleted_property_bridges = []
       new_columns = []
 
-      db_conn = DbConnection.where(work_id: @work.id).first
+      db_conn = DBConnection.where(work_id: @work.id).first
       db = TogoMapper::DB.new(db_conn.connection_config)
       tables = db.tables
       class_maps = @work.class_maps

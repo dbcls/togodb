@@ -1,15 +1,25 @@
 default: &default
   resque:
-    data_download_queue: togodb_v4_dl
-    data_import_queue: togodb_v4_di
-    db_copy_queue: togodb_v4_cp
-    data_release_queue: togodb_v4_re
-    new_rdf_repository_queue: togodb_v4_nr
+    data_download_queue:
+      name: togodb_v4_dl
+      num_workers: 1
+    data_import_queue:
+      name: togodb_v4_di
+      num_workers: 1
+    db_copy_queue:
+      name: togodb_v4_cp
+      num_workers: 1
+    data_release_queue:
+      name: togodb_v4_re
+      num_workers: 1
+    new_rdf_repository_queue:
+      name: togodb_v4_nr
+      num_workers: 1
 
   run_data_release_after_import: true
 
   open_search:
-    enable: false
+    enable: true
     admin_email: togodb-admin@dbcls.jp
 
 development:

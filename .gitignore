@@ -7,8 +7,9 @@
 # Ignore bundler config.
 /.bundle
 
-# Ignore gems installed by bundle
-/vendor/bundle
+# Ignore all environment files (except templates).
+/.env*
+!/.env*.erb
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -16,48 +17,22 @@
 !/log/.keep
 !/tmp/.keep
 
-# Ignore uploaded files in development
+# Ignore pidfiles, but keep the directory.
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+
+# Ignore storage (uploaded files in development and any SQLite databases).
 /storage/*
 !/storage/.keep
+/tmp/storage/*
+!/tmp/storage/
+!/tmp/storage/.keep
 
-# Ignore Byebug command history file.
-.byebug_history
+/public/assets
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-# Ignore rbenv files
-.rbenv-gemsets
-.ruby-version
-
-*.swp
-*~
-.project
-.DS_Store
-
-yarn.lock
-/node_modules
-/yarn-error.log
-
-# Ignore asset pipeline files
-/public/assets
-
-# TogoDB
-/.env
-/.local/*
-!/.local/bin/
-/.local/bin/*
-!/.local/bin/resque-worker.rb
-/data/
-
-# Ignore capistrano file
-/Capfile
-/config/deploy
-/config/deploy.rb
-
-# Docker
-/.dockerignore
-/Dockerfile
-/docker
-/docker-compose.yml
-
+# Ignore installed gem files
+/vendor/bundle

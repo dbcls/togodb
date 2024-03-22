@@ -1,5 +1,10 @@
 require 'tempfile'
 
+module Togodb
+  module DB
+  end
+end
+
 module Togodb::DB::Pgsql
   include Togodb::StringUtils
 
@@ -148,7 +153,7 @@ EOS
     sql = <<EOS
 SELECT
   reltuples as rows,
-  pg_relation_size(relname) as bytes
+  pg_relation_size(regclass(relname)) as bytes
 FROM
   pg_class
 WHERE
@@ -240,7 +245,6 @@ EOS
     num_copied = 0
 
     tf = Tempfile.new('togodb_copy')
-    tf.chmod(0666)
     loop do
       where = "#{quote pkey_colname} IN ("
       where << (start ... start + limit).map { |v| v }.join(',')
@@ -269,7 +273,6 @@ EOS
     num_copied = 0
 
     tf = Tempfile.new('togodb_copy')
-    tf.chmod(0666)
     loop do
       ActiveRecord::Base.connection.execute "COPY (SELECT * FROM #{quote src_table_name} ORDER BY #{pkey_col_name} OFFSET #{offset} LIMIT #{limit}) TO '#{tf.path}'"
       if tf.size.positive?
@@ -289,7 +292,6 @@ EOS
   def copy_all_records_by_no_pkey(src_table_name, dst_table_name, limit, block)
     num_copied = 0
     tf = Tempfile.new('togodb_copy')
-    tf.chmod(0666)
     ActiveRecord::Base.connection.execute "COPY #{quote src_table_name} TO '#{tf.path}'"
     num_copied = copy_data_from_file(dst_table_name, tf.path)
     tf.close true
@@ -347,7 +349,7 @@ EOS
     sql = <<EOS
 SELECT
   attr.attname AS column_name,
-  ad.adsrc AS default_value
+  pg_get_expr(ad.adbin, ad.adrelid) AS default_value
 FROM
   pg_attribute attr
   JOIN pg_attrdef ad ON attr.attrelid = ad.adrelid AND attr.attnum = ad.adnum

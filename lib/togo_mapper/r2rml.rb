@@ -1,8 +1,5 @@
-require 'rdf/turtle'
-require 'togo_mapper/db'
-
 module TogoMapper
-  module R2rml
+  module R2RML
 
     @@ommit_table_name = true
     @@prefixes = { rr: "http://www.w3.org/ns/r2rml#" }

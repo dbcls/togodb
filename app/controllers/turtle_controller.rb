@@ -1,7 +1,7 @@
 require 'tempfile'
 require 'open3'
 
-class TurtleController < D2rqMapperController
+class TurtleController < D2RQMapperController
   #include ActionController::Live
 
   #before_action :authenticate_user!
@@ -21,7 +21,7 @@ class TurtleController < D2rqMapperController
   end
 
   def preview
-    generator = TogoMapper::D2rq::TtlGenerator.new(@work, nil, 1, false)
+    generator = TogoMapper::D2RQ::TtlGenerator.new(@work, nil, 1, false)
     output_file_path = generator.generate_via_nt
 
     render plain: File.read(output_file_path), content_type: 'text/turtle'
@@ -47,9 +47,9 @@ class TurtleController < D2rqMapperController
       end
     end
 
-    db_conn = DbConnection.where(work_id: @work.id).first
+    db_conn = DBConnection.where(work_id: @work.id).first
 
-    mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+    mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
     mapping_generator.prepare_by_work(@work)
     mapping_generator.password = db_conn.decrypt_password
 
@@ -136,7 +136,7 @@ class TurtleController < D2rqMapperController
         work_id: @work.id,
         status: 'WAITING'
     )
-    Resque.enqueue(TogoMapper::D2rq::TurtleGeneratorJob,
+    Resque.enqueue(TogoMapper::D2RQ::TurtleGeneratorJob,
                    @work.id,
                    "#{Rails.root}/data/turtle", "#{Rails.root}/data/tmp", generation.id)
   end
@@ -165,7 +165,7 @@ class TurtleController < D2rqMapperController
     @work = class_map.work
     validate_user(@work.id)
 
-    db_conn = DbConnection.where(work_id: @work.id).first
+    db_conn = DBConnection.where(work_id: @work.id).first
 
     db = TogoMapper::DB.new(db_conn.connection_config)
     if !class_map.table_name.blank? && !db.tables.include?(class_map.table_name)
@@ -173,7 +173,7 @@ class TurtleController < D2rqMapperController
       return
     end
 
-    mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+    mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
     mapping_generator.prepare_by_class_map(class_map)
     mapping_generator.password = db_conn.decrypt_password
     mapping_generator.database_property = {
@@ -202,7 +202,7 @@ class TurtleController < D2rqMapperController
     property_bridge = PropertyBridge.find(params[:id])
     @work = property_bridge.work
 
-    db_conn = DbConnection.where(work_id: @work.id).first
+    db_conn = DBConnection.where(work_id: @work.id).first
 
     db = TogoMapper::DB.new(db_conn.connection_config)
     table_name = property_bridge.class_map.table_name
@@ -211,7 +211,7 @@ class TurtleController < D2rqMapperController
       return
     end
 
-    mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+    mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
     mapping_generator.prepare_by_property_bridge(property_bridge)
     mapping_generator.password = db_conn.decrypt_password
     mapping_generator.database_property = {
@@ -241,9 +241,9 @@ class TurtleController < D2rqMapperController
     @work = table_join.work
     validate_user(@work.id)
 
-    db_conn = DbConnection.where(work_id: @work.id).first
+    db_conn = DBConnection.where(work_id: @work.id).first
 
-    mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+    mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
     mapping_generator.prepare_by_table_join(table_join)
     mapping_generator.password = db_conn.decrypt_password
     mapping_generator.configuration_property = {

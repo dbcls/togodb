@@ -51,7 +51,7 @@ module ReleasesHelper
       fpath = "#{Togodb.dataset_dir}/#{table_name}_#{dataset_name}.#{format}"
     #end
 
-    if File.exists?(fpath)
+    if File.exist?(fpath)
       #number_with_delimiter File.size(fpath)
       number_to_human_size File.size(fpath)
     else
@@ -67,7 +67,7 @@ module ReleasesHelper
     end
   end
 
-  def relase_file_exist?(table_name, dataset_name, format)
+  def release_file_exist?(table_name, dataset_name, format)
     table = TogodbTable.find_by(name: table_name)
     #if table.migrate_ver == 'semantic' || table.migrate_ver == 'v3'
     #  fpath = "/data/togodb/data-migration/release-data/#{table.migrate_ver}/#{table_name}_#{dataset_name}.#{format}"

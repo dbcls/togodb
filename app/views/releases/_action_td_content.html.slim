@@ -2,6 +2,7 @@
   .table_menu_actions_other
     - if dataset.can_submit_job?
       = link_to run_release_path(dataset), remote: true do
-        #release.release Release
+        button#reload.togodb_btn_double.releaseall type="button" style="margin: 0;" Release
+        / #release.release Release
     - if dataset.name != 'default'
       .delete Delete

@@ -3,12 +3,13 @@ require 'redis'
 require 'resque'
 require 'yaml'
 require 'logger'
-require 'togodb/db/pgsql'
-require 'd2rq_mapper'
 
 class Togodb::DataImporter
   include Togodb::DB::Pgsql
-  include D2rqMapper
+  include Togodb::StringUtils
+  include D2RQMapper
+
+  UPLOAD_FILES_DIR = File.join(ENV.fetch('DATA_DIR'), 'upload_files')
 
   class TooManyListValues < StandardError;
   end
@@ -42,8 +43,12 @@ class Togodb::DataImporter
     @user_id = @create.user_id
     @has_header = @create.header_line
 
-    @data_file = @create.utf8_file_path
+    @data_file = File.join(UPLOAD_FILES_DIR, File.basename(@create.uploded_file_path))
     @file_size = File.size(@data_file)
+
+    @entry_id = 1
+    @metastanza_json_generator = MetaStanza::DataGenerator::PaginationTable.new(@table)
+    @metadata_table_rows = []
 
     begin
       @time_zone = Rails.application.config.time_zone
@@ -74,7 +79,7 @@ class Togodb::DataImporter
 
       prepare_insert(conn)
 
-      CSV.foreach(@data_file, csv_opts) do |record|
+      CSV.foreach(@data_file, **csv_opts) do |record|
         record = record.map { |ary| ary[1] } if record.kind_of?(CSV::Row)
 
         next if empty_line?(record)
@@ -93,6 +98,8 @@ class Togodb::DataImporter
           end
           base_time = Time.now
         end
+
+        @entry_id += 1
       end
 
       update_togodb_table(conn, num_records)
@@ -100,6 +107,8 @@ class Togodb::DataImporter
       refresh_list_column_values_all(conn)
 
       setup_new_mapping_for_togodb(@table.name, @table.creator_id)
+
+      insert_metastanza_table_json(conn)
 
       def_ds_id = default_dataset_id(conn)
       @log.debug "import: default_dataset_id: #{def_ds_id}"
@@ -109,9 +118,7 @@ class Togodb::DataImporter
 
       create_indexes(conn)
 
-      if Togodb.create_release_files
-        Togodb::DataRelease.enqueue_job(def_ds_id, Togodb.use_graphdb)
-      end
+      Togodb::DataRelease.enqueue_job(def_ds_id, Togodb.create_new_repository) if Togodb.create_release_files
     rescue => e
       conn&.exec('ROLLBACK')
       @redis.set error_msg_key, "#$!"
@@ -119,9 +126,7 @@ class Togodb::DataImporter
       raise e
     ensure
       conn&.close
-      unless @warn_msgs.empty?
-        @redis.set warning_msg_key, @warn_msgs.join('<br />')
-      end
+      @redis.set warning_msg_key, @warn_msgs.join('<br />') unless @warn_msgs.empty?
       @redis.set populated_key, 100
     end
   end
@@ -166,6 +171,7 @@ class Togodb::DataImporter
   end
 
   def insert_record(conn, record)
+    column_names = []
     values = []
     record.each_with_index do |data, i|
       column = @csv_cols[i] or next
@@ -176,12 +182,17 @@ class Togodb::DataImporter
       else
         data = nil if data.blank?
       end
+      column_names << column['internal_name']
       values << data
     end
     num_difference = @num_enabled_columns - values.size
     values = values + Array.new(num_difference) if num_difference.positive?
 
     insert(conn, values)
+
+    column_names.unshift('id')
+    values.unshift(@entry_id)
+    @metadata_table_rows << metastanza_table_row_hash(column_names.zip(values).to_h)
   end
 
   def insert(conn, values)
@@ -299,11 +310,11 @@ class Togodb::DataImporter
     fs = "\t" if @data_file[-3 .. -1] == 'tsv'
 
     {
-        col_sep: fs,
-        headers: @has_header,
-        return_headers: false,
-        encoding: 'UTF-8',
-        liberal_parsing: true
+      encoding: "#{@create.input_file_encoding}:UTF-8",
+      col_sep: fs,
+      headers: @has_header,
+      return_headers: false,
+      liberal_parsing: true
     }
   end
 
@@ -356,15 +367,39 @@ class Togodb::DataImporter
     conn.exec('CREATE EXTENSION IF NOT EXISTS pg_trgm')
     idx_names = index_names(conn)
     @table.columns.each do |column|
-      unless idx_names.include?(index_name(@table.name, column.internal_name))
-        create_btree_index(@table.name, column.internal_name, conn)
+      if idx_names.include?(index_name(@table.name, column.internal_name)) || idx_names.include?(index_name(@table.name, column.internal_name, 'gin'))
+        next
       end
-      if column.text?
+
+      if column.data_type == 'text'
         unless idx_names.include?(index_name(@table.name, column.internal_name, 'gin'))
           create_gin_index(@table.name, column.internal_name, conn)
         end
+      else
+        create_btree_index(@table.name, column.internal_name, conn)
       end
     end
   end
 
+  def insert_metastanza_table_json(conn)
+    puts @metadata_table_rows.to_json
+    stmt_id = "#{@table.name}_insert_metastanza_table_json"
+    stmt = 'UPDATE togodb_tables SET metastanza_table_json = $1 WHERE id = $2'
+    @log.debug stmt
+    conn.prepare(stmt_id, stmt)
+    conn.exec_prepared(stmt_id, [@metadata_table_rows.to_json, @table.id])
+  end
+
+  def metastanza_table_row_hash(row)
+    row_hash =
+      @metastanza_json_generator.show_link_hash(@table)
+
+    @table.columns.where(enabled: true).each do |togodb_column|
+      row_hash.merge!(
+        @metastanza_json_generator.hash_for_column_data(row, togodb_column)
+      )
+    end
+
+    row_hash
+  end
 end

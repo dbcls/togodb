@@ -35,4 +35,24 @@ module Togodb::StringUtils
     key
   end
 
+  def valid_encoding?(s, encoding)
+    s.force_encoding encoding
+    s.valid_encoding?
+  end
+
+  def utf8?(s)
+    valid_encoding?(s, Encoding::UTF_8)
+  end
+
+  def shift_jis?(s)
+    valid_encoding?(s, Encoding::Windows_31J)
+  end
+
+  def euc?(s)
+    valid_encoding?(s, Encoding::EUC_JP)
+  end
+
+  def iso_2022_jp?(s)
+    valid_encoding?(s, Encoding::ISO_2022_JP)
+  end
 end

@@ -27,7 +27,7 @@
           p.form_control_static
             | Creative Commons license
           #licence
-            - TogodbDbMetadata.creative_commons.each_with_index do |cc, i|
+            - TogodbDBMetadata.creative_commons.each_with_index do |cc, i|
               .nav_licence
                 = f.label "creative_commons_#{i + 1}", class: 'radio_inline' do
                   = f.radio_button :creative_commons, i + 1

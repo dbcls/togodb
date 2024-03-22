@@ -1,13 +1,19 @@
 = content_for :header do
   title TogoDB - Configuration
+
+  link href="/fine-uploader/fine-uploader-new.css" rel="stylesheet" type="text/css"
+
+  link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"
   = stylesheet_link_tag "style"
   = stylesheet_link_tag "font-awesome"
-  = stylesheet_link_tag "bootstrap"
+  /= stylesheet_link_tag "bootstrap"
   = stylesheet_link_tag "jqtree"
   = stylesheet_link_tag "supplementary_files"
   css:
     .jqtree-tree { margin-top: 0px; }
-  = javascript_include_tag "bootstrap"
+
+  script src="/fine-uploader/fine-uploader.min.js" type="text/javascript"
+  /= javascript_include_tag "bootstrap"
   = javascript_include_tag "tree.jquery"
   = javascript_include_tag "upload_files"
   - if @tree_json_data
@@ -41,6 +47,8 @@
         });
       });
 
+  = render 'fineuploader'
+
 .contents_title_selectdb_box
   = render partial: 'table_selector'
   = render partial: 'config_menu', locals: { selected: :upload_files }
@@ -50,15 +58,50 @@
   - if flash[:err]
     = render partial: 'application/alert_message', locals: { message: flash[:err] }
   div style="margin-top:30px;"
-    = form_with model: @supplementary_file, multipart: true, local: true do
-      .drag_area
+    /= form_with model: @supplementary_file, multipart: true, local: true do
+    = form_with model: @supplementary_file, id: 'qq-form' do
+      div#fine-uploader
+      /.drag_area
         = file_field_tag 'supplementary_file'
       = hidden_field_tag 'table_id', @table.id
-      = submit_tag 'Upload a zip file', class: "togodb_btn_single upload"
+      = button_tag 'Upload a zip file', type: 'button', id: 'upload-button', class: 'togodb_btn_single upload'
+      /= submit_tag 'Upload a zip file', class: "togodb_btn_single upload"
     - unless @supplementary_file.new_record?
       div style="margin-top:30px;"
         #supplementary-files style="margin-top:20px;"
           |  Uploaded zip file: 
           = @supplementary_file.original_filename
-          = link_to 'Delete file', togodb_supplementary_file_path(@supplementary_file), method: :delete, data: { confirm: 'Are you sure you want to delete the file?' }
+          = link_to 'Download zip file',
+                  dl_togodb_supplementary_file_path(@supplementary_file),
+                  class: 'download'
+          = link_to 'Delete uploaded files',
+                  togodb_supplementary_file_path(@supplementary_file),
+                  method: :delete,
+                  data: { confirm: 'Are you sure you want to delete the file?' },
+                  class: 'delete'
         #jqtree
+
+javascript:
+  const uploader = new qq.FineUploader({
+      debug: true,
+      element: document.getElementById('fine-uploader'),
+      autoUpload: false,
+      multiple: false,
+      disableCancelForFormUploads: true,
+      validation: {
+          allowedExtensions: ['zip']
+      },
+      callbacks: {
+          onComplete: function (id, name, responseJSON, xhr) {
+              if (xhr.status === 200) {
+                  location.href = "#{upload_files_url(@table.name)}";
+              }
+          }
+      }
+  });
+
+  qq(document.getElementById("upload-button")).attach('click', function () {
+      uploader.uploadStoredFiles();
+  });
+
+script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"

@@ -34,15 +34,15 @@ class TogodbSupplementaryFile < ApplicationRecord
     zip_extract_dir_path.join(url_path)
   end
 
+  def zip_file_path
+    uploaded_files_save_path.join(original_filename)
+  end
+
   private
 
   def uploaded_files_save_path
     path = Pathname.new(Togodb.supfile_dir)
     path.join(table.name)
-  end
-
-  def zip_file_path
-    uploaded_files_save_path.join(original_filename)
   end
 
   def zip_extract_dir_path

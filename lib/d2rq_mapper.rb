@@ -1,4 +1,4 @@
-module D2rqMapper
+module D2RQMapper
   include TogoMapper::Mapping
 
   def setup_new_mapping_for_togodb(table_name, user_id)
@@ -12,7 +12,7 @@ module D2rqMapper
       )
       @work.save!
 
-      @db_connection = DbConnection.new(
+      @db_connection = DBConnection.new(
         adapter:  db_config[:adapter],
         host:     db_config[:host],
         port:     db_config[:port],

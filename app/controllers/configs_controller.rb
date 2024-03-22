@@ -2,10 +2,12 @@ class ConfigsController < ApplicationController
   protect_from_forgery
 
   before_action :set_table
+  before_action :set_columns, only: %i[edit_record]
   before_action :execute_user_required
   #before_action :set_page, except: [ :show, :find_user ]
 
   def show
+    puts "current_user: #{current_togodb_account}"
     unless @table.has_resource_label?
       @table.resource_label = @table.resource_label_default
       @table.save
@@ -26,6 +28,28 @@ class ConfigsController < ApplicationController
 
     @tables = @user.configurable_tables
     @class_map = ClassMap.by_table(@table)
+  end
+
+  def index_columns
+    # flash[:err] = 'This is test error message.'
+    @columns = columns(@table)
+
+    @column = @columns.first
+    @togodb_graph =
+      TogodbGraph.find_by(togodb_column_id: @column.id) || TogodbGraph.create!(togodb_column_id: @column.id)
+  end
+
+  def request_official
+    # TODO current_userが取れない(Ajaxだからだと思われる)
+    # puts "current_user: #{current_togodb_account}"
+    email_address = params[:config][:email]
+
+    TogodbProductionRequest.create!(
+      table_id: params[:id], requester_id: params[:config][:user_id], email: email_address
+    )
+    @table.requested = true
+    @table.save!
+    render json: { status: 'success', environment: @table.environment_text }
   end
 
   def find_user
@@ -60,21 +84,29 @@ class ConfigsController < ApplicationController
     end
   end
 
+  def edit_record
+
+  end
+
   private
+
+  def set_columns
+    @columns = columns(@table)
+  end
 
   def set_page
     @page = TogodbPage.find(params[:id])
   end
 
   def set_metadata(table)
-    @metadata = TogodbDbMetadata.find_by_table_id(table.id)
+    @metadata = TogodbDBMetadata.find_by_table_id(table.id)
     unless @metadata
-      @metadata = TogodbDbMetadata.create(
-          table_id: table.id
+      @metadata = TogodbDBMetadata.create(
+        table_id: table.id
       )
     end
-    @metadata_pubmeds = TogodbDbMetadataPubmed.where(db_metadata_id: @metadata.id)
-    @metadata_dois = TogodbDbMetadataDoi.where(db_metadata_id: @metadata.id)
+    @metadata_pubmeds = TogodbDBMetadataPubmed.where(db_metadata_id: @metadata.id)
+    @metadata_dois = TogodbDBMetadataDoi.where(db_metadata_id: @metadata.id)
   end
 
   def role_params(id)

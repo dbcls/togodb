@@ -3,6 +3,7 @@ class EntriesController < ApplicationController
   include ApplicationHelper
   include TablesHelper
   include EntriesHelper
+  include MetaStanza::MixIn
 
   before_action :set_table
   before_action :read_user_required, only: %i[show form quickbrowse quickbrowse_edit_form]
@@ -46,32 +47,23 @@ class EntriesController < ApplicationController
       }
 
       format.json {
-        record_name = @record_name.respond_to?(:gsub) ? @record_name.gsub(/["\\]/) { |q| '\\' + q } : @record_name
-        data = { @table.name => {}, :record_name => record_name, :raw_value => {} }
-        @columns.each do |column|
-          data[@table.name][column.name] = {
-              :label => column.label,
-              :value => html_value(@record, column),
-              :sanitize => column.sanitize ? 1 : 0
-          }
-          data[:raw_value][column.internal_name] = @record[column.internal_name]
-        end
-
+        # data = hash_for_json
+        data = array_for_key_value_metastanza
         if params[:callback]
           render json: JSON.generate(data), callback: params[:callback]
         else
-          render json: JSON.generate(data)
+          render json: JSON.pretty_generate(data)
         end
       }
 
       format.rdf {
-        exporter = Togodb::Exporter::Rdf.new(@table, @columns, Togodb.temporary_workspace, 'rdf')
+        exporter = Togodb::Exporter::RDF.new(@table, @columns, Togodb.temporary_workspace, 'rdf')
         exporter.export_rdf([@record])
         render plain: exporter.output, content_type: "application/rdf+xml"
       }
 
       format.ttl {
-        exporter = Togodb::Exporter::Rdf.new(@table, @columns, Togodb.temporary_workspace, 'ttl')
+        exporter = Togodb::Exporter::RDF.new(@table, @columns, Togodb.temporary_workspace, 'ttl')
         exporter.export_ttl([@record])
         render plain: exporter.output, content_type: "text/turtle; charset=utf-8"
       }
@@ -84,12 +76,12 @@ class EntriesController < ApplicationController
           if @page_setting
             css = @page_setting.show_css
             if css.blank?
-              render plain: entry_css_default, content_type: content_type
+              render(plain: entry_css_default, content_type:)
             else
-              render plain: css, content_type: content_type
+              render plain: css, content_type:
             end
           else
-            render plain: entry_css_default, content_type: content_type
+            render plain: entry_css_default, content_type:
           end
         end
       }
@@ -107,15 +99,19 @@ class EntriesController < ApplicationController
   end
 
   def quickbrowse
-    @record = @table.active_record.find(params[:id])
-    @columns = @table.columns
+    if false
+      @record = @table.active_record.find(params[:id])
+      @columns = @table.columns
 
-    quickbrowse_html = @table.page.show_body
-    quickbrowse_html = entry_body_default if quickbrowse_html.blank?
+      quickbrowse_html = @table.page.show_body
+      quickbrowse_html = entry_body_default if quickbrowse_html.blank?
 
-    register_fs_helper(@record.id)
-    template = FlavourSaver::Template.new { prepare_template quickbrowse_html }
-    @html = template.render
+      register_fs_helper(@record.id)
+      template = FlavourSaver::Template.new { prepare_template quickbrowse_html }
+      @html = template.render
+
+      @src = "#{Togodb.url_scheme}://#{Togodb.api_server}/entry/#{@table.name}/#{params[:id]}"
+    end
   end
 
   def quickbrowse_edit_form
@@ -249,4 +245,24 @@ class EntriesController < ApplicationController
     end
   end
 
+  def hash_for_json
+    record_name = @record_name.respond_to?(:gsub) ? @record_name.gsub(/["\\]/) { |q| '\\' + q } : @record_name
+    data = { @table.name => {}, :record_name => record_name, :raw_value => {} }
+    @columns.each do |column|
+      data[@table.name][column.name] = {
+        label: column.label,
+        value: html_value(@record, column),
+        sanitize: column.sanitize ? 1 : 0
+      }
+      data[:raw_value][column.internal_name] = @record[column.internal_name]
+    end
+
+    data
+  end
+
+  def array_for_key_value_metastanza
+    generator = MetaStanza::DataGenerator::KeyValue.new(@table)
+
+    generator.generate(@id)
+  end
 end

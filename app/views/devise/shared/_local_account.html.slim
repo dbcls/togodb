@@ -1,0 +1,14 @@
+.login_title Login with local account
+
+= form_for resource, as: resource_name, url: session_path(resource_name) do |f|
+  table.togodb_table.login_settings
+    tr.login_admin_data_box
+      th = f.label :name
+      td = f.text_field :name, autofocus: true, autocomplete: "name", style: "width: 100px;"
+    tr.login_admin_data_box
+      th = f.label :password
+      td = f.password_field :password, autocomplete: "current-password", style: "width: 100px;"
+
+  .db_operation_buttons style="padding:20px 0 10px 0;"
+    /= submit_tag "Login", data: { disable_with: 'Login ...' }, id: "togodb-login-admin-submit", class: "togodb_btn_single login", role: "button", "aria-disabled" => "false"
+    = f.submit "Login", data: { disable_with: 'Login ...' }, id: "togodb-login-admin-submit", class: "togodb_btn_single login", role: "button", "aria-disabled" => "false"

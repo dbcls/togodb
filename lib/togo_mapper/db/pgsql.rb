@@ -1,5 +1,4 @@
 require 'pg'
-require 'togo_mapper/db/common'
 
 module TogoMapper
   class DB

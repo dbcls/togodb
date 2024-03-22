@@ -1,0 +1,11 @@
+<% if @chart %>
+(() => {
+    const elem = document.getElementById('togodb-chart-form-elements');
+    elem.innerHTML = "<%= j(render 'charts/form') %>";
+})();
+<% else %>
+(() => {
+    const elem = document.getElementById('togodb-chart-form-elements');
+    elem.innerHTML = "<%= j(render 'charts/uncreated_form') %>";
+})();
+<% end %>

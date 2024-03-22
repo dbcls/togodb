@@ -1,5 +1,5 @@
 module TogoMapper
-  module D2rq
+  module D2RQ
     module Bnode
       include TogoMapper::Mapping
 

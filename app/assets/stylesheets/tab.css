@@ -1,0 +1,5 @@
+.togodb_tab_box .togodb_tab.active {
+    color: #fff;
+    background-color: hotpink;
+    border-bottom-color: hotpink;
+}

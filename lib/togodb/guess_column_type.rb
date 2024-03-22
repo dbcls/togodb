@@ -118,6 +118,12 @@ module Togodb
         @fs = ','
       end
 
+      @csv_opts = {
+        encoding: "#{@options[:csv_file_encoding]}:UTF-8",
+        col_sep: @fs,
+        liberal_parsing: true
+      }
+
       if header?
         @header = first_entry
         @column_size = @header.size
@@ -125,7 +131,6 @@ module Togodb
         @header = nil
         @column_size = first_entry.size
       end
-
     end
 
     # returns: ["string", "integer", ...] where types are kind of AR::ColumnType
@@ -149,7 +154,7 @@ module Togodb
       row_id = 0
       column_types = Array.new(col_ids.size).collect { ColumnType.new }
 
-      CSV.foreach(@file, encoding: 'UTF-8', col_sep: @fs, liberal_parsing: true) do |row|
+      CSV.foreach(@file, **@csv_opts) do |row|
         if header? && row_id.zero?
           row_id = 1
           next
@@ -171,7 +176,7 @@ module Togodb
 
     def first_entry
       entry = []
-      CSV.foreach(@file, encoding: 'UTF-8', col_sep: @fs, liberal_parsing: true) do |row|
+      CSV.foreach(@file, **@csv_opts) do |row|
         entry = row
         break
       end

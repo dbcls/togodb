@@ -1,4 +1,4 @@
-class D2rqMappingController < D2rqMapperController
+class D2RQMappingController < D2RQMapperController
   before_action :set_table, only: [:show]
   before_action :set_work, only: [:download]
   before_action :read_user_required, only: [:show, :download]
@@ -10,7 +10,7 @@ class D2rqMappingController < D2rqMapperController
     @class_map = ClassMap.where(table_name: @table.name).reorder(id: :desc).first
     @work = @class_map.work
 
-    mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+    mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
     mapping_generator.prepare_by_work(@work)
     @mapping_data = mapping_generator.generate
 
@@ -28,7 +28,7 @@ class D2rqMappingController < D2rqMapperController
 
 =begin
   def download
-    mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+    mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
     mapping_generator.prepare_by_work(@work)
 
     send_data(
@@ -43,7 +43,7 @@ class D2rqMappingController < D2rqMapperController
     @work = class_map.work
     validate_user(@work.id)
     
-    mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+    mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
     mapping_generator.prepare_by_class_map(class_map)
     @mapping_data = mapping_generator.generate_by_class_map
 
@@ -61,7 +61,7 @@ class D2rqMappingController < D2rqMapperController
     @work = property_bridge.work
     validate_user(@work.id)
     
-    mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+    mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
     mapping_generator.prepare_by_property_bridge(property_bridge)
     @mapping_data = mapping_generator.generate_by_property_bridge
 
@@ -82,7 +82,7 @@ class D2rqMappingController < D2rqMapperController
     @work = table_join.work
     validate_user(@work.id)
     
-    mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+    mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
     mapping_generator.prepare_by_table_join(table_join)
     @mapping_data = mapping_generator.generate_by_table_join
 
@@ -93,7 +93,7 @@ class D2rqMappingController < D2rqMapperController
   private
 
   def generate_d2rq_mapping
-    mapping_generator = TogoMapper::D2rq::MappingGenerator.new
+    mapping_generator = TogoMapper::D2RQ::MappingGenerator.new
     mapping_generator.prepare_by_work(@work.id)
   end
 

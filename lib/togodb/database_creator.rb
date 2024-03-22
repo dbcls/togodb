@@ -46,7 +46,7 @@ module Togodb
     def parse_for_header_line
       records = []
       n = 0
-      CSV.foreach(utf8_file(@create.file_format), encoding: 'UTF-8', col_sep: line_separator(@create.file_format), liberal_parsing: true) do |row|
+      CSV.foreach(uploaded_file(@create.file_format), **csv_opts) do |row|
         records << row
         n += 1
         break if n == 3 # we need first three rows at most
@@ -62,34 +62,41 @@ module Togodb
       column_samples = []
 
       column_names = []
-      samples = []
-      first_line = []
-      second_line = []
+      column_labels = []
+      lines = []
       no = 1
-      CSV.foreach(utf8_file(@create.file_format), encoding: 'UTF-8', col_sep: line_separator(@create.file_format), liberal_parsing: true) do |row|
-        if no == 1
-          first_line = row
-        elsif no == 2
-          second_line = row
-        end
-
+      CSV.foreach(uploaded_file(@create.file_format), **csv_opts) do |row|
+        lines << row
         no += 1
 
         break if no > 3
       end
 
       if first_line_is_header
-        first_line.each_with_index do |name, i|
-          column_names << coerce_to_column_name(name, i + 1)
+        # first line (lines[0]) of CSV file is header line
+        lines[0].each_with_index do |first_line_column_value, i|
+          column_name = coerce_to_column_name(first_line_column_value, i + 1)
+          column_names << column_name
+          column_labels << if first_line_column_value == column_name
+                             column_name.capitalize
+                           else
+                             first_line_column_value
+                           end
         end
-        samples = second_line
+        samples = if lines.size > 1
+                    lines[1]
+                  else
+                    Array.new(column_names.size) { '' }
+                  end
       else
-        column_names = first_line.size.times.map { |i| "col#{i + 1}" }
-        samples = first_line
+        # first line of CSV file is not header line, so generate column names
+        column_names = lines[0].size.times.map { |i| "col#{i + 1}" }
+        column_labels = column_names.map(&:capitalize)
+        samples = lines[0]
       end
 
-      column_names.zip(samples).each do |array|
-        column_samples << { name: array[0], sample: array[1] }
+      column_names.zip(samples, column_labels).each do |array|
+        column_samples << { name: array[0], sample: array[1], label: array[2] }
       end
 
       column_samples
@@ -105,9 +112,12 @@ module Togodb
     end
 
     def guess_column_types(column_indexes = nil)
-      Togodb::GuessColumnType.new(
-          @create.utf8_file_path, header: @create.header_line, fs: line_separator(@create.file_format)
-      ).execute(column_indexes)
+      opts = {
+        header: @create.header_line,
+        fs: line_separator(@create.file_format),
+        csv_file_encoding: @create.input_file_encoding || 'UTF-8'
+      }
+      Togodb::GuessColumnType.new(@create.uploded_file_path, opts).execute(column_indexes)
     end
 
     def guess_column_type_simply(name, data)
@@ -136,9 +146,9 @@ module Togodb
       "#{Togodb.upfile_saved_dir}/create#{@create.id}.#{format}"
     end
 
-    def utf8_file(format)
-      "#{Togodb.upfile_saved_dir}/create#{@create.id}-utf8.#{format}"
-    end
+    # def utf8_file(format)
+    #   "#{Togodb.upfile_saved_dir}/create#{@create.id}-utf8.#{format}"
+    # end
 
     def create_columns
       types = guess_column_types
@@ -151,8 +161,9 @@ module Togodb
             name: hash[:name],
             internal_name: "col_#{hash[:name]}",
             data_type: data_type,
-            label: hash[:name].capitalize,
+            label: hash[:label],
             enabled: true,
+            sanitize: true,
             position: position,
             action_list: position <= 100,
             action_show: true,
@@ -173,6 +184,14 @@ module Togodb
       Resque.enqueue Togodb::DataImportJob, @create.id, key, @table.csv_cols_for_data_import_job
 
       key
+    end
+
+    def csv_opts
+      {
+        encoding: "#{@create.input_file_encoding}:UTF-8",
+        col_sep: line_separator(@create.file_format),
+        liberal_parsing: true
+      }
     end
   end
 end

@@ -1,0 +1,65 @@
+= content_for :header do
+  meta charset="utf-8"
+  title TogoDB - Columns settings
+  = stylesheet_link_tag "style"
+  = stylesheet_link_tag "font-awesome"
+  = stylesheet_link_tag "bootstrap"
+  = stylesheet_link_tag "configs"
+  = stylesheet_link_tag "tab"
+  = javascript_include_tag "bootstrap"
+  = javascript_include_tag "tools"
+  = javascript_include_tag "configs"
+  = javascript_include_tag "columns_setting_tab"
+  = javascript_include_tag "config_columns"
+  = javascript_include_tag "togodb_graphs"
+  script type="module" src="https://togostanza.github.io/metastanza-devel/barchart.js" async
+  script type="module" src="https://togostanza.github.io/metastanza-devel/piechart.js" async
+
+  ruby:
+    html_link = Togodb::ColumnTypes.supported_types.map { |item| %('#{item[:name]}': '#{item[:link]}') }.join(",")
+
+  javascript:
+    const table_name = "#{@table.name}";
+    const html_link = { #{{html_link}}};
+
+  css:
+    togostanza-piechart {
+      --togostanza-canvas-width: 100;
+      --togostanza-canvas-height: 100;
+      --togostanza-canvas-padding: 0px 0px 0px 0px;
+    }
+
+    togostanza-barchart {
+      --togostanza-canvas-width: 150;
+      --togostanza-canvas-height: 120;
+      --togostanza-canvas-padding: 0 30 30 30;
+    }
+
+.contents_title_selectdb_box
+  = render 'table_selector'
+  = render 'config_menu', selected: :columns_settings
+
+#togodb_page_contents
+  .contents_selected_menu_title Columns settings
+
+  - if flash[:err]
+    = render 'alert_message', message: flash[:err]
+
+  #togodb_config_columns_contents
+    / tab
+    .togodb_tab_box.left
+      #togodb_columns_basic.togodb_tab.active Basic
+      #togodb_columns_link.togodb_tab Link
+      #togodb_columns_graph.togodb_tab Chart
+
+    / Columns settings
+    #togodb_columns_basic_contents
+      = render 'columns_basic_contents'
+
+    / Link
+    #togodb_columns_link_contents style="display: none;"
+      = render 'columns_link_contents'
+
+    / Graph
+    #togodb_columns_graph_contents style="display: none;"
+      = render 'columns_graph_contents'

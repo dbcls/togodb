@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'csv'
 require 'json'
 require 'fileutils'
@@ -48,6 +49,13 @@ class TablesController < ApplicationController
     @page_key = "togodb_view_#{random_str(64)}"
     @preview = false
 
+#    if params.key?('--dev--')
+#      @dev_mode = true
+#      params.delete('--dev--')
+#    else
+#      @dev_mode = false
+#    end
+    
     if request.post?
       @preview = true
       @page_body = params[:body]
@@ -61,6 +69,8 @@ class TablesController < ApplicationController
     respond_to do |format|
       format.html do
         @entry_head_html = entry_page_head_embed_html
+        key_value_metastanza = MetaStanza::KeyValue.new(@table)
+        @key_value_metastanza_tag = key_value_metastanza.html_tag
 
         if @preview
 
@@ -68,17 +78,19 @@ class TablesController < ApplicationController
           page = TogodbPage.find_by_table_id(@table.id)
           @page_body = page.view_body
           if @page_body.blank?
-            @page_body = render_to_string(partial: 'pages/view_body_default')
+            @page_body = db_body_default
           end
           @page_head = page.view_header
           if @page_head.blank?
             @page_head = render_to_string(partial: 'pages/view_header_default')
           end
 
-          if !request.query_string.blank? or params.key?(:search)
-            search_condition = save_search_condition(@page_key)
-            unless search_condition['condition'].empty?
-              add_page_key_to_flexigrid
+          unless request.query_string == '--dev--'
+            if !request.query_string.blank? or params.key?(:search)
+              search_condition = save_search_condition(@page_key)
+              unless search_condition['condition'].empty?
+                add_page_key_to_flexigrid
+              end
             end
           end
         end
@@ -101,16 +113,27 @@ class TablesController < ApplicationController
         render plain: css, type: 'text/css'
       end
 
+      format.json do
+        metadata_table_json = @table.metastanza_table_json
+        if metadata_table_json.blank?
+          data_generator = MetaStanza::DataGenerator::PaginationTable.new(@table)
+          metadata_table_json = data_generator.generate.to_json
+          @table.update(metastanza_table_json: metadata_table_json)
+        end
+
+        render json: metadata_table_json
+      end
+
       format.js
 
       format.ttl do
-        db_metadata = TogodbDbMetadata.where(table_id: @table.id).first
+        db_metadata = TogodbDBMetadata.where(table_id: @table.id).first
         metadata = Togodb::Metadata.new(db_metadata.id)
         render text: metadata.generate_rdf('turtle')
       end
 
       format.rdf do
-        db_metadata = TogodbDbMetadata.where(table_id: @table.id).first
+        db_metadata = TogodbDBMetadata.where(table_id: @table.id).first
         metadata = Togodb::Metadata.new(db_metadata.id)
         render text: metadata.generate_rdf('rdfxml')
       end
@@ -199,13 +222,13 @@ class TablesController < ApplicationController
       end
     else
       @authorized_users = []
-      if @user.id != @table.creator_id
-        @authorized_users << TogodbUser.find(@table.creator_id)
+      if current_togodb_account.id != @table.creator_id
+        @authorized_users << TogodbAccount.find(@table.creator_id)
       end
       TogodbRole.where(table_id: @table.id).each do |role|
         next if role.user_id == @user.id
 
-        @authorized_users << TogodbUser.find(role.user_id)
+        @authorized_users << TogodbAccount.find(role.user_id)
       end
 
       @authorized_users.uniq!
@@ -681,13 +704,35 @@ class TablesController < ApplicationController
 
   def prepare_templ_vars
     metadata = @table.metadata
+    tag_generator = MetaStanza::PaginationTable.new(@table, html_escape: false)
 
-    {
+    vars = {
         db_name: @table.name,
         title: metadata&.title,
         description: metadata&.description,
-        creator: metadata&.creator
+        creator: metadata&.creator,
+        togodb_base_url: Togodb.togodb_base_url,
+        togostanza_bar_chart_js_tag: %(<script type="module" src="https://togostanza.github.io/metastanza-devel/barchart.js" async></script>),
+        togostanza_pie_chart_js_tag: %(<script type="module" src="https://togostanza.github.io/metastanza-devel/piechart.js" assync></script>),
+        togostanza_pagination_table_js_tag: %(<script type="module" src="https://togostanza.github.io/metastanza-devel/pagination-table.js" async></script>),
+        togostanza_key_value_js_tag: %(<script type="module" src="https://togostanza.github.io/metastanza-devel/key-value.js" async></script>),
+        togostanza_pagination_table: tag_generator.html_tag
     }
+
+    @table.columns.each do |column|
+      TogodbGraph.where(togodb_column_id: column.id).each do |chart|
+        next if chart&.embed_tag.blank?
+
+        # api_url =
+        #   "#{Togodb.url_scheme}://#{[Togodb.api_server, 'chart', chart.chart_type, @table.name, column.name].join('/')}.json"
+        api_url = chart.api_url
+        embed_tag = chart.embed_tag.sub(/(<togostanza\-\w+)(\s+)/) { %(\n#{$1} id="metastanza-#{chart.chart_type}-#{@table.name}-#{column.name}" data-url="#{api_url}"#{$2}) }
+
+        vars["togostanza_#{chart.chart_type}_#{@table.name}_#{column.name}"] = embed_tag
+      end
+    end
+
+    vars
   end
 
   def generate_csv_for_download(use_psql_copy = true)

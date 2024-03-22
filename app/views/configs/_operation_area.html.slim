@@ -15,6 +15,24 @@
             span style="color:#ff478a; margin-left:10px;"
               = link_to @app_server + sparql_path(@table.name), @app_server + sparql_path(@table.name), target: '_blank'
       tr
+        - if @table.environment == 'Test'
+          th Environment
+        - else
+          th Environment
+        td
+          p#togodb-database-environment.form_control_static
+            = @table.environment_text
+            - if @table.test_env? && !@table.in_requesting?
+              = button_tag 'Request production release', type: 'button', id: 'togodb-official-release-request-btn', class: 'togodb_btn_double'
+
+          #official-release-wrapper style="display: none; align-items: center; margin-top: 3px; margin-bottom: 10px;"
+            div style="font-size: 1.2em;"
+              | Email Address
+            div
+              input type="text" id="togodb-official-release-request-email" style="margin-left: 4px; width: 350px;"
+            div
+              = button_tag 'Send request', type: 'button', id: 'togodb-official-release-send-btn', class: 'togodb_btn_double', style: "margin-top: 0px; margin-left: 4px;"
+      tr
         th Alias name
         td
           = f.text_field :page_name

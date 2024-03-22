@@ -1,0 +1,38 @@
+<% content_for :header do %>
+  <title>TogoDB - Edit record</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+  <%= stylesheet_link_tag "style" %>
+  <%= stylesheet_link_tag "font-awesome" %>
+  <%= stylesheet_link_tag "flexigrid/flexigrid" %>
+  <link rel="stylesheet" href="/db/<%= @table.name %>.css">
+
+  <script>
+      const new_form_url = () => {
+          return "<%= entry_form_path(db: @table.name) %>";
+      };
+      const edit_form_url = (record_id) => {
+          return "<%= entry_form_path(db: @table.name) %>" + "/" + record_id;
+      };
+      const delete_entries_url = () => {
+          return "<%= delete_entries_path(db: @table.name) %>";
+      };
+  </script>
+<% end %>
+
+<div class="contents_title_selectdb_box">
+  <%= render 'table_selector' %>
+  <%= render 'config_menu', selected: :edit_record %>
+</div>
+
+<div id="togodb_page_contents" style="max-width: 90%;">
+  <div class="contents_selected_menu_title custom_html">Edit record</div>
+  <div id="togodb-table-view">
+    <div class="togodb_table_wrapper" style="margin-top: 10px;">
+      <table class="togodb_table" id="togodb-<%= @table.name %>" style="display:none;"></table>
+      <script src="/togodb/flexigrid/<%= @table.name %>.js?width=auto&amp;height=400&amp;buttons"></script>
+    </div>
+  </div>
+</div>
+
+<% # wrapper div element for Add or Edit record dialog %>
+<div id="togodb-view-add-form" style="display: none;"></div>

@@ -1,0 +1,9 @@
+section.togodb_create_db_sectionbox
+  #contents_editcolumn.togodb_create_db_sectionbox_content
+    #togodb_create_columns
+      .togodb_import_track_contents
+        = form_with url: columns_basic_config_path(@table), method: :patch, id: "tab-column-basic-form" do
+          #column_basic_setting_table
+            = render 'columns_settings_table'
+          .togodb_btns
+            = submit_tag 'Update', id: 'col_settings_btn', class: 'togodb_btn_double update', role: 'button', 'aria-disabled' => 'false'

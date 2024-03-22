@@ -16,14 +16,17 @@
 
   /!
     This is a placeholder for a data table. Do not edit this block.
-  .togodb_table_wrapper
+  /.togodb_table_wrapper
     table class="togodb_table" id="togodb-{{db_name}}" style="display:none;"
     script src="/togodb/flexigrid/#{@table.name}.js?width=auto&height=400&buttons" type="text/javascript"
-  = "\n"
+  script[type="module"
+         src=@pagination_table.metastanza_javascript_url
+         async]
+  == @pagination_table.html_tag
 
   .togodb_info id="togodb-info-{{db_name}}" style="display:none;"
   script src="/togodb/info/#{@table.name}.js" type="text/javascript"
 
   .togodb_footer
     |
-      The {{db_name}} database, Copyright (C) 2019 {{creator}}
+      The {{db_name}} database, Copyright (C) #{Time.now.year} {{creator}}

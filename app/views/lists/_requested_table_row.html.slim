@@ -1,0 +1,26 @@
+tr.odd
+  td.left.sorting_1.style.style_fontsize_14
+    = link_to production_request.table.name, data_list_path(production_request.table.name), target: '_blank'
+  td
+    - if true
+      /- if current_togodb_account.execute_table?(production_request.table)
+      /= link_to content_tag(:span, 'Config', class: 'table_arrow'), config_path(table.name)
+      = button_tag 'Process this request', type: :button, class: 'togodb-process-request-btn btn btn-light',
+              style: 'margin-top: 5px; margin-bottom: 5px; font-size: 12px;',
+              data: { production_request_id: production_request.id, toggle: :modal, target: '#togodb-process-request' }
+  td
+    = database_access_text(production_request.table)
+  td.num-records
+    = number_with_delimiter(production_request.table.num_records)
+  td.left
+    = production_request.table.created_at
+  td
+    = production_request.table.creator ? production_request.table.creator.login : '[Unknown]'
+  td.release_info_data_table
+    .tabble_menu_row_other
+      .table_menu_actions_other
+        /- if @user.execute_table?(table)
+          = link_to content_tag(:div, 'Copy', class: 'copy'), copy_table_path(table)
+          = link_to content_tag(:div, 'Append', class: 'add'), append_table_path(table)
+          = link_to content_tag(:div, 'Delete', class: 'delete'), table_path(table), method: :delete, data: { confirm: "Are you sure you want to delete the database '#{table.name}' ?" }
+
