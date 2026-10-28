@@ -1,7 +1,7 @@
 ruby:
   options_for_format = { "Text" => "text", "XML" => "xml", "JSON" => "json", "CSV" => "csv", "TSV" => "tsv" }
 
-= form_with url: search_sparql_path, id: "sparql-form", class: "form-horizontal" do
+= form_with url: search_sparql_path, local: false, id: "sparql-form", class: "form-horizontal" do
   .form-group
     div
       label.control-label for="sparql-query" style="padding-left:15px;" SPARQL Query

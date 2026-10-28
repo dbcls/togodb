@@ -1,4 +1,4 @@
-= form_with url: upload_create_path(@create) do
+= form_with url: upload_create_path(@create), local: false do
   .remote_file_contents_url.margin_top_28
     | URL
     = text_field_tag 'remote_url', '', size: 80

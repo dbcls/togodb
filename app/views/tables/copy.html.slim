@@ -13,7 +13,7 @@
 #copy-database-title.contents_title Copy Database
 #database-copy-wrapper
   #database-copy-message
-  = form_with url: copy_table_path(@table), id: 'togodb-db-copy-form' do
+  = form_with url: copy_table_path(@table), local: false, id: 'togodb-db-copy-form' do
     table.togodb_table.togodb_table_inform cellpadding="5" cellspacing="0"
       tbody
         tr

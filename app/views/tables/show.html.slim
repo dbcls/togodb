@@ -1,6 +1,14 @@
 - content_for :header do
   title = @table.label
 
+  sass:
+    #togodb-quickbrowse-body
+      min-width: 600px
+    #qb-ifm
+      border: none
+      min-width: 810px
+      width: 100%
+
   javascript:
     var writable = "#{@writable}";
     var table_id = "#{@table.id}";
@@ -20,6 +28,25 @@
     var view_table_id = function () {
         return "#{{view_table_id(@table.name)}}";
     };
+
+    const resize_qb = function () {
+        console.log(document.body.clientWidth);
+        console.log("onload QuickBrowse: ");
+        const qb_ifm = document.getElementById("qb-ifm");
+        const ifm_width = qb_ifm.contentWindow.document.body.scrollWidth;
+        const ifm_height = qb_ifm.contentWindow.document.body.scrollHeight;
+        console.log("width = " + ifm_width + ", height = " + ifm_height);
+        if (ifm_width > document.body.clientWidth - 100) {
+            // qb_ifm.style.width = document.body.clientWidth - 100 + "px";
+        } else {
+            // qb_ifm.style.width = ifm_width + "px";
+        }
+        if (ifm_height > document.body.clientHeight - 100) {
+            qb_ifm.style.height = document.body.clientHeight - 100 + "px";
+        } else {
+            qb_ifm.style.height = ifm_height + "px";
+        }
+    }
 
   / for QuickBrowse
   - if @table.name != 'antmossdb'

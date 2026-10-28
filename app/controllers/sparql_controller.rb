@@ -1,15 +1,10 @@
-require 'tempfile'
-require 'open3'
-require 'togo_mapper/d2rq/mapping_generator'
-require 'togo_mapper/namespace'
-
 class SparqlController < D2rqMapperController
   include TogoMapper::Namespace
 
   before_action :set_work
   before_action :read_user_required
   before_action :set_html_body_class
-  protect_from_forgery except: [:search]
+  protect_from_forgery except: [:show, :search]
 
   RESPONSE_MIME_TYPE_JSON = 'application/sparql-results+json'
   RESPONSE_MIME_TYPE_XML = 'application/sparql-results+xml'
@@ -55,6 +50,7 @@ class SparqlController < D2rqMapperController
       execute_sparql(sparql, format)
     else
       @result = sparql_query_to_graphdb(database_name, sparql, format)
+      # @result.force_encoding('UTF-8')
     end
   end
 
@@ -89,13 +85,7 @@ class SparqlController < D2rqMapperController
     @password = ''
 
     cmd = cmd_parts.join(' ')
-    logger.debug cmd
-
     @result, @stderr, @status = Open3.capture3(cmd)
-
-    logger.debug "===== STDOUT =====\n#{@result}"
-    logger.debug "===== STDERR =====\n#{@stderr}"
-    logger.debug "===== STATUS =====\n#{@status}"
   end
 
   def response_mime_type_by_accept_header(accept_header)

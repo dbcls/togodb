@@ -1,2 +1,2 @@
-class TogodbDbMetadataPubmed < ApplicationRecord
+class TogodbDBMetadataPubmed < ApplicationRecord
 end

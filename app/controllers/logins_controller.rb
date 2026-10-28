@@ -1,6 +1,4 @@
 class LoginsController < ApplicationController
-  protect_from_forgery except: :openid
-
   def show; end
 
   def openid
@@ -33,8 +31,9 @@ class LoginsController < ApplicationController
 
   def open_id_authentication
     options = {
-      trust_root: @app_server,
-      return_to: "#{request.headers['HTTP_REFERER']}/openid?_method=post"
+      # trust_root: @app_server,
+      # trust_root: "https://dbcls-togodb.nisizawa.com",
+      return_to: "#{request.headers['HTTP_REFERER']}/openid"
     }
     authenticate_with_open_id(nil, options) do |result, identity_url|
       if result.successful?

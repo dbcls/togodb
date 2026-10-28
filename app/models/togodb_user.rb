@@ -1,5 +1,3 @@
-require 'acts_as_bits'
-
 class TogodbUser < ApplicationRecord
   has_many :tables, class_name: 'TogodbTable', foreign_key: 'creator_id'
   has_many :roles, class_name: 'TogodbRole', foreign_key: 'user_id', dependent: :destroy

@@ -1,6 +1,6 @@
 #togodb_create_dbname
   #database-name-message
-  = form_with url: creates_path do
+  = form_with url: creates_path, local: false do
     - if @create.mode == 'append'
       = text_field_tag :table_name, @table.name, id: "create-dbname-input", class: "togodb_input_databse_name", disabled: true
     - else

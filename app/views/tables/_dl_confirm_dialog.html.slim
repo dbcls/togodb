@@ -8,7 +8,7 @@ div id=dialog_id title="License agreement" style="display:none;"
     br
     br
     - if metadata.license_is_creative_commons?
-      = image_tag TogodbDbMetadata.creative_commons[metadata.creative_commons - 1][:image_url]
+      = image_tag TogodbDBMetadata.creative_commons[metadata.creative_commons - 1][:image_url]
     - else
       = @table.metadata.licence
 

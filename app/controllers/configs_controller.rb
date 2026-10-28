@@ -67,14 +67,14 @@ class ConfigsController < ApplicationController
   end
 
   def set_metadata(table)
-    @metadata = TogodbDbMetadata.find_by_table_id(table.id)
+    @metadata = TogodbDBMetadata.find_by_table_id(table.id)
     unless @metadata
-      @metadata = TogodbDbMetadata.create(
+      @metadata = TogodbDBMetadata.create(
           table_id: table.id
       )
     end
-    @metadata_pubmeds = TogodbDbMetadataPubmed.where(db_metadata_id: @metadata.id)
-    @metadata_dois = TogodbDbMetadataDoi.where(db_metadata_id: @metadata.id)
+    @metadata_pubmeds = TogodbDBMetadataPubmed.where(db_metadata_id: @metadata.id)
+    @metadata_dois = TogodbDBMetadataDoi.where(db_metadata_id: @metadata.id)
   end
 
   def role_params(id)

@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   resource :login, only: [:show] do
     member do
-      post :openid
+      get :openid
       post :account
     end
   end
@@ -40,7 +40,11 @@ Rails.application.routes.draw do
   end
 
   # Uploaded files (Supplementary files)
-  resources :togodb_supplementary_files, controller: :supplementary_files, only: %i[create update destroy]
+  resources :togodb_supplementary_files, controller: :supplementary_files, only: %i[create update destroy] do
+    member do
+      get :dl
+    end
+  end
   get '/upload_files/:id', to: 'supplementary_files#show', as: :upload_files
   get '/supplementary_files/:id/:dirpath', to: 'supplementary_files#list', dirpath: /.+/
   get '/files/:id/:fpath', to: 'supplementary_files#send_supplementary_file', fpath: /.+/
@@ -94,7 +98,6 @@ Rails.application.routes.draw do
       get  :progress
       get  :status
       get  :populated_percentage
-      get  :convert_progress
     end
   end
 

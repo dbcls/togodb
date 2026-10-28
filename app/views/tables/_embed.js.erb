@@ -3,21 +3,21 @@
 
 <% if request.headers['Referer'] != "#{@app_server}/db/#{@table.name}" %>
 document.write("<%== j @entry_head %>");
-document.write('<%= stylesheet_link_tag "#{@app_server}/entry/#{@table.name}" %>');
+document.write('<%= stylesheet_link_tag "#{@app_server}/entry/#{@table.name}.css" %>');
 
-document.write('<%= stylesheet_link_tag asset_url("menu.css") %>');
-document.write('<%= stylesheet_link_tag asset_url("page-contents.css") %>');
-document.write('<%= stylesheet_link_tag asset_url("flexigrid/flexigrid.css") %>');
-document.write('<%= stylesheet_link_tag asset_url("jquery-ui-Base.1.11.4/jquery-ui.css") %>');
-document.write('<%= stylesheet_link_tag asset_url("jquery-ui.css") %>');
-document.write('<%= stylesheet_link_tag asset_url("table_view.css") %>');
-document.write('<%= stylesheet_link_tag asset_url("flexigrid.css") %>');
-document.write('<%= stylesheet_link_tag asset_url("tables/dialog.css") %>');
+document.write('<%= stylesheet_link_tag asset_url("menu.css").sub(/\Ahttp/, 'https') %>');
+document.write('<%= stylesheet_link_tag asset_url("page-contents.css").sub(/\Ahttp/, 'https') %>');
+document.write('<%= stylesheet_link_tag asset_url("flexigrid/flexigrid.css").sub(/\Ahttp/, 'https') %>');
+document.write('<%= stylesheet_link_tag asset_url("jquery-ui-Base.1.11.4/jquery-ui.css").sub(/\Ahttp/, 'https') %>');
+document.write('<%= stylesheet_link_tag asset_url("jquery-ui.css").sub(/\Ahttp/, 'https') %>');
+document.write('<%= stylesheet_link_tag asset_url("table_view.css").sub(/\Ahttp/, 'https') %>');
+document.write('<%= stylesheet_link_tag asset_url("flexigrid.css").sub(/\Ahttp/, 'https') %>');
+document.write('<%= stylesheet_link_tag asset_url("tables/dialog.css").sub(/\Ahttp/, 'https') %>');
 
-document.write('<%= javascript_include_tag asset_url("jquery.js") %>');
-document.write('<%= javascript_include_tag asset_url("jquery-ui.js") %>');
-document.write('<%= javascript_include_tag asset_url("flexigrid.js") %>');
-document.write('<%= javascript_include_tag asset_url("jquery.cookie.js") %>');
+document.write('<%= javascript_include_tag asset_url("jquery.js").sub(/\Ahttp/, 'https') %>');
+document.write('<%= javascript_include_tag asset_url("jquery-ui.js").sub(/\Ahttp/, 'https') %>');
+document.write('<%= javascript_include_tag asset_url("flexigrid.js").sub(/\Ahttp/, 'https') %>');
+document.write('<%= javascript_include_tag asset_url("jquery.cookie.js").sub(/\Ahttp/, 'https') %>');
 
 document.write("<%== j @page_head %>");
 document.write('<%= stylesheet_link_tag "#{@app_server}/db/#{@table.name}.css" %>');

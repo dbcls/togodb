@@ -4,8 +4,8 @@ class TogodbTable < ApplicationRecord
   has_one :page, class_name: 'TogodbPage', foreign_key: 'table_id', dependent: :delete
   belongs_to :creator, class_name: 'TogodbUser', foreign_key: 'creator_id'
   has_many :roles, class_name: 'TogodbRole', foreign_key: 'table_id', dependent: :delete_all
-  has_one :supplementary_files, class_name: 'TogodbSupplementaryFile', foreign_key: 'togodb_table_id', dependent: :destroy
-  has_one :metadata, class_name: 'TogodbDbMetadata', foreign_key: 'table_id', dependent: :delete
+  has_many :supplementary_files, class_name: 'TogodbSupplementaryFile', foreign_key: 'togodb_table_id', dependent: :destroy
+  has_one :metadata, class_name: 'TogodbDBMetadata', foreign_key: 'table_id', dependent: :delete
 
   class << self
 

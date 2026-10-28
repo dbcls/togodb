@@ -1,4 +1,4 @@
-class DbConnection < ApplicationRecord
+class DBConnection < ApplicationRecord
 
   belongs_to :work
 

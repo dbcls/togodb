@@ -20,7 +20,14 @@
     font-size: 14px;
   }
 
-  a:before {
+  a.download:before {
+    font-family: "FontAwesome";
+    content: "\f019";
+    padding-right: 3px;
+    width: 80%;
+  }
+
+  a.delete:before {
     font-family: "FontAwesome";
     content: "\f1f8";
     padding-right: 3px;

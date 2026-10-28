@@ -7,7 +7,7 @@
       .togodb-import-error-message
         == @errors.keys.sort.map { |col_id| @errors[col_id] }.join("<br />")
 
-    = form_with url: columns_create_path(@create), method: :post do
+    = form_with url: columns_create_path(@create), method: :post, local: false do
       table.togodb_table_inform.margin_top_28 cellpadding="4" cellspacing="0"
         tr
           th Enable

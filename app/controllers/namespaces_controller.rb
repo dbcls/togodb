@@ -1,11 +1,9 @@
-require 'togo_mapper/namespace'
-
 class NamespacesController < D2rqMapperController
   protect_from_forgery
 
   include TogoMapper::Namespace
 
-  before_action :set_work, except: [:new_namespace_form, :add_form, :ontology_file_upload_form]
+  before_action :set_work, except: [:new_namespace_form]
   before_action :read_user_required, only: [:show]
   before_action :execute_user_required, only: [:update]
   before_action :set_html_body_class

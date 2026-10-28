@@ -301,10 +301,23 @@ Togodb.ListViewer.Popup.prototype = {
     change_record: function () {
         const elem = this.viewer.records()[this.viewer.position];
         this.viewer.current_id = $(elem).attr("id").slice(3);
+	/*
         $.getScript("<%= @app_server %>/entries/quickbrowse/" + this.viewer.dbname + "/" + this.viewer.current_id, function (data) {
                 eval(data);
             }
         );
+        */
+        const url = `/entries/quickbrowse/${this.viewer.dbname}/${this.viewer.current_id}`;
+	console.log(url);
+        fetch(url, {
+            headers: {
+                "Accept": "application/javascript"
+            }
+        })
+          .then((response) => response.text())
+          .then((js) => {
+              eval(js);
+          });
 
         if (this.viewer.active) {
             $(elem).addClass(this.viewer.style.current);

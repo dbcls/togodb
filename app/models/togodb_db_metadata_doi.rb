@@ -1,2 +1,2 @@
-class TogodbDbMetadataDoi < ApplicationRecord
+class TogodbDBMetadataDoi < ApplicationRecord
 end

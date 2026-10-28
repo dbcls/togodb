@@ -5,7 +5,7 @@
   #entry_code_columns_settings.togodb_tab Columns settings
   #entry_code_columns_link.togodb_tab Columns link
 
-= form_with model: @page, method: :patch, id: "entry-page-form" do |f|
+= form_with model: @page, method: :patch, local: false, id: "entry-page-form" do |f|
   #entry_code_body_contents
     = f.text_area :show_body, id: "entry_code_textarea_body"
   #entry_code_header_contents

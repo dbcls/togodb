@@ -1,5 +1,3 @@
-require 'acts_as_bits'
-
 class TogodbColumn < ApplicationRecord
 
   include ActsAsBits

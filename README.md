@@ -1,9 +1,12 @@
 # TogoDB
 
 ## 必要なソフトウェア
+### Ruby
+Ruby 4.0.x で動作を確認しています。
+
 ### PostgreSQL
 postgresql-serverが稼働しており、TogoDB（Railsアプリケーション）からpostgresql-serverにアクセスできる必要があります。
-* Version 9.x, 10.x, 11.xで動作を確認しています。
+* Version 18.x で動作を確認しています。
 * pg_trgmを利用しています。そのためpostgresql-contribをインストールするかPostgreSQLのcontribからpg_trgmをインストールする必要があります。
 
 ### Redis
@@ -37,9 +40,9 @@ RDFのフォーマット変換（N-triples => Turtle, RDF/XML）のため、Rapt
 ## 設定ファイル
 PostgreSQLの接続情報等、環境に依存する情報の管理に[dotenv](https://github.com/bkeepers/dotenv/)を使用しています。
 
-.env-sampleファイルをコピーして.envファイルを作成し、.envファイルを環境に合わせて編集します。
+dotenv-sampleファイルをコピーして.envファイルを作成し、.envファイルを環境に合わせて編集します。
 ```
-$ cp .env-sample .env
+$ cp dotenv-sample .env
 $ vi .env
 ```
 
@@ -81,12 +84,12 @@ TogoDBアプリケーションのセットアップは以下の手順で行い�
 ```
 $ git clone https://github.com/dbcls/togodb.git
 $ cd togodb
-$ bundle install --path vendor/bundle
-$ cp .env-sample .env
+$ bundle install
+$ cp dotenv-sample .env
 $ .envファイルの内容を環境に合わせて編集
-$ bundle exec rails db:setup
-$ bundle exec rails togodb:setup
-$ bundle exec rails assets:precompile　（development環境では不要）
+$ bin/rails db:setup
+$ bin/rails togodb:setup
+$ bin/rails assets:precompile　（development環境では不要）
 ```
 
 ## ローカル・アカウントの作成
@@ -94,7 +97,7 @@ TogoDBにローカル・アカウントでログインするためには、ロ�
 
 ローカル・アカウントの作成は、以下のコマンドを実行します。
 ```
-$ bundle exec rails c
+$ bin/rails c
 irb(main):001:0> TogodbUser.regist('ユーザ名', 'パスワード')
 ```
 
@@ -110,7 +113,7 @@ $ bundle exec ruby .local/bin/resque-worker.rb start
  
 Railsサーバの起動
 ```
-$ bundle exec rails s -b 0.0.0.0
+$ bin/rails s -b 0.0.0.0
 ```
 
 サーバの起動後、Webブラウザで http://<サーバ名>:3000/ にアクセスするとTogoDBのトップ画面が表示されます。

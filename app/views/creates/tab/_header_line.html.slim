@@ -15,9 +15,9 @@
   p.contents_subtitle Treat the first line as column names?
 
   .togodb_btns.margin_bottom_10 style="text-align: center;"
-    = form_with url: header_create_path(@create), method: :post do
+    = form_with url: header_create_path(@create), method: :post, local: false do
       = submit_tag "Yes", class: "togodb_btn_double"
       = hidden_field_tag "header", "t"
-    = form_with url: header_create_path(@create), method: :post do
+    = form_with url: header_create_path(@create), method: :post, local: false do
       = submit_tag "No", class: "togodb_btn_double"
       = hidden_field_tag "header", "f"

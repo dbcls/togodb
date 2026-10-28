@@ -1,3 +1,4 @@
+# coding: utf-8
 module TablesHelper
   include Togodb::Link
   include Togodb::StringUtils
@@ -128,8 +129,13 @@ module TablesHelper
     link
   end
 
-  def quickbrowse_data_elem_id(name)
-    "togodb-quickbrowse-#{name}"
+  def quickbrowse_data_elem_id(table)
+    case table
+    when TogodbTable
+      "togodb-quickbrowse-#{table.name}"
+    else
+      "togodb-quickbrowse-#{table}"
+    end
   end
 
   def content_for_opensearch(query, record, columns)
@@ -253,7 +259,7 @@ module TablesHelper
   def flexigrid_properties(jsonize = true)
     sorting_column = @table.default_sorting_column
     props = {
-      url: flexigrid_fetch_url(@table),
+      url: flexigrid_fetch_path(@table),
       params: flexigrid_params,
       method: 'get',
       dataType: 'json',

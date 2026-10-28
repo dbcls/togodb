@@ -47,7 +47,7 @@ class TurtleController < D2rqMapperController
       end
     end
 
-    db_conn = DbConnection.where(work_id: @work.id).first
+    db_conn = DBConnection.where(work_id: @work.id).first
 
     mapping_generator = TogoMapper::D2rq::MappingGenerator.new
     mapping_generator.prepare_by_work(@work)
@@ -165,7 +165,7 @@ class TurtleController < D2rqMapperController
     @work = class_map.work
     validate_user(@work.id)
 
-    db_conn = DbConnection.where(work_id: @work.id).first
+    db_conn = DBConnection.where(work_id: @work.id).first
 
     db = TogoMapper::DB.new(db_conn.connection_config)
     if !class_map.table_name.blank? && !db.tables.include?(class_map.table_name)
@@ -202,7 +202,7 @@ class TurtleController < D2rqMapperController
     property_bridge = PropertyBridge.find(params[:id])
     @work = property_bridge.work
 
-    db_conn = DbConnection.where(work_id: @work.id).first
+    db_conn = DBConnection.where(work_id: @work.id).first
 
     db = TogoMapper::DB.new(db_conn.connection_config)
     table_name = property_bridge.class_map.table_name
@@ -241,7 +241,7 @@ class TurtleController < D2rqMapperController
     @work = table_join.work
     validate_user(@work.id)
 
-    db_conn = DbConnection.where(work_id: @work.id).first
+    db_conn = DBConnection.where(work_id: @work.id).first
 
     mapping_generator = TogoMapper::D2rq::MappingGenerator.new
     mapping_generator.prepare_by_table_join(table_join)

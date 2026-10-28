@@ -1,6 +1,6 @@
 class Work < ApplicationRecord
 
-  has_many :db_connections, dependent: :destroy
+  has_many :db_connections, class_name: 'DBConnection', dependent: :destroy
   has_many :namespace_settings, dependent: :destroy
   has_many :class_maps, dependent: :destroy
   has_many :property_bridges, dependent: :destroy
@@ -12,7 +12,7 @@ class Work < ApplicationRecord
 
 
   def db_connection
-    DbConnection.where(work_id: self.id).first
+    DBConnection.where(work_id: self.id).first
   end
 
   def table_exists?(table_name)

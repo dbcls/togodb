@@ -1,5 +1,3 @@
-require 'fileutils'
-
 class TogodbSupplementaryFile < ApplicationRecord
   belongs_to :togodb_table
 
@@ -14,8 +12,6 @@ class TogodbSupplementaryFile < ApplicationRecord
 
   def tree_json
     if json_for_file_tree.blank?
-      require 'togodb/zip_handler'
-
       zip_handler = Togodb::ZipHandler.new
       self.json_for_file_tree = zip_handler.to_json(zip_file_path, togodb_table.name)
       save
@@ -34,15 +30,15 @@ class TogodbSupplementaryFile < ApplicationRecord
     zip_extract_dir_path.join(url_path)
   end
 
+  def zip_file_path
+    uploaded_files_save_path.join(original_filename)
+  end
+
   private
 
   def uploaded_files_save_path
     path = Pathname.new(Togodb.supfile_dir)
     path.join(table.name)
-  end
-
-  def zip_file_path
-    uploaded_files_save_path.join(original_filename)
   end
 
   def zip_extract_dir_path

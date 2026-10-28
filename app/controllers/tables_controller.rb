@@ -1,7 +1,3 @@
-require 'csv'
-require 'json'
-require 'fileutils'
-
 class TablesController < ApplicationController
   include Togodb::FileUtils
   include Togodb::StringUtils
@@ -48,6 +44,13 @@ class TablesController < ApplicationController
     @page_key = "togodb_view_#{random_str(64)}"
     @preview = false
 
+#    if params.key?('--dev--')
+#      @dev_mode = true
+#      params.delete('--dev--')
+#    else
+#      @dev_mode = false
+#    end
+    
     if request.post?
       @preview = true
       @page_body = params[:body]
@@ -75,10 +78,12 @@ class TablesController < ApplicationController
             @page_head = render_to_string(partial: 'pages/view_header_default')
           end
 
-          if !request.query_string.blank? or params.key?(:search)
-            search_condition = save_search_condition(@page_key)
-            unless search_condition['condition'].empty?
-              add_page_key_to_flexigrid
+          unless request.query_string == '--dev--'
+            if !request.query_string.blank? or params.key?(:search)
+              search_condition = save_search_condition(@page_key)
+              unless search_condition['condition'].empty?
+                add_page_key_to_flexigrid
+              end
             end
           end
         end
@@ -104,13 +109,13 @@ class TablesController < ApplicationController
       format.js
 
       format.ttl do
-        db_metadata = TogodbDbMetadata.where(table_id: @table.id).first
+        db_metadata = TogodbDBMetadata.where(table_id: @table.id).first
         metadata = Togodb::Metadata.new(db_metadata.id)
         render text: metadata.generate_rdf('turtle')
       end
 
       format.rdf do
-        db_metadata = TogodbDbMetadata.where(table_id: @table.id).first
+        db_metadata = TogodbDBMetadata.where(table_id: @table.id).first
         metadata = Togodb::Metadata.new(db_metadata.id)
         render text: metadata.generate_rdf('rdfxml')
       end
@@ -725,7 +730,7 @@ class TablesController < ApplicationController
     require 'browser'
     browser = Browser.new(request.env['HTTP_USER_AGENT'])
     if browser.platform.windows?
-      system "nkf -s -Lw -c --overwrite #{csv_file_path}"
+      system "#{Togodb.nkf_path} -s -Lw -c --overwrite #{csv_file_path}"
     end
 
     csv_file_path
@@ -773,8 +778,8 @@ class TablesController < ApplicationController
     require 'browser'
     browser = Browser.new(request.env['HTTP_USER_AGENT'])
     if browser.platform.windows?
-      system "nkf -s -Lw -c --overwrite #{send_file_path}"
-      system "nkf -s -Lw -c #{csv_file_path} >> #{send_file_path}"
+      system "#{Togodb.nkf_path} -s -Lw -c --overwrite #{send_file_path}"
+      system "#{Togodb.nkf_path} -s -Lw -c #{csv_file_path} >> #{send_file_path}"
     else
       system "cat #{csv_file_path} >> #{send_file_path}"
     end

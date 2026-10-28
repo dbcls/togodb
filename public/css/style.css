@@ -255,7 +255,7 @@ table {
   margin: 0 auto;
 }
 #togodb_indexpage_contents ul {
-  margin-top: 8px;
+  margin-top: 0px;
   margin-left: 20px;
   list-style: disc;
 }

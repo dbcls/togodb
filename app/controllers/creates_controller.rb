@@ -1,5 +1,6 @@
 class CreatesController < ApplicationController
   include Togodb::DatabaseCreator
+  include Togodb::FileUtils
 
   before_action :require_login
   before_action :set_create, except: %i[new create]
@@ -47,8 +48,11 @@ class CreatesController < ApplicationController
 
         handle_upload
 
-        set_records if params[:method] == 'upload'
+        #--> set_records if params[:method] == 'upload'
+        set_records if params[:method] == 'upload' || params[:method] == 'download'
       rescue CSV::MalformedCSVError => e
+        logger.fatal e.inspect
+        logger.fatal e.backtrace.join("\n")
         @upload_message = "#{@create.file_format.to_s.upcase} file format error: #{e.message}"
         render 'retry_upload'
       rescue => e
@@ -98,6 +102,8 @@ class CreatesController < ApplicationController
           end
         end
       rescue => e
+        logger.fatal e.inspect
+        logger.fatal e.backtrace.join("\n")
         case e
         when CSV::MalformedCSVError
           @error_message = e.message
@@ -127,7 +133,7 @@ class CreatesController < ApplicationController
     @table.create_table
     @key = enqueue_data_import_job
 
-    render action: :import, content_type: 'text/javascript'
+    render action: :import, formats: :js
   end
 
   def progress(klass = Togodb::DataImporter)
@@ -184,21 +190,6 @@ class CreatesController < ApplicationController
     { pct: populated, warning: warning.to_s, error: error.to_s }
   end
 
-  def convert_progress
-    populated = populated_percentage(params[:key], Togodb::DataDownloader)
-    if populated[:pct] == '200'
-      progress = 100
-    else
-      upload_size = File.size(@create.uploded_file_path)
-      convert_size = File.size(@create.utf8_file_path)
-
-      progress = ((convert_size.to_f / upload_size) * 90).to_i
-      progress = 99 if progress >= 100
-    end
-
-    render json: { pct: progress.to_s }.to_json
-  end
-
   private
 
   def set_create
@@ -220,19 +211,21 @@ class CreatesController < ApplicationController
 
     file_format = params[:file_format]
     output_file = uploaded_file(params[:file_format])
-    converted_file = utf8_file(params[:file_format])
+    # converted_file = utf8_file(params[:file_format])
 
     begin
       @create.uploded_file_path = output_file
-      @create.utf8_file_path = converted_file
+      # @create.utf8_file_path = converted_file
       @create.file_format = file_format
       @create.save!
 
       if params[:remote_url]
         @key = random_str
-        redis = Redis.new(host: Togodb.redis_host, port: Togodb.redis_port)
-        redis.set Togodb::DataDownloader.populated_key(@key), '0'
-        Resque.enqueue Togodb::DataDownloadJob, @create.id, params[:remote_url], @key
+        #--> redis = Redis.new(host: Togodb.redis_host, port: Togodb.redis_port)
+        #--> redis.set Togodb::DataDownloader.populated_key(@key), '0'
+        #--> Resque.enqueue Togodb::DataDownloadJob, @create.id, params[:remote_url], @key
+        downloader = Togodb::DataDownloader.new(@create.id, params[:remote_url], @key)
+        downloader.download
       else
         case file
         when ActionDispatch::Http::UploadedFile
@@ -242,7 +235,9 @@ class CreatesController < ApplicationController
             f.write request.body.read
           end
         end
-        convert_to_utf8(output_file, converted_file)
+        # convert_to_utf8(output_file, converted_file)
+        @create.input_file_encoding = detect_char_code(output_file)
+        @create.save!
       end
     rescue => e
       logger.fatal e.inspect

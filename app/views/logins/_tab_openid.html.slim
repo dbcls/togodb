@@ -1,5 +1,5 @@
 .login_title Login with OpenID account
-= form_tag openid_login_path do
+= form_with url: openid_login_path, method: :get, local: true do
   table.togodb_table.login_settings
     tbody
       tr

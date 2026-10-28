@@ -1,1 +1,6 @@
-$("div#togodb-quickbrowse-<%= @table.name %> > div#togodb-quickbrowse-body").html("<%== j @html %>");
+<%# if @db.name == 'antmossdb' %>
+<% if true %>
+$("div#<%= quickbrowse_data_elem_id(@table) %> > div#togodb-quickbrowse-body").html('<iframe id="qb-ifm" src="<%== j @src %>" onload="resize_qb()"></iframe>');
+<% else %>
+$("div#<%= quickbrowse_data_elem_id(@table) %> > div#togodb-quickbrowse-body").html("<%== j @html %>");
+<% end %>

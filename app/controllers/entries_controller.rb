@@ -65,13 +65,13 @@ class EntriesController < ApplicationController
       }
 
       format.rdf {
-        exporter = Togodb::Exporter::Rdf.new(@table, @columns, Togodb.temporary_workspace, 'rdf')
+        exporter = Togodb::Exporter::RDF.new(@table, @columns, Togodb.temporary_workspace, 'rdf')
         exporter.export_rdf([@record])
         render plain: exporter.output, content_type: "application/rdf+xml"
       }
 
       format.ttl {
-        exporter = Togodb::Exporter::Rdf.new(@table, @columns, Togodb.temporary_workspace, 'ttl')
+        exporter = Togodb::Exporter::RDF.new(@table, @columns, Togodb.temporary_workspace, 'ttl')
         exporter.export_ttl([@record])
         render plain: exporter.output, content_type: "text/turtle; charset=utf-8"
       }
@@ -116,6 +116,9 @@ class EntriesController < ApplicationController
     register_fs_helper(@record.id)
     template = FlavourSaver::Template.new { prepare_template quickbrowse_html }
     @html = template.render
+
+    # @src = "#{@app_server}/entry/#{@table.name}/#{params[:id]}"
+    @src = "/entry/#{@table.name}/#{params[:id]}"
   end
 
   def quickbrowse_edit_form

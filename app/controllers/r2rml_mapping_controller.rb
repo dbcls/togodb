@@ -1,6 +1,3 @@
-require 'togo_mapper/r2rml'
-require 'togo_mapper/namespace'
-
 class R2rmlMappingController < D2rqMapperController
   include TogoMapper::R2rml
   include TogoMapper::Namespace

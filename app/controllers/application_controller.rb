@@ -1,5 +1,3 @@
-require 'togo_mapper/d2rq'
-
 class ApplicationController < ActionController::Base
   include Togodb::Management
 
@@ -33,9 +31,10 @@ class ApplicationController < ActionController::Base
   end
 
   def app_server
-    @app_server = "#{request.scheme}://#{ENV.fetch('SERVER_NAME')}"
+    #@app_server = "#{request.scheme}://#{ENV.fetch('SERVER_NAME')}"
     #@app_server = "#{request.scheme}://#{request.headers['HTTP_X_FORWARDED_HOST']}"
     #@app_server = request.headers['HTTP_ORIGIN'].to_s
+    @app_server = "//#{ENV.fetch('SERVER_NAME')}"
   end
 
   def current_user
@@ -146,7 +145,7 @@ class ApplicationController < ActionController::Base
   end
 
   def update_rdf_repository_after_release?(dataset)
-    Togodb.use_graphdb && Togodb.create_new_repository && dataset.update_rdf_repository?
+    Togodb.use_graphdb && Togodb.create_new_repository && @togodb_dataset.update_rdf_repository?
   end
 
   def columns(table)

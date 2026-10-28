@@ -1,7 +1,8 @@
 class D2rqMappingController < D2rqMapperController
   before_action :set_table, only: [:show]
-  before_action :set_work, only: [:download]
-  before_action :read_user_required, only: [:show, :download]
+  # before_action :set_work, only: [:download]
+  # before_action :read_user_required, only: [:show, :download]
+  before_action :read_user_required, only: [:show]
   before_action :set_html_body_class
 
   layout 'd2rq_mapper'
