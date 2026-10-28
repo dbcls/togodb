@@ -53,7 +53,7 @@ end
 
 # gems for TogoDB
 gem 'cgi'
-gem 'json', "< 3.0"
+gem 'json', "< 4.0"
 gem "sprockets", "~> 4.0"
 gem "sprockets-rails"
 gem "ffi", force_ruby_platform: true
