@@ -322,7 +322,7 @@ GEM
     rexml (3.4.4)
     ruby-openid2 (3.1.0)
       version_gem (~> 1.1, >= 1.1.4)
-    rubyzip (2.4.1)
+    rubyzip (3.7.0)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
@@ -439,7 +439,7 @@ DEPENDENCIES
   rdf-rdfxml
   rdf-turtle
   resque
-  rubyzip (< 3.0)
+  rubyzip (< 4.0)
   sass-rails
   slim-rails
   sprockets (~> 4.0)
@@ -567,7 +567,7 @@ CHECKSUMS
   resque (3.2.0) sha256=0eb8bb50948f0f2847778e83fc3c23dff0b10acc0274e2398272c688fd9809b3
   rexml (3.4.4) sha256=19e0a2c3425dfbf2d4fc1189747bdb2f849b6c5e74180401b15734bc97b5d142
   ruby-openid2 (3.1.0) sha256=716c7e101162654380d5520fd377a71bc67d85c8f8ccc8f9cf53dca001c896c6
-  rubyzip (2.4.1) sha256=8577c88edc1fde8935eb91064c5cb1aef9ad5494b940cf19c775ee833e075615
+  rubyzip (3.7.0) sha256=65c19294da75297a939006f3516deacc33185fbd721ff1954f7a231db6d3e121
   sass-rails (6.0.0) sha256=e0b6448ea1c7929fd5929fc7a8eb2d78045e44cc82fc0765a249d3fa1c5810d3
   sassc (2.4.0) sha256=4c60a2b0a3b36685c83b80d5789401c2f678c1652e3288315a1551d811d9f83e
   sassc-rails (2.1.2) sha256=5f4fdf3881fc9bdc8e856ffbd9850d70a2878866feae8114aa45996179952db5
