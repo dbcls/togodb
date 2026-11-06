@@ -205,7 +205,7 @@ GEM
     net-ssh (7.3.6)
     nio4r (2.7.5)
     nkf (0.3.0)
-    nokogiri (1.19.4)
+    nokogiri (1.19.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     open_id_authentication (2.0.2)
@@ -531,7 +531,7 @@ CHECKSUMS
   net-ssh (7.3.6) sha256=3364dedce752b9f5221e12ae970880d871a8e733e4730e4b9bd89e0b6808ce4b
   nio4r (2.7.5) sha256=6c90168e48fb5f8e768419c93abb94ba2b892a1d0602cb06eef16d8b7df1dca1
   nkf (0.3.0) sha256=357a8dbeba38b727b75930f665146546076a394a1c243faf634ff176e3588895
-  nokogiri (1.19.4) sha256=50c951611c92bca05c51411aef45f1cbc50f2821c4802758c5c6d34696533ab5
+  nokogiri (1.19.7) sha256=abe94507c54cb18f872777b16bdca4aad32b1abdc4c52fe843f1c80fbdf992b8
   open_id_authentication (2.0.2) sha256=499b5011e6444989cb259a4d09eb060896b8dcb23750218e2ff0c9a7f672e8ec
   optionize (0.1.1) sha256=df58b91b442f3cc13bcb22f0d3a203781c079199a92123c2d4c2ff5a07a83894
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
